@@ -1,2 +1,3 @@
-# carveme
+# CarveMe
+
 Genome-scale metabolic model reconstruction
