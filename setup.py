@@ -9,10 +9,18 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    "framed", "pandas"
+    "framed",
+    "pandas"
 ]
 
-#setup_requirements = [}
+script_list = [
+    "scripts/carveme_init.py",
+    "scripts/build_universe.py",
+    "scripts/carveme.py",
+    "scripts/gapfill.py"
+]
+
+#setup_requirements = []
 #test_requirements = []
 
 setup(
@@ -20,9 +28,10 @@ setup(
     version='0.1.0',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
-    author="Daniel Machado",
+    author="Daniel Machado, Sergej Andrejev",
     author_email='cdanielmachado@gmail.com',
     url='https://github.com/cdanielmachado/carveme',
+    scripts=script_list,
     packages=find_packages(include=['src']),
     include_package_data=True,
     install_requires=requirements,
@@ -30,8 +39,10 @@ setup(
     zip_safe=False,
     keywords='carveme',
     classifiers=[
-        'Development Status :: 4 - Beta',
-        'Topic :: Utilities',
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Console', 
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Programming Language :: Python :: 2.7',
         'License :: OSI Approved :: Apache Software License',
     ],
