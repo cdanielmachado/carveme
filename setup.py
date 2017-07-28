@@ -14,10 +14,10 @@ requirements = [
 ]
 
 script_list = [
-    "scripts/carveme_init.py",
-    "scripts/build_universe.py",
-    "scripts/carveme.py",
-    "scripts/gapfill.py"
+    "scripts/carveme_init",
+    "scripts/build_universe",
+    "scripts/carve",
+    "scripts/gapfill"
 ]
 
 #setup_requirements = []
