@@ -2,6 +2,8 @@
 
 import urllib
 import subprocess
+import os
+
 
 from carveme import project_dir
 
@@ -9,15 +11,15 @@ from carveme import project_dir
 if __name__ == '__main__':
 
     downloads = {
-        'data/input/bigg_proteins.faa.gz': 'https://oc.embl.de/index.php/s/MeQ2XvaKo3IkEyQ',
-        'data/input/equilibrator_compounds.tsv.gz': 'https://oc.embl.de/index.php/s/DJyljWecdgsd0Rm',
-        'data/input/refseq_assembly_all.tsv.gz': 'https://oc.embl.de/index.php/s/kEfngj0H5DvjJR4',
-        'data/input/genbank_assembly_all.tsv.gz': 'https://oc.embl.de/index.php/s/b5VCK9tfhW9TSgd',
-        'data/generated/bigg_gprs.csv.gz': 'https://oc.embl.de/index.php/s/VOJ165bbkfCro2A',
-        'data/generated/model_specific_data.csv.gz': 'https://oc.embl.de/index.php/s/83HjrtEIny6tAjy',
-        'data/generated/universe_draft.xml.gz': 'https://oc.embl.de/index.php/s/jyAMU4JXB9Rwv9Q',
-        'data/generated/universe_bacteria.xml.gz': 'https://oc.embl.de/index.php/s/NEEZzHnWVfhNBWz',
-        'data/generated/universe_cyanobacteria.xml.gz': 'https://oc.embl.de/index.php/s/QfehkO5JrGI5epW'
+        'data/input/bigg_proteins.faa': 'https://oc.embl.de/index.php/s/cuLYsiIqeYIyYw1/download',
+        'data/input/equilibrator_compounds.tsv.gz': 'https://oc.embl.de/index.php/s/DJyljWecdgsd0Rm/download',
+        'data/input/refseq_assembly_all.tsv.gz': 'https://oc.embl.de/index.php/s/kEfngj0H5DvjJR4/download',
+        'data/input/genbank_assembly_all.tsv.gz': 'https://oc.embl.de/index.php/s/b5VCK9tfhW9TSgd/download',
+        'data/generated/bigg_gprs.csv.gz': 'https://oc.embl.de/index.php/s/VOJ165bbkfCro2A/download',
+        'data/generated/model_specific_data.csv.gz': 'https://oc.embl.de/index.php/s/83HjrtEIny6tAjy/download',
+        'data/generated/universe_draft.xml.gz': 'https://oc.embl.de/index.php/s/jyAMU4JXB9Rwv9Q/download',
+        'data/generated/universe_bacteria.xml.gz': 'https://oc.embl.de/index.php/s/NEEZzHnWVfhNBWz/download',
+        'data/generated/universe_cyanobacteria.xml.gz': 'https://oc.embl.de/index.php/s/QfehkO5JrGI5epW/download'
     }
 
     for file_path, file_url in downloads.items():
@@ -27,7 +29,24 @@ if __name__ == '__main__':
 
     print 'Building diamond database...'
 
-    cmd = ['diamond', 'makedb', '--in', 'data/input/bigg_proteins.faa.gz', '-d', 'data/input/bigg_proteins']
+    cmd = [
+        'diamond',
+        'makedb',
+        '--in',
+        project_dir + 'data/input/bigg_proteins.faa',
+        '-d',
+        project_dir + 'data/input/bigg_proteins'
+    ]
+
     subprocess.call(cmd)
 
-    print 'Done.'
+    with open(os.devnull, 'w') as devnull:
+        try:
+            exit_code = subprocess.call(cmd, stdout=devnull)
+        except OSError:
+            exit_code = None
+
+    if exit_code != 0:
+        print 'Failed to run diamond. Please make sure diamond is installed and add it to your PATH.'
+    else:
+        print 'Done.'
