@@ -20,12 +20,20 @@ script_list = [
     "scripts/gapfill"
 ]
 
+included_files = {
+    'carveme': [
+        'config.cfg',
+        'data/input/*',
+        'data/generated/*',
+    ]
+}
+
 #setup_requirements = []
 #test_requirements = []
 
 setup(
     name='carveme',
-    version='0.1.1',
+    version='0.1.2',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
     author="Daniel Machado, Sergej Andrejev",
