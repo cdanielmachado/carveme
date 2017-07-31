@@ -25,7 +25,7 @@ script_list = [
 
 setup(
     name='carveme',
-    version='version='0.1.0'',
+    version='0.1.0',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
     author="Daniel Machado, Sergej Andrejev",
