@@ -25,14 +25,15 @@ script_list = [
 
 setup(
     name='carveme',
-    version='0.1.0',
+    version='0.1.1',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
     author="Daniel Machado, Sergej Andrejev",
     author_email='cdanielmachado@gmail.com',
     url='https://github.com/cdanielmachado/carveme',
     scripts=script_list,
-    packages=find_packages(include=['src']),
+    package_dir = {'':'src'},
+    packages = find_packages('src'),
     include_package_data=True,
     install_requires=requirements,
     license="Apache Software License 2.0",
