@@ -1,2 +1,4 @@
 include LICENSE
 include README.rst
+include config.cfg
+recursive-include data
