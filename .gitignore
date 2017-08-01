@@ -15,3 +15,5 @@ build/*
 
 dist/*
 
+carveme.egg-info/*
+
