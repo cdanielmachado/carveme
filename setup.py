@@ -23,26 +23,30 @@ script_list = [
 included_files = {
     'carveme': [
         'config.cfg',
-        'data/input/*',
-        'data/generated/*',
+        'data/input/bigg_models.csv',
+        'data/input/biomass_db.tsv',
+        'data/input/manually_curated.csv',
+        'data/input/media_db.tsv',
+        'data/input/metabolomics_park2016.csv',
+        'data/input/unbalanced_metabolites.csv',
+        'data/generated/bigg_gibbs.csv'
     ]
 }
 
-#setup_requirements = []
-#test_requirements = []
 
 setup(
     name='carveme',
-    version='0.1.2',
+    version='0.1.3',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
     author="Daniel Machado, Sergej Andrejev",
     author_email='cdanielmachado@gmail.com',
     url='https://github.com/cdanielmachado/carveme',
     scripts=script_list,
-    package_dir = {'':'src'},
-    packages = find_packages('src'),
+#    package_dir={'':'src'},
+    packages=find_packages(),
     include_package_data=True,
+    package_data=included_files,
     install_requires=requirements,
     license="Apache Software License 2.0",
     zip_safe=False,
@@ -55,7 +59,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'License :: OSI Approved :: Apache Software License',
     ],
+    setup_requires=['setuptools_scm']
 #    test_suite='tests',
 #    tests_require=test_requirements,
-#    setup_requires=setup_requirements,
 )

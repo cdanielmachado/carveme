@@ -1,4 +1,9 @@
 include LICENSE
-include README.rst
-include config.cfg
-recursive-include data
+include carveme/config.cfg
+include carveme/data/input/bigg_models.csv
+include carveme/data/input/biomass_db.tsv
+include carveme/data/input/manually_curated.csv
+include carveme/data/input/media_db.tsv
+include carveme/data/input/metabolomics_park2016.csv
+include carveme/data/input/unbalanced_metabolites.csv
+include carveme/data/generated/bigg_gibbs.csv

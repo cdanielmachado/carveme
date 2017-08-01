@@ -2,9 +2,10 @@ import os
 from ConfigParser import ConfigParser
 from framed import set_default_solver, set_default_parameter, Parameter
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
-project_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../../')
+#project_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../../')
+project_dir = os.path.abspath(os.path.dirname(__file__)) + '/'
 
 config = ConfigParser()
 config.read(project_dir + 'config.cfg')
