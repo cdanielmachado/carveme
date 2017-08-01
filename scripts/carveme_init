@@ -11,7 +11,7 @@ from carveme import project_dir
 if __name__ == '__main__':
 
     downloads = {
-        'data/input/bigg_proteins.faa': 'https://oc.embl.de/index.php/s/cuLYsiIqeYIyYw1/download',
+        'data/input/bigg_proteins.faa': 'https://oc.embl.de/index.php/s/V9iFIXaQ1Petmme/download',
         'data/input/equilibrator_compounds.tsv.gz': 'https://oc.embl.de/index.php/s/DJyljWecdgsd0Rm/download',
         'data/input/refseq_assembly_all.tsv.gz': 'https://oc.embl.de/index.php/s/kEfngj0H5DvjJR4/download',
         'data/input/genbank_assembly_all.tsv.gz': 'https://oc.embl.de/index.php/s/b5VCK9tfhW9TSgd/download',
