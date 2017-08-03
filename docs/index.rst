@@ -1,18 +1,14 @@
-Welcome to CarveMe's documentation!
-======================================
+Welcome to CarveMe!
+===================
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   readme
    installation
    usage
-   modules
-   contributing
-   authors
-   history
+   advanced
 
 Indices and tables
 ==================

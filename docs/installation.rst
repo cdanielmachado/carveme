@@ -4,48 +4,38 @@
 Installation
 ============
 
+**CarveMe** requires Python 2.7, which is available for all major operating systems. We recommend the `Anaconda python
+distribution <https://www.continuum.io/downloads>`_.
 
-Stable release
---------------
-
-To install CarveMe, run this command in your terminal:
+It can be easily installed using the **pip** package manager:
 
 .. code-block:: console
 
     $ pip install carveme
 
-This is the preferred method to install CarveMe, as it will always install the most recent stable release. 
+This will automatically install other dependencies as well:
 
-If you don't have `pip`_ installed, this `Python installation guide`_ can guide
-you through the process.
+- framed_
+- pandas_
 
-.. _pip: https://pip.pypa.io
-.. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
+.. _framed: https://github.com/cdanielmachado/framed
+.. _pandas: https://pandas.pydata.org/
 
+Additionally, you must manually install two external dependencies:
 
-From sources
-------------
+- diamond_
+- IBM CPLEX_ Optimizer
 
-The sources for CarveMe can be downloaded from the `Github repo`_.
+.. _diamond: https://github.com/bbuchfink/diamond
+.. _CPLEX: https://www-01.ibm.com/software/commerce/optimization/cplex-optimizer/
 
-You can either clone the public repository:
+Note that you will need to register with IBM to obtain an academic license for CPLEX.
 
-.. code-block:: console
-
-    $ git clone git://github.com/cdanielmachado/carveme
-
-Or download the `tarball`_:
-
-.. code-block:: console
-
-    $ curl  -OL https://github.com/cdanielmachado/carveme/tarball/master
-
-Once you have a copy of the source, you can install it with:
+Finally, you should run the initialization script. This will download larger files
+to build an internal database for *CarveMe*, which does not come bundled with the installer:
 
 .. code-block:: console
 
-    $ python setup.py install
+    $ carveme_init
 
-
-.. _Github repo: https://github.com/cdanielmachado/carveme
-.. _tarball: https://github.com/cdanielmachado/carveme/tarball/master
+Everything should be ready now! See the next section for instructions on how to start *carving*.
