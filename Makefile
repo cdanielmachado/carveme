@@ -85,3 +85,7 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
+
+md2rst:
+	pandoc --from=markdown --to=rst --output=README.rst README.md
+

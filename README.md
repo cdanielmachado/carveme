@@ -15,7 +15,7 @@ Can be easily installed using **pip**:
 pip install carveme
 ```
 
-Additionally, you must install diamond and CPLEX. 
+Additionally, you must install diamond and CPLEX (please check the documentation for details). 
 
 ### Credits and License
 
