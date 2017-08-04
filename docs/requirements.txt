@@ -1,0 +1,6 @@
+framed
+pandas
+matplotlib
+python-libsbml
+numpy
+scipy
