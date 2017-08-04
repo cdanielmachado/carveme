@@ -18,7 +18,7 @@ import os
 
 import mock
 
-MOCK_MODULES = ['cplex', 'gurobipy', '_tkinter']
+MOCK_MODULES = ['cplex', 'gurobipy']
 
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()

@@ -1,6 +1,6 @@
-framed
-pandas
 matplotlib
-python-libsbml
 numpy
 scipy
+python-libsbml
+pandas
+framed
