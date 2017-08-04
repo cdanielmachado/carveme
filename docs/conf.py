@@ -23,6 +23,10 @@ MOCK_MODULES = ['cplex', 'gurobipy']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
+import matplotlib
+
+matplotlib.use('Agg')
+
 
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
