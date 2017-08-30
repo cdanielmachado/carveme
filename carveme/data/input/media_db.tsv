@@ -1,6 +1,5 @@
 medium	description	compound	name
 LB	Lysogeny broth	adn	Adenosine
-LB	Lysogeny broth	adocbl	Adenosylcobalamin
 LB	Lysogeny broth	ala__L	L-Alanine
 LB	Lysogeny broth	amp	AMP
 LB	Lysogeny broth	arg__L	L-Arginine
@@ -43,6 +42,7 @@ LB	Lysogeny broth	mn2	Mn2+
 LB	Lysogeny broth	mobd	Molybdate
 LB	Lysogeny broth	na1	Na+
 LB	Lysogeny broth	nac	Isonicotinic acid
+LB	Lysogeny broth	nh4	Ammonium
 LB	Lysogeny broth	ni2	Ni2+
 LB	Lysogeny broth	o2	O2
 LB	Lysogeny broth	phe__L	L-Phenylalanine
@@ -65,7 +65,6 @@ LB	Lysogeny broth	uri	Uridine
 LB	Lysogeny broth	val__L	L-Valine
 LB	Lysogeny broth	zn2	Zn2+
 LB[-O2]	Lysogeny broth (anaerobic)	adn	Adenosine
-LB[-O2]	Lysogeny broth (anaerobic)	adocbl	Adenosylcobalamin
 LB[-O2]	Lysogeny broth (anaerobic)	ala__L	L-Alanine
 LB[-O2]	Lysogeny broth (anaerobic)	amp	AMP
 LB[-O2]	Lysogeny broth (anaerobic)	arg__L	L-Arginine
@@ -108,6 +107,7 @@ LB[-O2]	Lysogeny broth (anaerobic)	mn2	Mn2+
 LB[-O2]	Lysogeny broth (anaerobic)	mobd	Molybdate
 LB[-O2]	Lysogeny broth (anaerobic)	na1	Na+
 LB[-O2]	Lysogeny broth (anaerobic)	nac	Isonicotinic acid
+LB[-O2]	Lysogeny broth (anaerobic)	nh4	Ammonium
 LB[-O2]	Lysogeny broth (anaerobic)	ni2	Ni2+
 LB[-O2]	Lysogeny broth (anaerobic)	phe__L	L-Phenylalanine
 LB[-O2]	Lysogeny broth (anaerobic)	pheme	Protoheme

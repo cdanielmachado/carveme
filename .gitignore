@@ -20,3 +20,4 @@ carveme.egg-info/*
 *.pyc
 
 docs/_build/*
+Dockerfile
