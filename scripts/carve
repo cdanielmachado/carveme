@@ -13,7 +13,6 @@ import argparse
 import os
 import pandas as pd
 from framed.io.sbml import save_cbmodel, sanitize_id
-from glob import glob
 from multiprocessing import Pool
 
 
@@ -185,7 +184,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Reconstruct a metabolic model using CarveMe",
                                      formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument('input', metavar='INPUT',
+    parser.add_argument('input', metavar='INPUT', nargs='+',
                         help="Input (protein fasta file by default, see other options for details).\n" +
                              "When used with -r an input pattern with wildcards can also be used.\n" +
                              "When used with --refseq an NCBI RefSeq assembly accession is expected."
@@ -258,8 +257,10 @@ if __name__ == '__main__':
         flavor = None
 
     if not args.recursive:
+        if len(args.input) > 1:
+            parser.error('Use -r when specifying more than one input file')
 
-        main(inputfile=args.input,
+        main(inputfile=args.input[0],
              input_type=input_type,
              outputfile=args.output,
              diamond_args=args.diamond_args,
@@ -275,7 +276,6 @@ if __name__ == '__main__':
              uptake_score=args.uptake_score)
 
     else:
-        input_files = glob(args.input)
 
         def f(x):
             main(inputfile=x,
@@ -295,4 +295,4 @@ if __name__ == '__main__':
                     recursive_mode=True)
 
         p = Pool()
-        p.map(f, input_files)
+        p.map(f, args.input)
