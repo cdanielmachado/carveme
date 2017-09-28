@@ -260,11 +260,8 @@ def compute_flux_bounds(model, dG0, sdG0=None, x0=None, method=None, inplace=Fal
 
     if not method:
         for r_id in dG0:
-            if 'M_atp_c' in model.reactions[r_id].get_substrates(): # TODO: CHECK IF THIS IS REALLY NECESSARY!
-                model.set_flux_bounds(r_id, 0, 1000)
-            else:
-                dG_min, dG_max = dG_bounds(model, r_id, dG0, sdG0, x0, excluded)
-                bounds[r_id] = dG_to_flux_bounds(dG_min, dG_max)
+            dG_min, dG_max = dG_bounds(model, r_id, dG0, sdG0, x0, excluded)
+            bounds[r_id] = dG_to_flux_bounds(dG_min, dG_max)
 
     # elif method == 'NET':
     #

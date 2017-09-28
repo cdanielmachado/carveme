@@ -236,7 +236,7 @@ def filter_reactions_by_kingdom(model, kingdom, kingdom_map, exclusive=False, in
         return valid
 
 
-def reversibility_heuristics(model, no_reverse_atp=True, no_proton_pumps=True):
+def reversibility_heuristics(model, no_reverse_atp=True, no_proton_pumps=True, override_trusted=False):
     """ Apply heuristic rules to constrain reaction reversibilities.
 
     Args:
@@ -247,7 +247,10 @@ def reversibility_heuristics(model, no_reverse_atp=True, no_proton_pumps=True):
 
     if no_reverse_atp:
         for r_id, rxn in model.reactions.items():
-            if 'M_atp_c' in rxn.get_substrates() and not rxn.trusted:
+            if rxn.trusted and not override_trusted:
+                continue
+
+            if 'M_atp_c' in rxn.get_substrates():
                 model.set_flux_bounds(r_id, 0, 1000)
                 rxn.reversible = False
 
@@ -256,6 +259,9 @@ def reversibility_heuristics(model, no_reverse_atp=True, no_proton_pumps=True):
         protons = {'M_h_c', 'M_h_p', 'M_h_e'}
 
         for r_id, rxn in model.reactions.items():
+            if rxn.trusted and not override_trusted:
+                continue
+
             substrates = set(rxn.get_substrates())
             products = set(rxn.get_products())
             if len(substrates) == len(products) == 2:
@@ -348,10 +354,11 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
         compute_flux_bounds(model, dG0, sdG0, x0, method=thermodynamics_method, inplace=True, override_trusted=False)
         print 'done\n'
 
+
     print 'Applying manual curation rules...',
 
     if use_heuristics:
-        reversibility_heuristics(model, no_reverse_atp=True, no_proton_pumps=True)
+        reversibility_heuristics(model, no_reverse_atp=True, no_proton_pumps=False, override_trusted=False)
 
     # manually curated reactions
     if manually_curated is not None:
