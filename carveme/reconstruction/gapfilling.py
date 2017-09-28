@@ -1,4 +1,4 @@
-from carveme.reconstruction.media import medium_to_constraints
+from carveme.reconstruction.utils import medium_to_constraints
 from framed.model.transformation import disconnected_metabolites
 from framed.solvers import solver_instance
 from framed.solvers.solver import VarType, Status
