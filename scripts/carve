@@ -4,7 +4,7 @@ from carveme import config, project_dir
 from carveme.reconstruction.carving import carve_model, build_ensemble
 from carveme.reconstruction.eggnog import load_eggnog_data
 from carveme.reconstruction.gapfilling import multiGapFill
-from carveme.reconstruction.media import load_media_db
+from carveme.reconstruction.utils import load_media_db
 from carveme.reconstruction.ncbi_download import load_ncbi_table, download_ncbi_genome
 from carveme.reconstruction.scoring import reaction_scoring
 from carveme.reconstruction.diamond import run_blast, load_diamond_results
