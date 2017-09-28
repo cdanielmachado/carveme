@@ -12,7 +12,8 @@ from carveme.reconstruction.utils import load_biomass_db
 from framed.io.sbml import load_cbmodel
 
 
-def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow_blocked=False, biomass=None, outputfile=None):
+def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow_blocked=False,
+         biomass=None, biomass_db_path=None, outputfile=None):
 
     if mode == 'draft':
 
@@ -60,8 +61,10 @@ def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow
         unbalanced = pd.read_csv(unbalanced, header=None)
         unbalanced = unbalanced[0].tolist()
 
-        biomass_library = project_dir + config.get('input', 'biomass_library')
-        biomass_db = load_biomass_db(biomass_library)
+        if biomass_db_path is None:
+            biomass_db_path = project_dir + config.get('input', 'biomass_library')
+
+        biomass_db = load_biomass_db(biomass_db_path)
 
         if not biomass:
             biomass = config.get('universe', 'default_biomass')
@@ -134,6 +137,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--biomass', help="Advanced options: biomass equation identifier")
 
+    parser.add_argument('--biomass-db', dest='biomass_db', help="Advanced options: biomass database file")
+
     args = parser.parse_args()
 
     if args.nothermo and (args.draft or args.thermo):
@@ -166,5 +171,6 @@ if __name__ == '__main__':
          allow_unbalanced=args.unbalanced,
          allow_blocked=args.blocked,
          biomass=args.biomass,
+         biomass_db_path=args.biomass_db,
          outputfile=args.output)
 
