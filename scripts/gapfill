@@ -2,7 +2,7 @@
 
 from carveme import config, project_dir
 from carveme.reconstruction.gapfilling import multiGapFill
-from carveme.reconstruction.media import load_media_db
+from carveme.reconstruction.utils import load_media_db
 from framed import load_cbmodel, save_cbmodel
 import argparse
 import os

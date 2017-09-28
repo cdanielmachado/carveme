@@ -8,10 +8,11 @@ import pandas as pd
 from carveme.universe.bigg_download import build_bigg_universe_model, download_model_specific_data, create_gpr_table
 from carveme.universe.curation import curate_universe
 from carveme.universe.thermodynamics import compute_bigg_gibbs_energy
+from carveme.reconstruction.utils import load_biomass_db
 from framed.io.sbml import load_cbmodel
 
 
-def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow_blocked=False, outputfile=None):
+def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow_blocked=False, biomass=None, outputfile=None):
 
     if mode == 'draft':
 
@@ -47,7 +48,7 @@ def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow
         if outputfile:
             universe_final = outputfile
         else:
-            universe_final = "{}{}universe_{}.xml".format(project_dir, config.get('generated', 'folder'), mode)
+            universe_final = "{}{}universe_{}.xml.gz".format(project_dir, config.get('generated', 'folder'), mode)
 
         bigg_models = project_dir + config.get('input', 'bigg_models')
         bigg_models = pd.read_csv(bigg_models, index_col=0)
@@ -60,9 +61,16 @@ def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow
         unbalanced = unbalanced[0].tolist()
 
         biomass_library = project_dir + config.get('input', 'biomass_library')
-        biomass_db = pd.read_csv(biomass_library, index_col=0, sep='\t')
-        default_biomass = config.get('universe', 'default_biomass')
-        biomass_eq = biomass_db.loc[default_biomass, 'equation']
+        biomass_db = load_biomass_db(biomass_library)
+
+        if not biomass:
+            biomass = config.get('universe', 'default_biomass')
+
+        if biomass not in biomass_db:
+            valid_ids = ','.join(biomass_db.keys())
+            raise RuntimeError('Biomass identifier not in database. Currently in database: ' + valid_ids)
+
+        biomass_eq = biomass_db[biomass]
 
         try:
             model = load_cbmodel(universe_draft, flavor=config.get('sbml', 'default_flavor'))
@@ -124,6 +132,8 @@ if __name__ == '__main__':
     parser.add_argument('--blocked', action='store_true',
                         help="Advanced options: allow blocked reactions")
 
+    parser.add_argument('--biomass', help="Advanced options: biomass equation identifier")
+
     args = parser.parse_args()
 
     if args.nothermo and (args.draft or args.thermo):
@@ -137,6 +147,9 @@ if __name__ == '__main__':
 
     if args.blocked and (args.draft or args.thermo):
         parser.error('--blocked cannot be used with --draft or --thermo')
+
+    if args.biomass and (args.draft or args.thermo):
+        parser.error('--biomass cannot be used with --draft or --thermo')
 
     if args.draft:
         mode = 'draft'
@@ -152,5 +165,6 @@ if __name__ == '__main__':
          noheuristics=args.noheuristics,
          allow_unbalanced=args.unbalanced,
          allow_blocked=args.blocked,
+         biomass=args.biomass,
          outputfile=args.output)
 
