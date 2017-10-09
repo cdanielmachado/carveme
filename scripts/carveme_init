@@ -10,22 +10,26 @@ from carveme import project_dir
 
 if __name__ == '__main__':
 
-    downloads = {
-        'data/input/bigg_proteins.faa': 'https://oc.embl.de/index.php/s/V9iFIXaQ1Petmme/download',
-        'data/input/equilibrator_compounds.tsv.gz': 'https://oc.embl.de/index.php/s/DJyljWecdgsd0Rm/download',
-        'data/input/refseq_assembly_all.tsv.gz': 'https://oc.embl.de/index.php/s/kEfngj0H5DvjJR4/download',
-        'data/input/genbank_assembly_all.tsv.gz': 'https://oc.embl.de/index.php/s/b5VCK9tfhW9TSgd/download',
-        'data/generated/bigg_gprs.csv.gz': 'https://oc.embl.de/index.php/s/VOJ165bbkfCro2A/download',
-        'data/generated/model_specific_data.csv.gz': 'https://oc.embl.de/index.php/s/83HjrtEIny6tAjy/download',
-        'data/generated/universe_draft.xml.gz': 'https://oc.embl.de/index.php/s/jyAMU4JXB9Rwv9Q/download',
-        'data/generated/universe_bacteria.xml.gz': 'https://oc.embl.de/index.php/s/NEEZzHnWVfhNBWz/download',
-        'data/generated/universe_cyanobacteria.xml.gz': 'https://oc.embl.de/index.php/s/QfehkO5JrGI5epW/download'
-    }
+    source_url = 'https://github.com/cdanielmachado/carveme/raw/master/carveme/'
 
-    for file_path, file_url in downloads.items():
+    downloads = [
+        'data/input/bigg_proteins.faa',
+        'data/input/equilibrator_compounds.tsv.gz',
+        'data/input/refseq_assembly_all.tsv.gz',
+        'data/input/genbank_assembly_all.tsv.gz',
+        'data/generated/bigg_gprs.csv.gz',
+        'data/generated/model_specific_data.csv.gz',
+        'data/generated/universe_draft.xml.gz',
+        'data/generated/universe_bacteria.xml.gz',
+        'data/generated/universe_grampos.xml.gz',
+        'data/generated/universe_gramneg.xml.gz',
+    ]
+
+    for file_path in downloads:
         print 'Downloading', file_path
+        inputfile = source_url + file_path
         outputfile = project_dir + file_path
-        urllib.urlretrieve(file_url, outputfile)
+        urllib.urlretrieve(inputfile, outputfile)
 
     print 'Building diamond database...'
 
