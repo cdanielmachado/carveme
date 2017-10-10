@@ -14,6 +14,7 @@ import os
 import pandas as pd
 from framed.io.sbml import save_cbmodel, sanitize_id
 from multiprocessing import Pool
+from glob import glob
 
 
 def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
@@ -88,7 +89,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
 
     if not universe_file:
         if universe:
-            universe_file = "{}{}universe_{}.xml".format(project_dir, config.get('generated', 'folder'), universe)
+            universe_file = "{}{}universe_{}.xml.gz".format(project_dir, config.get('generated', 'folder'), universe)
         else:
             universe_file = project_dir + config.get('generated', 'default_universe')
 
@@ -96,10 +97,8 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         universe_model = load_cbmodel(universe_file, flavor=config.get('sbml', 'default_flavor'))
         universe_model.id = model_id
     except IOError:
-        if universe:
-            raise IOError('Failed to load universe "{0}". Please run build_universe.py --{0}.'.format(universe))
-        else:
-            raise IOError('Failed to load universe model:' + universe_file)
+        available = '\n'.join(glob("{}{}universe_*.xml.gz".format(project_dir, config.get('generated', 'folder'))))
+        raise IOError('Failed to load universe model: {}\nAvailable universe files:\n{}'.format(universe_file, available))
 
     if gapfill or init:
 

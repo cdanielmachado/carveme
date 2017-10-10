@@ -1,8 +1,11 @@
 from collections import OrderedDict
+from warnings import warn
 
 import pandas as pd
 from framed import Environment
 from framed import CBReaction
+from framed.experimental.elements import molecular_weight
+import numpy as np
 
 
 def create_exchange_reactions(model, default_lb=0, default_ub=None):
@@ -89,7 +92,7 @@ def medium_to_constraints(model, compounds, max_uptake=10, inplace=False, verbos
     return env.apply(model, inplace=inplace, warning=verbose)
 
 
-def load_biomass_db(filename, sep='\t'):
+def load_biomass_db(filename, sep='\t', normalize_weight=False, model=None):
     data = pd.read_csv(filename, sep=sep)
     data.dropna(subset=['bigg_id', 'comp'], inplace=True)
     data.sort_values(by=['bigg_id', 'comp'], inplace=True)
@@ -99,7 +102,39 @@ def load_biomass_db(filename, sep='\t'):
         if column.startswith('@'):
             col_slice = data[['bigg_id', 'comp', column]].dropna().values
             biomass_db[column[1:]] = OrderedDict(('M_{}_{}'.format(x, y), z) for x, y, z in col_slice)
+
+    if normalize_weight:
+        if model is None:
+            raise RuntimeError('To normalize the biomass weight please provide a model with metabolite formulas.')
+
+        for biomass_id, coeffs in biomass_db.items():
+            normalize_coeffs(biomass_id, coeffs, model)
+
     return biomass_db
+
+
+def biomass_weight(biomass_id, coeffs, model):
+    bio_weight = 0
+    for m_id, coeff in coeffs.items():
+        metabolite = model.metabolites[m_id]
+        if 'FORMULA' in metabolite.metadata:
+            formulae = metabolite.metadata['FORMULA'].split(';')
+            met_weight = np.mean([molecular_weight(formula) for formula in formulae])
+            bio_weight += -coeff * met_weight
+#            print biomass_id, '\t', m_id, '\t', (-coeff * met_weight)
+        else:
+            warn('Unable to normalize {} due to missing formula for {}:'.format(biomass_id, m_id))
+            break
+
+    return bio_weight
+
+
+def normalize_coeffs(biomass_id, coeffs, model):
+    bio_weight = biomass_weight(biomass_id, coeffs, model)
+
+    if bio_weight > 0:
+        for x, val in coeffs.items():
+            coeffs[x] = val * 1000.0 / bio_weight
 
 
 def add_biomass_equation(model, stoichiometry, label=None):
