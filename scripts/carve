@@ -156,7 +156,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
     else:
         build_ensemble(universe_model, scores, ensemble_size, outputfile, flavor, init_env=init_env)
 
-    if gapfill:
+    if gapfill and model is not None:
 
         media = gapfill.split(',')
 
