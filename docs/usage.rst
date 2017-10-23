@@ -127,3 +127,49 @@ To simultaneously gap-fill and initialize the model for a desired medium, you mu
     $ carve genome.faa -g M9 -i M9
 
 You are now a basic user. Happy *carving*!
+
+
+Microbial Communities
+---------------------
+
+**CarveMe** enables the generation of microbial community models from single species models.
+
+The most basic usage is:
+
+.. code-block:: console
+
+    $ merge_community organism_1.xml organism_2.xml ... organism_N.xml -o community.xml
+
+or more simply:
+
+.. code-block:: console
+
+    $ merge_community *.xml -o community.xml
+
+This generates an SBML file with a community where each organism is assigned to its own compartment and
+a common community biomass equation is also generated. You can import the merged model into any simulation tool, just
+as any normal constraint-based model and apply different types of simulation methods (FBA, FVA, etc...).
+
+You can choose not to create a community biomass equation (this allows each species to grow at a different rate):
+
+.. code-block:: console
+
+    $ merge_community [input files] --no-community-biomass
+
+By default, all organisms share the same extracellular environment. This is the most simple representation of the community,
+but also makes it more difficult to observe inter-species exchanges. Another option is to keep individual extracellular
+environments for each organism, and create a common metabolite pool for exchanges between these environments.
+The simulation results are the same (this just adds redundancy to the model) but makes it easier to analyse
+species-to-species exchanges:
+
+.. code-block:: console
+
+    $ merge_community [input files] --split-pool
+
+Finally, you can initialize the community with a pre-defined medium (just like during single-species reconstruction):
+
+.. code-block:: console
+
+    $ merge_community [input files] -i M9
+
+
