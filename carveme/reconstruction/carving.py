@@ -261,6 +261,10 @@ def cleanup_metadata(model):
     for met in model.metabolites.values():
         if 'BiGG models' in met.metadata:
             del met.metadata['BiGG models']
+        if 'CHEBI' in met.metadata:
+            del met.metadata['CHEBI']
+        if 'CHARGE' in met.metadata:
+            del met.metadata['CHARGE']
 
     for rxn in model.reactions.values():
         if 'BiGG models' in rxn.metadata:
