@@ -31,8 +31,7 @@ Additionally, you must manually install two external dependencies:
 
 Note that you will need to register with IBM to obtain an academic license for CPLEX.
 
-Finally, you should run the initialization script. This will download larger files
-to build an internal database for *CarveMe*, which does not come bundled with the installer:
+If at any point *carveme* complains about missing or outdated files, please run:
 
 .. code-block:: console
 

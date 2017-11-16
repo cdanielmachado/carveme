@@ -17,7 +17,8 @@ script_list = [
     "scripts/carveme_init",
     "scripts/build_universe",
     "scripts/carve",
-    "scripts/gapfill"
+    "scripts/gapfill",
+    "scripts/merge_community"
 ]
 
 included_files = {
@@ -36,7 +37,7 @@ included_files = {
 
 setup(
     name='carveme',
-    version='0.1.4',
+    version='1.0.0',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
     author="Daniel Machado, Sergej Andrejev",
