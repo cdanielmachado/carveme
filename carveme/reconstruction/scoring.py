@@ -73,7 +73,7 @@ def merge_protein_scores(scores):
     return scores.max(skipna=True)
 
 
-def reaction_scoring(annotation, gprs, spontaneous_score=0.0):
+def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None):
     """ Calculate reaction scores using new eggnog output.
 
     Args:
@@ -109,6 +109,11 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0):
         .agg({'GPR': merge_proteins, 'score': merge_protein_scores}).dropna()
 
     avg_score = reaction_scores['score'].median()
+
+    if debug_output:
+        gene_scores.to_csv(debug_output + '_gene_scores.tsv', sep='\t', index=False)
+        protein_scores.to_csv(debug_output + '_protein_scores.tsv', sep='\t', index=False)
+        reaction_scores.to_csv(debug_output + '_reaction_scores.tsv', sep='\t', index=False)
 
     if avg_score != 0:
         reaction_scores['normalized_score'] = reaction_scores['score'] / avg_score

@@ -330,8 +330,6 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
 
         filter_reactions_by_kingdom(model, kingdom, kingdom_map, inplace=True)
 
-        print '(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions))
-
         if taxa == 'bacteria':
             valid_compartments = {'C_c', 'C_p', 'C_e'}
         elif taxa == 'cyanobacteria':
@@ -339,6 +337,8 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
 
         other_compartments = set(model.compartments.keys()) - valid_compartments
         model.remove_compartments(other_compartments, delete_metabolites=True, delete_reactions=True)
+
+        print '(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions))
 
     if thermodynamics_data is not None:
         print 'Computing thermodynamics...',
