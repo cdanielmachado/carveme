@@ -22,7 +22,7 @@ def main(inputfiles, flavor=None, split_pool=False, no_biomass=False, init=None,
     models = [load_cbmodel(inputfile, flavor=flavor) for inputfile in inputfiles]
 
     community = Community(model_id, models,
-                          extracellular_compartment_id='e',
+                          extracellular_compartment_id='C_e',
                           merge_extracellular_compartments=(not split_pool),
                           create_biomass=(not no_biomass))
 
