@@ -198,13 +198,13 @@ def add_bounds_from_extracted_data(model, data, trusted_models=None):
         model.reactions[r_id].reversible = bool(lb < 0)
 
 
-def filter_reactions_by_kingdom(model, kingdom, kingdom_map, exclusive=False, inplace=False):
-    """ Filter reactions in model by Kingdom.
+def filter_reactions_by_kingdoms(model, kingdoms, kingdom_map, exclusive=False, inplace=False):
+    """ Filter reactions in model by Kingdoms.
     A reaction is considered valid for a given Kingdom if it is present in at least one model from that Kingdom.
 
     Args:
         model (CBModel): model
-        kingdom (str): Kingdom name
+        kingdoms (set): Kingdom names
         kingdom_map (dict): mapping between model ids and kingdoms
         exclusive (bool): only accept reactions *exclusive* to given Kingdom (default: False)
         inplace (bool): automatically remove invalid reactions from model (default: False)
@@ -219,11 +219,11 @@ def filter_reactions_by_kingdom(model, kingdom, kingdom_map, exclusive=False, in
 
     for r_id, rxn in model.reactions.items():
         model_ids = rxn.metadata['BiGG models'].split(';')
-        kingdoms = set([kingdom_map[model_id] for model_id in model_ids])
+        model_kingdoms = set([kingdom_map[model_id] for model_id in model_ids])
 
-        if exclusive and kingdoms == {kingdom}:
+        if exclusive and model_kingdoms == kingdoms:
             valid.append(r_id)
-        elif not exclusive and kingdom in kingdoms:
+        elif not exclusive and len(model_kingdoms & kingdoms) > 0:
             valid.append(r_id)
         else:
             invalid.append(r_id)
@@ -324,13 +324,15 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
         kingdom_map = bigg_models['domain'].to_dict()
 
         if taxa in {'cyanobacteria', 'bacteria'}:
-            kingdom = 'Bacteria'
+            kingdoms = {'Bacteria'}
+        elif taxa == 'archaea':
+            kingdoms = {'Archaea', 'Bacteria'}
         else:
             raise ValueError('Unsupported taxa:' + taxa)
 
-        filter_reactions_by_kingdom(model, kingdom, kingdom_map, inplace=True)
+        filter_reactions_by_kingdoms(model, kingdoms, kingdom_map, inplace=True)
 
-        if taxa == 'bacteria':
+        if taxa in {'bacteria', 'archaea'}:
             valid_compartments = {'C_c', 'C_p', 'C_e'}
         elif taxa == 'cyanobacteria':
             valid_compartments = {'C_c', 'C_p', 'C_e', 'C_u'}

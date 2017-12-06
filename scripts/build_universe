@@ -13,7 +13,7 @@ from framed.io.sbml import load_cbmodel
 
 
 def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow_blocked=False,
-         biomass=None, biomass_db_path=None, normalize_biomass=False, cyanobacteria=False, outputfile=None):
+         biomass=None, biomass_db_path=None, normalize_biomass=False, taxa=None, outputfile=None):
 
     if mode == 'draft':
 
@@ -52,7 +52,7 @@ def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow
         if outputfile:
             universe_final = outputfile
         else:
-            tag = 'cyanobacteria' if cyanobacteria else biomass
+            tag = taxa if taxa != 'bacteria' else biomass
             universe_final = "{}{}universe_{}.xml.gz".format(project_dir, config.get('generated', 'folder'), tag)
 
         bigg_models = project_dir + config.get('input', 'bigg_models')
@@ -96,7 +96,7 @@ def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow
             metabolomics_data = pd.read_csv(metabolomics, index_col=1)
 
         curate_universe(model,
-                        taxa='cyanobacteria' if cyanobacteria else 'bacteria',
+                        taxa=taxa,
                         outputfile=universe_final,
                         model_specific_data=model_specific_data,
                         bigg_models=bigg_models,
@@ -135,8 +135,13 @@ if __name__ == '__main__':
     parser.add_argument('--blocked', action='store_true',
                         help="Advanced options: allow blocked reactions")
 
-    parser.add_argument('--cyanobacteria', action='store_true',
+    taxa = parser.add_mutually_exclusive_group(required=False)
+
+    taxa.add_argument('--cyanobacteria', action='store_true',
                       help='Generate a template for cyanobacteria (includes thylakoid compartment).')
+
+    taxa.add_argument('--archaea', action='store_true',
+                      help='Generate a template for archaea (includes methanogenic reactions).')
 
     parser.add_argument('--biomass', help="Advanced options: biomass equation identifier")
 
@@ -166,12 +171,22 @@ if __name__ == '__main__':
     if args.cyanobacteria and (args.draft or args.thermo):
         parser.error('--cyanobacteria cannot be used with --draft or --thermo')
 
+    if args.archaea and (args.draft or args.thermo):
+        parser.error('--archaea cannot be used with --draft or --thermo')
+
     if args.draft:
         mode = 'draft'
     elif args.thermo:
         mode = 'thermo'
     elif args.curated:
         mode = 'curated'
+
+    if args.cyanobacteria:
+        taxa = 'cyanobacteria'
+    elif args.archaea:
+        taxa = 'archaea'
+    else:
+        taxa = 'bacteria'
 
     main(mode=mode,
          nothermo=args.nothermo,
@@ -181,6 +196,6 @@ if __name__ == '__main__':
          biomass=args.biomass,
          biomass_db_path=args.biomass_db,
          normalize_biomass=args.normalize_biomass,
-         cyanobacteria=args.cyanobacteria,
+         taxa=taxa,
          outputfile=args.output)
 
