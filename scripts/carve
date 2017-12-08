@@ -4,7 +4,7 @@ from carveme import config, project_dir
 from carveme.reconstruction.carving import carve_model, build_ensemble
 from carveme.reconstruction.eggnog import load_eggnog_data
 from carveme.reconstruction.gapfilling import multiGapFill
-from carveme.reconstruction.utils import load_media_db
+from carveme.reconstruction.utils import load_media_db, load_soft_constraints, load_hard_constraints
 from carveme.reconstruction.ncbi_download import load_ncbi_table, download_ncbi_genome
 from carveme.reconstruction.scoring import reaction_scoring
 from carveme.reconstruction.diamond import run_blast, load_diamond_results
@@ -19,7 +19,7 @@ from glob import glob
 
 def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
          ensemble_size=None, verbose=False, flavor=None, gapfill=None, init=None, mediadb=None,
-         default_score=None, uptake_score=None, recursive_mode=False):
+         default_score=None, uptake_score=None, soft=None, hard=None, recursive_mode=False):
 
     if recursive_mode:
         model_id = os.path.splitext(os.path.basename(inputfile))[0]
@@ -46,6 +46,22 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         except:
             print 'Unable to create output folder:', outputfolder
             return
+
+    if soft:
+        try:
+            soft_constraints = load_soft_constraints(soft)
+        except IOError:
+            raise IOError('Failed to load soft-constraints file:' + soft)
+    else:
+        soft_constraints = None
+
+    if hard:
+        try:
+            hard_constraints = load_hard_constraints(hard)
+        except IOError:
+            raise IOError('Failed to load hard-constraints file:' + hard)
+    else:
+        hard_constraints = None
 
     if input_type == 'refseq' or input_type == 'genbank':
 
@@ -146,12 +162,16 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
                         flavor=flavor,
                         default_score=default_score,
                         uptake_score=uptake_score,
+                        soft_constraints=soft_constraints,
+                        hard_constraints=hard_constraints,
                         init_env=init_env)
         else:
             model = carve_model(universe_model, scores,
                                 inplace=False,
                                 default_score=default_score,
                                 uptake_score=uptake_score,
+                                soft_constraints=soft_constraints,
+                                hard_constraints=hard_constraints,
                                 init_env=init_env)
     else:
         build_ensemble(universe_model, scores, ensemble_size, outputfile, flavor, init_env=init_env)
@@ -226,16 +246,22 @@ if __name__ == '__main__':
     parser.add_argument('--default-score', type=float, help=argparse.SUPPRESS)
     parser.add_argument('--uptake-score', type=float, help=argparse.SUPPRESS)
 
+    parser.add_argument('--soft', help="Soft constraints file")
+    parser.add_argument('--hard', help="Hard constraints file")
+
     args = parser.parse_args()
 
     if args.gapfill and args.ensemble:
         parser.error('Gap fill and ensemble generation cannot currently be combined (not implemented yet).')
 
+    if (args.soft or args.hard) and args.ensemble:
+        parser.error('Soft/hard constraints and ensemble generation cannot currently be combined (not implemented yet).')
+
     if args.mediadb and not args.gapfill:
         parser.error('--mediadb can only be used with --gapfill')
 
-    if args.recursive and args.refseq:
-        parser.error('-r cannot be combined with --refseq')
+    if args.recursive and (args.refseq or args.genbank):
+        parser.error('-r cannot be combined with --refseq or --genbank')
 
     if args.egg:
         input_type = 'eggnog'
@@ -272,7 +298,9 @@ if __name__ == '__main__':
              init=args.init,
              mediadb=args.mediadb,
              default_score=args.default_score,
-             uptake_score=args.uptake_score)
+             uptake_score=args.uptake_score,
+             soft=args.soft,
+             hard=args.hard)
 
     else:
 
@@ -291,6 +319,8 @@ if __name__ == '__main__':
                     mediadb=args.mediadb,
                     default_score=args.default_score,
                     uptake_score=args.uptake_score,
+                    soft=args.soft,
+                    hard=args.hard,
                     recursive_mode=True)
 
         p = Pool()
