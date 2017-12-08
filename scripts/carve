@@ -18,7 +18,7 @@ from glob import glob
 
 
 def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
-         ensemble_size=None, verbose=False, flavor=None, gapfill=None, init=None, mediadb=None,
+         ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, init=None, mediadb=None,
          default_score=None, uptake_score=None, soft=None, hard=None, recursive_mode=False):
 
     if recursive_mode:
@@ -136,7 +136,8 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
     gprs = pd.read_csv(bigg_gprs)
     gprs = gprs[gprs.reaction.isin(universe_model.reactions)]
 
-    scores = reaction_scoring(annotations, gprs)
+    debug_output = model_id if debug else None
+    scores = reaction_scoring(annotations, gprs, debug_output=debug_output)
 
     if scores is None:
         print 'The input genome did not match sufficient genes/reactions in the database.'
@@ -164,7 +165,8 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
                         uptake_score=uptake_score,
                         soft_constraints=soft_constraints,
                         hard_constraints=hard_constraints,
-                        init_env=init_env)
+                        init_env=init_env,
+                        debug_output=debug_output)
         else:
             model = carve_model(universe_model, scores,
                                 inplace=False,
@@ -172,7 +174,8 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
                                 uptake_score=uptake_score,
                                 soft_constraints=soft_constraints,
                                 hard_constraints=hard_constraints,
-                                init_env=init_env)
+                                init_env=init_env,
+                                debug_output=debug_output)
     else:
         build_ensemble(universe_model, scores, ensemble_size, outputfile, flavor, init_env=init_env)
 
@@ -242,6 +245,8 @@ if __name__ == '__main__':
     parser.add_argument('--mediadb', help="Media database file")
 
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', help="Switch to verbose mode")
+    parser.add_argument('-d', '--debug', action='store_true', dest='debug',
+                        help="Debug mode: writes intermediate results into output files")
 
     parser.add_argument('--default-score', type=float, help=argparse.SUPPRESS)
     parser.add_argument('--uptake-score', type=float, help=argparse.SUPPRESS)
@@ -293,6 +298,7 @@ if __name__ == '__main__':
              universe_file=args.universe_file,
              ensemble_size=args.ensemble,
              verbose=args.verbose,
+             debug=args.debug,
              flavor=flavor,
              gapfill=args.gapfill,
              init=args.init,

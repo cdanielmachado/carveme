@@ -1,5 +1,6 @@
 import numpy as np
 import warnings
+import pandas as pd
 
 from framed.cobra.ensemble import EnsembleModel, save_ensemble
 from framed.io.sbml import parse_gpr_rule, save_cbmodel
@@ -155,7 +156,8 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
 
 
 def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=True,
-                default_score=-1.0, uptake_score=0.0, soft_constraints=None, hard_constraints=None, init_env=None):
+                default_score=-1.0, uptake_score=0.0, soft_constraints=None, hard_constraints=None,
+                init_env=None, debug_output=None):
     """ Reconstruct a metabolic model using the CarveMe approach.
 
     Args:
@@ -203,6 +205,10 @@ def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=Tr
     else:
         print "MILP solver failed: {}".format(sol.message)
         return
+
+    if debug_output:
+        pd.DataFrame.from_dict(sol.values, orient='index').to_csv(debug_output + '_milp_solution.tsv',
+                                                                  sep='\t', header=False)
 
     model.remove_reactions(inactive)
 
