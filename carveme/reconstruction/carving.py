@@ -210,13 +210,13 @@ def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=Tr
     if soft_constraints:
         not_in_model = set(soft_constraints) - set(model.reactions)
         if not_in_model:
-            soft_constraints = {r_id: val for r_id, val in soft_constraints if r_id in model.reactions}
+            soft_constraints = {r_id: val for r_id, val in soft_constraints.items() if r_id in model.reactions}
             warnings.warn("Soft constraints contain reactions not in the model:\n" + "\n".join(not_in_model))
 
     if hard_constraints:
         not_in_model = set(hard_constraints) - set(model.reactions)
         if not_in_model:
-            hard_constraints = {r_id: (lb, ub) for r_id, (lb, ub) in hard_constraints if r_id in model.reactions}
+            hard_constraints = {r_id: (lb, ub) for r_id, (lb, ub) in hard_constraints.items() if r_id in model.reactions}
             warnings.warn("Hard constraints contain reactions not in the model:\n" + "\n".join(not_in_model))
 
     sol = minmax_reduction(model, scores, default_score=default_score, uptake_score=uptake_score, soft_score=soft_score,
