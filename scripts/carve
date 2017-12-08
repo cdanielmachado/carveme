@@ -19,7 +19,7 @@ from glob import glob
 
 def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
          ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, init=None, mediadb=None,
-         default_score=None, uptake_score=None, soft=None, hard=None, recursive_mode=False):
+         default_score=None, uptake_score=None, soft_score=None, soft=None, hard=None, recursive_mode=False):
 
     if recursive_mode:
         model_id = os.path.splitext(os.path.basename(inputfile))[0]
@@ -97,6 +97,8 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         annotations = load_diamond_results(blast_output)
     elif input_type == 'eggnog':
         annotations = load_eggnog_data(inputfile)
+    elif input_type == 'diamond':
+        annotations = load_diamond_results(inputfile)
     else:
         raise ValueError('Invalid input type: ' + input_type)
 
@@ -163,6 +165,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
                         flavor=flavor,
                         default_score=default_score,
                         uptake_score=uptake_score,
+                        soft_score=soft_score,
                         soft_constraints=soft_constraints,
                         hard_constraints=hard_constraints,
                         init_env=init_env,
@@ -172,6 +175,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
                                 inplace=False,
                                 default_score=default_score,
                                 uptake_score=uptake_score,
+                                soft_score=soft_score,
                                 soft_constraints=soft_constraints,
                                 hard_constraints=hard_constraints,
                                 init_env=init_env,
@@ -215,6 +219,7 @@ if __name__ == '__main__':
     input_type_args = parser.add_mutually_exclusive_group()
     input_type_args.add_argument('--dna', action='store_true', help="Build from DNA fasta file")
     input_type_args.add_argument('--egg', action='store_true', help="Build from eggNOG-mapper output file")
+    input_type_args.add_argument('--diamond', action='store_true', help=argparse.SUPPRESS)
     input_type_args.add_argument('--refseq', action='store_true', help="Download genome from NCBI RefSeq and build")
     input_type_args.add_argument('--genbank', action='store_true', help="Download genome from NCBI GenBank and build")
 
@@ -248,11 +253,13 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--debug', action='store_true', dest='debug',
                         help="Debug mode: writes intermediate results into output files")
 
-    parser.add_argument('--default-score', type=float, help=argparse.SUPPRESS)
-    parser.add_argument('--uptake-score', type=float, help=argparse.SUPPRESS)
-
     parser.add_argument('--soft', help="Soft constraints file")
     parser.add_argument('--hard', help="Hard constraints file")
+
+    parser.add_argument('--default-score', type=float, help=argparse.SUPPRESS)
+    parser.add_argument('--uptake-score', type=float, help=argparse.SUPPRESS)
+    parser.add_argument('--soft-score', type=float, help=argparse.SUPPRESS)
+
 
     args = parser.parse_args()
 
@@ -272,6 +279,8 @@ if __name__ == '__main__':
         input_type = 'eggnog'
     elif args.dna:
         input_type = 'dna'
+    elif args.diamond:
+        input_type = 'diamond'
     elif args.refseq:
         input_type = 'refseq'
     elif args.genbank:
@@ -290,44 +299,50 @@ if __name__ == '__main__':
         if len(args.input) > 1:
             parser.error('Use -r when specifying more than one input file')
 
-        main(inputfile=args.input[0],
-             input_type=input_type,
-             outputfile=args.output,
-             diamond_args=args.diamond_args,
-             universe=args.universe,
-             universe_file=args.universe_file,
-             ensemble_size=args.ensemble,
-             verbose=args.verbose,
-             debug=args.debug,
-             flavor=flavor,
-             gapfill=args.gapfill,
-             init=args.init,
-             mediadb=args.mediadb,
-             default_score=args.default_score,
-             uptake_score=args.uptake_score,
-             soft=args.soft,
-             hard=args.hard)
+        main(
+            inputfile=args.input[0],
+            input_type=input_type,
+            outputfile=args.output,
+            diamond_args=args.diamond_args,
+            universe=args.universe,
+            universe_file=args.universe_file,
+            ensemble_size=args.ensemble,
+            verbose=args.verbose,
+            debug=args.debug,
+            flavor=flavor,
+            gapfill=args.gapfill,
+            init=args.init,
+            mediadb=args.mediadb,
+            default_score=args.default_score,
+            uptake_score=args.uptake_score,
+            soft_score=args.soft_score,
+            soft=args.soft,
+            hard=args.hard
+        )
 
     else:
 
         def f(x):
-            main(inputfile=x,
-                    input_type=input_type,
-                    outputfile=args.output,
-                    diamond_args=args.diamond_args,
-                    universe=args.universe,
-                    universe_file=args.universe_file,
-                    ensemble_size=args.ensemble,
-                    verbose=args.verbose,
-                    flavor=flavor,
-                    gapfill=args.gapfill,
-                    init=args.init,
-                    mediadb=args.mediadb,
-                    default_score=args.default_score,
-                    uptake_score=args.uptake_score,
-                    soft=args.soft,
-                    hard=args.hard,
-                    recursive_mode=True)
+            main(
+                inputfile=x,
+                input_type=input_type,
+                outputfile=args.output,
+                diamond_args=args.diamond_args,
+                universe=args.universe,
+                universe_file=args.universe_file,
+                ensemble_size=args.ensemble,
+                verbose=args.verbose,
+                flavor=flavor,
+                gapfill=args.gapfill,
+                init=args.init,
+                mediadb=args.mediadb,
+                default_score=args.default_score,
+                uptake_score=args.uptake_score,
+                soft_score=args.soft_score,
+                soft=args.soft,
+                hard=args.hard,
+                recursive_mode=True
+            )
 
         p = Pool()
         p.map(f, args.input)
