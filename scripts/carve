@@ -18,7 +18,7 @@ from glob import glob
 
 
 def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
-         ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, init=None, mediadb=None,
+         ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, blind_gapfill=False, init=None, mediadb=None,
          default_score=None, uptake_score=None, soft_score=None, soft=None, hard=None, recursive_mode=False):
 
     if recursive_mode:
@@ -192,7 +192,11 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
             print 'Gap filling for {}...'.format(', '.join(media))
 
         max_uptake = config.getint('gapfill', 'max_uptake')
-        scores = dict(scores[['reaction', 'normalized_score']].values)
+
+        if blind_gapfill:
+            scores = None
+        else:
+            scores = dict(scores[['reaction', 'normalized_score']].values)
         multiGapFill(model, universe_model, media, media_db, scores=scores, max_uptake=max_uptake, inplace=True)
 
         if verbose:
@@ -260,6 +264,8 @@ if __name__ == '__main__':
     parser.add_argument('--uptake-score', type=float, help=argparse.SUPPRESS)
     parser.add_argument('--soft-score', type=float, help=argparse.SUPPRESS)
 
+    parser.add_argument('--blind-gapfill', action='store_true', help=argparse.SUPPRESS)
+
 
     args = parser.parse_args()
 
@@ -311,6 +317,7 @@ if __name__ == '__main__':
             debug=args.debug,
             flavor=flavor,
             gapfill=args.gapfill,
+            blind_gapfill=False,
             init=args.init,
             mediadb=args.mediadb,
             default_score=args.default_score,
@@ -334,6 +341,7 @@ if __name__ == '__main__':
                 verbose=args.verbose,
                 flavor=flavor,
                 gapfill=args.gapfill,
+                blind_gapfill=False,
                 init=args.init,
                 mediadb=args.mediadb,
                 default_score=args.default_score,
