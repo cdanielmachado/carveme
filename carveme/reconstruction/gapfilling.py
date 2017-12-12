@@ -69,8 +69,8 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
         inactive = [r_id for r_id in new_reactions if abs(solution.values[r_id]) < abstol]
 
     else:
-        inactive = new_reactions
-        print 'Failed to gapfill model', ('for medium {}'.format(tag) if tag else '')
+#        inactive = new_reactions
+        raise RuntimeError('Failed to gapfill model for medium {}'.format(tag))
 
     model.remove_reactions(inactive)
     del_metabolites = disconnected_metabolites(model)
