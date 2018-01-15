@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from carveme import config, project_dir
+from carveme import __version__ as version
 from carveme.reconstruction.carving import carve_model, build_ensemble
 from carveme.reconstruction.eggnog import load_eggnog_data
 from carveme.reconstruction.gapfilling import multiGapFill
@@ -137,6 +138,8 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
             init_env = Environment.from_compounds(media_db[init])
         else:
             print 'Error: medium {} not in media database.'.format(init)
+
+    universe_model.metadata['Description'] = 'This model was built with CarveMe version ' + version
 
     if ensemble_size is None or ensemble_size <= 1:
         if verbose:
