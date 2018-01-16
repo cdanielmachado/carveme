@@ -8,7 +8,8 @@ import argparse
 import os
 
 
-def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outputfile=None, flavor=None, verbose=False):
+def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outputfile=None, flavor=None,
+         exchange_format=None, verbose=False):
 
     if verbose:
         print 'Loading model...'
@@ -51,7 +52,8 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
         print 'Gap filling for {}...'.format(', '.join(media))
 
     max_uptake = config.getint('gapfill', 'max_uptake')
-    multiGapFill(model, universe_model, media, media_db, max_uptake=max_uptake, inplace=True)
+    multiGapFill(model, universe_model, media, media_db, max_uptake=max_uptake, inplace=True,
+                 exchange_format=exchange_format)
 
     if verbose:
         m2, n2 = len(model.metabolites), len(model.reactions)
@@ -93,6 +95,8 @@ if __name__ == '__main__':
     sbml.add_argument('--cobra', action='store_true', help="Input SBML in old cobra format")
     sbml.add_argument('--fbc2', action='store_true', help="Input SBML in sbml-fbc2 format")
 
+    parser.add_argument('--exchange-format', dest='exchange_format', help=argparse.SUPPRESS)
+
     args = parser.parse_args()
 
     if args.fbc2:
@@ -109,4 +113,5 @@ if __name__ == '__main__':
          universe_file=args.universe_file,
          outputfile=args.output,
          flavor=flavor,
+         exchange_format=args.exchange_format,
          verbose=args.verbose)

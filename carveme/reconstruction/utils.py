@@ -45,26 +45,6 @@ def add_maintenance_atp(model, lb=0, ub=1000):
     model.add_reaction_from_str(rxn_str)
 
 
-# def simulate_biomass_vs_medium(model, biomass_dict, media_db, constraints=None):
-#
-#     result = {}
-#
-#     for organism, equation in biomass_dict.items():
-#         result[organism] = {}
-#         r_id = add_biomass_equation(model, equation, organism)
-#
-#         for medium_id, compounds in media_db.items():
-#             constr = medium_to_constraints(model, compounds)
-#             if constraints:
-#                 constr.update(constraints)
-#             sol = FBA(model, constraints=constr, objective={r_id: 1})
-#             result[organism][medium_id] = sol.fobj
-#
-#         model.remove_reaction(r_id)
-#
-#     return pd.DataFrame(result).T
-
-
 def tab2fasta(inputfile, outputfile, filter_by_model=None):
 
     data = pd.read_csv(inputfile, sep='\t', header=0)
@@ -86,9 +66,12 @@ def load_media_db(filename, sep='\t', medium_col='medium', compound_col='compoun
     return media_db[compound_col].to_dict()
 
 
-def medium_to_constraints(model, compounds, max_uptake=10, inplace=False, verbose=False):
+def medium_to_constraints(model, compounds, max_uptake=10, inplace=False, verbose=False, exchange_format=None):
 
-    env = Environment.from_compounds(compounds, max_uptake=max_uptake)
+    if not exchange_format:
+        exchange_format = "'R_EX_{}_e'"
+
+    env = Environment.from_compounds(compounds, max_uptake=max_uptake, exchange_format=exchange_format)
     return env.apply(model, inplace=inplace, warning=verbose)
 
 
@@ -142,3 +125,14 @@ def add_biomass_equation(model, stoichiometry, label=None):
     name = 'Biomass reaction'
     reaction = CBReaction(r_id, name=name, reversible=False, stoichiometry=stoichiometry, objective=1.0)
     model.add_reaction(reaction)
+
+
+def load_soft_constraints(filename):
+    df = pd.read_csv(filename, sep='\t', header=None)
+    return dict(zip(df[0], df[1]))
+
+
+def load_hard_constraints(filename):
+    df = pd.read_csv(filename, sep='\t', header=None)
+    return dict(zip(df[0], zip(df[1], df[2])))
+
