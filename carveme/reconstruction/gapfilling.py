@@ -118,7 +118,7 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
         if medium_name in media_db:
             compounds = media_db[medium_name]
             constraints = medium_to_constraints(merged_model, compounds, max_uptake=max_uptake, inplace=False,
-                                                exchange_format=exchange_format, verbose=True)
+                                                exchange_format=exchange_format, verbose=False)
 
             gapFill(model, universe, constraints=constraints, min_growth=min_growth,
                     scores=scores, inplace=True, bigM=bigM, solver=solver, tag=medium_name)
