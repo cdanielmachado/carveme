@@ -21,4 +21,7 @@ Additionally, you must install diamond and CPLEX (please check the documentation
 
 Developed at the European Molecular Biology Laboratory (2017).
 
+For citation purposes please refer to our paper
+(pre-print currently available on biorXiv: https://www.biorxiv.org/content/early/2018/01/12/223198).
+
 Released under an Apache License.
