@@ -37,7 +37,7 @@ included_files = {
 
 setup(
     name='carveme',
-    version='1.0.0',
+    version='1.1.0',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
     author="Daniel Machado, Sergej Andrejev",
