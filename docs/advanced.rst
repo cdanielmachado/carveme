@@ -118,7 +118,13 @@ _____________________
 **CarveMe** implements a top-down reconstruction approach that requires a well-curated universal model to be used as
 template for the model *carving* process.
 
-Currently, only a bacterial template is provided. However, you are free to try to build and use your own templates.
+Currently, you can choose between the universal bacterial template, or two templates specialized for gram-positive and
+gram-negative bacteria:
+
+.. code-block:: console
+
+    $ carve genome.faa -u grampos
+    $ carve genome.faa -u gramneg
 
 A script with some utility functions is available to help you build your own templates. For instructions please check:
 
@@ -130,5 +136,39 @@ You can then provide your own customized universe model during reconstruction:
 
 .. code-block:: console
 
-    $ carve genome.faa -u yeast_universe.xml
+    $ carve genome.faa --universe-file yeast_universe.xml
+
+
+Experimental constraints
+________________________
+
+When you have experimental evidence for the presence/absence of a given set of reactions, you can provide this information
+to improve the reconstruction process. According to the level of evidence, you can format your data as *soft* or *hard*
+constraints. These can be applied to any kind of reaction present in the universe model (exchange, transport or enzymatic reactions).
+
+**Soft constraints** are used to change the priority given to a set of reactions, as well as their expected direction.
+They can be used when there is limited amount of evidence for some expected phenotype.
+For instance, if the organism you are reconstructing is closely related to other organisms that are known to secrete a
+given compound, you can include the respective exchange reaction as a *soft* constraint.
+
+.. code-block:: console
+
+    $ carve genome.faa --soft data.tsv
+
+Where *data.tsv* is a tab-separated file with two columns, the reaction identifiers and the respective values.
+Each value is one of the following: 1) reaction occurs in forward direction, -1) reaction occurs in backward direction,
+0) reaction does not occur.
+
+**Hard constraints** are used to force the fluxes through a given set of reactions during reconstruction. They can be used
+when there is absolute evidence about a given phenotype. For instance, if you are reconstructing an obligatory anaerobe,
+you can force the oxygen uptake rate to be zero.
+
+.. code-block:: console
+
+    $ carve genome.faa --hard data.tsv
+
+Where *data.tsv* is a tab-separated file with three columns, reaction identifiers, lower bounds, and upper bounds.
+Please use *hard* constraints with care, as they can make the reconstruction problem infeasible when incorrectly formulated.
+
+
 

@@ -31,7 +31,11 @@ Additionally, you must manually install two external dependencies:
 
 Note that you will need to register with IBM to obtain an academic license for CPLEX.
 
-If at any point *carveme* complains about missing or outdated files, please run:
+Also, after installing CPLEX, do not forget to install the CPLEX python API (see the CPLEX documentation_ for details).
+
+.. _documentation: https://www.ibm.com/support/knowledgecenter/SSSA5P_12.7.1/ilog.odms.cplex.help/CPLEX/GettingStarted/topics/set_up/Python_setup.html
+
+After installation you should run the initialization script to update the internal data files:
 
 .. code-block:: console
 
