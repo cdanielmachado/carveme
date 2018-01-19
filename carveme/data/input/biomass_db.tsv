@@ -1,97 +1,125 @@
-bigg_id	comp	seed_id	@bacteria	@grampos	@gramneg	@iAF1260	@iJO1366	@iYO844	name	observations
-10fthf	c	cpd00201	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000367	10-Formyltetrahydrofolate	cofactor
-2fe2s	c	cpd24604					-2.6E-05		[2Fe-2S] iron-sulfur cluster	cofactor
-2ohph	c	cpd03445				-0.000223	-0.000223		2-Octaprenyl-6-hydroxyphenol	cofactor
-4fe4s	c	cpd24682					-0.00026		[4Fe-4S] iron-sulfur cluster	cofactor
-adp	c	cpd00008	53.95	53.95	53.95	59.81	53.95	104.997414	ADP	cofactor
-ala__L	c	cpd00035	-0.513689	-0.513689	-0.513689	-0.5137	-0.513689	-0.266902	L-Alanine	protein
-amet	c	cpd00017	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223		S-Adenosyl-L-methionine	cofactor
-amp	c	cpd00018						-0.00467	AMP	cofactor
-arg__L	c	cpd00051	-0.295792	-0.295792	-0.295792	-0.2958	-0.295792	-0.193021	L-Arginine	protein
-asn__L	c	cpd00132	-0.241055	-0.241055	-0.241055	-0.2411	-0.241055	-0.147987	L-Asparagine	protein
-asp__L	c	cpd00041	-0.241055	-0.241055	-0.241055	-0.2411	-0.241055	-0.148014	L-Aspartate	protein
-atp	c	cpd00002	-54.124831	-54.124831	-54.124831	-59.984	-54.124831	-105.053483	ATP	energy
-bmocogdp	c						-0.000122		Bis-molybdopterin guanine dinucleotide	cofactor
-btn	c	cpd00104					-2E-06		Biotin	vitamin B7
-ca2	c	cpd00063	-0.005205	-0.005205	-0.005205	-0.004737	-0.005205	-0.003205	Calcium	cofactor
-cdlp_BS	c	cpd11426						-5E-06	Cardiolipin  B subtilis  C7172H13744O1700P200	
-cdp	c	cpd00096						-0.000251	CDP	cofactor
-cl	c	cpd00099	-0.005205	-0.005205	-0.005205	-0.004737	-0.005205		Chloride	cofactor
-cmp	c	cpd00046						-0.001042	CMP	cofactor
-coa	c	cpd00010	-0.000576	-0.000576	-0.000576	-0.000576	-0.000576		Coenzyme A	cofactor
-cobalt2	c	cpd00149	-0.0001	-0.0001	-0.0001	-0.003158	-2.5E-05		Co2+	cofactor
-ctp	c	cpd00052	-0.133508	-0.133508	-0.133508	-0.1335	-0.133508	-0.038902	CTP	rna
-cu2	c	cpd00058	-0.000709	-0.000709	-0.000709	-0.003158	-0.000709		Cu2+	cofactor
-cys__L	c	cpd00084	-0.09158	-0.09158	-0.09158	-0.09158	-0.09158	-0.05699	L-Cysteine	protein
-d12dg_BS	c	cpd11428						-0.00011	Diglucosyl 1 2 diacylglycerol C4636H8672O1500	lipid
-datp	c	cpd00115	-0.026166	-0.026166	-0.026166	-0.02617	-0.026166	-0.022982	DATP	dna
-dctp	c	cpd00356	-0.027017	-0.027017	-0.027017	-0.02702	-0.027017	-0.01738	DCTP	dna
-dgtp	c	cpd00241	-0.027017	-0.027017	-0.027017	-0.02702	-0.027017	-0.017398	DGTP	dna
-dttp	c	cpd00357	-0.026166	-0.026166	-0.026166	-0.02617	-0.026166	-0.022899	DTTP	dna
-fad	c	cpd00015	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223		FAD	cofactor
-fe2	c	cpd10515	-0.006715	-0.006715	-0.006715	-0.007106	-0.006715		Fe2+	cofactor
-fe3	c	cpd10516	-0.007808	-0.007808	-0.007808	-0.007106	-0.007808	-0.00345	Fe3+	cofactor
-gdp	c	cpd00031						-0.00018	GDP	cofactor
-gln__L	c	cpd00053	-0.26316	-0.26316	-0.26316	-0.2632	-0.26316	-0.260335	L-Glutamine	protein
-glu__L	c	cpd00023	-0.26316	-0.26316	-0.26316	-0.2632	-0.26316	-0.260378	L-Glutamate	protein
-gly	c	cpd00033	-0.612638	-0.612638	-0.612638	-0.6126	-0.612638	-0.408288	Glycine	protein
-gmp	c	cpd00126						-0.000503	GMP	cofactor
-gtca1_45_BS	c	cpd15667		-0.001				-0.003624	Glycerol teichoic acid  n45   unlinked  unsubstituted C151H297N2O238P46	cellwall
-gtca2_45_BS	c	cpd15668		-0.001				-0.002347	Glycerol teichoic acid  n45   unlinked  D ala substituted C286H612N47O328P46	cellwall
-gtca3_45_BS	c	cpd15669		-0.001				-0.001819	Glycerol teichoic acid  n45   unlinked  glucose substituted C421H749N2O464P46	cellwall
-gtp	c	cpd00038	-0.215096	-0.215096	-0.215096	-0.2151	-0.215096	-0.062667	GTP	rna
-h	c	cpd00067	53.95	53.95	53.95	59.81	53.95	105	H+	proton
-h2o	c	cpd00001	-48.601527	-48.601527	-48.601527	-54.462	-48.601527	-105	H2O	water
-his__L	c	cpd00119	-0.094738	-0.094738	-0.094738	-0.09474	-0.094738	-0.081739	L-Histidine	protein
-ile__L	c	cpd00322	-0.290529	-0.290529	-0.290529	-0.2905	-0.290529	-0.269905	L-Isoleucine	protein
-k	c	cpd00205	-0.195193	-0.195193	-0.195193	-0.1776	-0.195193	-0.706312	Potassium	cofactor
-kdo2lipid4	e	cpd03586				-0.01945	-0.019456		KDO(2)-lipid IV(A)	lipid
-kdo2lipid4	p	cpd03586			-0.019456				KDO(2)-lipid IV(A)	lipid
-leu__L	c	cpd00107	-0.450531	-0.450531	-0.450531	-0.4505	-0.450531	-0.346445	L-Leucine	protein
-lipo1_24_BS	c	cpd11445		-5E-05				-7E-06	Lipoteichoic acid  n24   linked  glucose substituted C26236H47072O25500P2400	
-lipo2_24_BS	c	cpd11446		-5E-05				-6E-06	Lipoteichoic acid  n24   linked  N acetyl D glucosamine C31036H54272N2400O25500P2400	
-lipo3_24_BS	c	cpd11447		-5E-05				-1.8E-05	Lipoteichoic acid  n24   linked  D alanine substituted C19036H39872N2400O18300P2400	
-lipo4_24_BS	c	cpd11448		-5E-05				-1.5E-05	Lipoteichoic acid  n24   linked  unsubstituted C11836H23072O13500P2400	
-lys__L	c	cpd00039	-0.343161	-0.343161	-0.343161	-0.3432	-0.343161	-0.323093	L-Lysine	protein
-met__L	c	cpd00060	-0.153686	-0.153686	-0.153686	-0.1537	-0.153686	-0.113326	L-Methionine	protein
-mg2	c	cpd00254	-0.008675	-0.008675	-0.008675	-0.007895	-0.008675	-0.101714	Magnesium	cofactor
-mlthf	c	cpd00125	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223		5,10-Methylenetetrahydrofolate	cofactor
-mn2	c	cpd00030	-0.000691	-0.000691	-0.000691	-0.003158	-0.000691		Mn2+	cofactor
-mobd	c	cpd11574				-0.003158	-7E-06		Molybdate	
-mql7	c	cpd11451						-0.000266	Menaquinol 7 C46H66O2	
-mql8	c	cpd15499	-0.0001	-0.0001	-0.0001				Menaquinol 8	vitamin K2
-murein5px4p	p	cpd15514			-0.013894	-0.01389	-0.013894		Two disacharide linked murein units, pentapeptide crosslinked tetrapeptide (A2pm->D-ala) (middle of chain)	
-nad	c	cpd00003	-0.001831	-0.001831	-0.001831	-0.001831	-0.001831	-0.016164	NAD	cofactor
-nadp	c	cpd00006	-0.000447	-0.000447	-0.000447	-0.000447	-0.000447	-0.000934	NADP	cofactor
-nadph	c	cpd00005						-0.000216	NAPDH	cofactor
-nh4	c	cpd00013				-0.011843	-0.013013		Ammonium	nitrogen source
-ni2	c	cpd20862					-0.000323		Nickel	
-pe160	c	cpd15531			-0.017868	-0.02233	-0.017868		Phosphatidylethanolamine (dihexadecanoyl, n-C16:0)	
-pe160	p	cpd15531			-0.045946	-0.04148	-0.045946		Phosphatidylethanolamine (dihexadecanoyl, n-C16:0)	
-pe161	c	cpd29055			-0.054154	-0.02632	-0.054154		Phosphatidylethanolamine (dihexadec-9enoyl, n-C16:1)	
-pe161	p	cpd29055			-0.02106	-0.04889	-0.02106		Phosphatidylethanolamine (dihexadec-9enoyl, n-C16:1)	
-peptido_BS	c	cpd15665		-0.01				-0.101817	Peptidoglycan_polymer_n_subunits	cellwall
-pgly_BS	c	cpd11453						-0.000176	Phosphatidylglycerol  B subtils  C3736H7272O1000P100	
-phe__L	c	cpd00066	-0.185265	-0.185265	-0.185265	-0.1759	-0.185265	-0.175939	L-Phenylalanine	protein
-pheme	c	cpd00028			-0.000223	-0.000223	-0.000223		Protoheme	cofactor
-pi	c	cpd00009	53.945662	53.945662	53.945662	59.806	53.945662	104.985613	Phosphate	cofactor
-ppi	c	cpd00012	0.773903	0.773903	0.773903	0.7739	0.773903	-0.000918	Diphosphate	
-pro__L	c	cpd00129	-0.221055	-0.221055	-0.221055	-0.2211	-0.221055	-0.160642	L-Proline	protein
-psetha_BS	c	cpd29688						-0.00056	Phosphatidylethanolamine  B subtilis  C3636H7172N100O800P100	
-pydx5p	c	cpd00016	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223		Pyridoxal 5'-phosphate	cofactor
-ribflv	c	cpd00220	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223		Riboflavin	cofactor
-ser__L	c	cpd00054	-0.215792	-0.215792	-0.215792	-0.2158	-0.215792	-0.216213	L-Serine	protein
-sheme	c	cpd00557			-0.000223	-0.000223	-0.000223		Siroheme	cofactor
-so4	c	cpd00048	-0.004338	-0.004338	-0.004338	-0.003948	-0.004338		Sulfate	cofactor
-t12dg_BS	c	cpd11458						-6.6E-05	Triglucosyl 1 2 diacylglycerol C5236H9672O2000	
-tcam_BS	c	cpd11459						-0.003112	Minor teichoic acid  acetylgalactosamine glucose phosphate  n30  C420H750N30O420P30	cellwall
-thf	c	cpd00087	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223		Tetrahydrofolate	cofactor
-thmpp	c	cpd00056	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223		Thiamine diphosphate	cofactor
-thr__L	c	cpd00161	-0.253687	-0.253687	-0.253687	-0.2537	-0.253687	-0.186317	L-Threonine	protein
-trp__L	c	cpd00065	-0.056843	-0.056843	-0.056843	-0.05684	-0.056843	-0.054336	L-Tryptophan	protein
-tyr__L	c	cpd00069	-0.137896	-0.137896	-0.137896	-0.1379	-0.137896	-0.110824	L-Tyrosine	protein
-uaagmda	c	cpd03495	-0.1						Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-D-glutamyl-meso-2,6-diaminopimeloyl-D-alanyl-D-alanine	Most common precursor for peptidoglycans
-udcpdp	c	cpd25775				-5.5E-05	-5.5E-05		Undecaprenyl diphosphate	
-utp	c	cpd00062	-0.144104	-0.144104	-0.144104	-0.1441	-0.144104	-0.041501	UTP	rna
-val__L	c	cpd00156	-0.423162	-0.423162	-0.423162	-0.4232	-0.423162	-0.306734	L-Valine	protein
-zn2	c	cpd00034	-0.000341	-0.000341	-0.000341	-0.003158	-0.000341		Zinc	cofactor
+bigg_id	comp	seed_id	@bacteria	@grampos	@gramneg	@archaea	@iAF1260	@iJO1366	@iYO844	@iAF692	name	observations
+10fthf	c	cpd00201	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000367		10-Formyltetrahydrofolate	cofactor
+2fe2s	c	cpd24604						-2.6E-05			[2Fe-2S] iron-sulfur cluster	cofactor
+2ohph	c	cpd03445					-0.000223	-0.000223			2-Octaprenyl-6-hydroxyphenol	cofactor
+3hdpgpe	c	cpd15817				-0.025				-0.002698	2-O-(3'-hydroxy)phytanyl-3-O-phytanyl-sn-glycero-l-phosphoethanolamine	lipid
+3hdpgpg	c	cpd15818				-0.025				-0.01012	2-O-(3'-hydroxy)phytanyl-3-O-phytanyl-sn-glycerol-1-phospho-3'-sn-glycerol	lipid
+3hdpgpi	c	cpd15819				-0.025				-0.01349	2-O-(3'-hydroxyl)phytanyl-3-O-phytanyl-sn-glycero-1-phospho-myo-inositol	lipid
+3hdpgps	c	cpd15820				-0.025				-0.01147	2-O-(3'-hydroxy)phytanyl-3-O-phytanyl-sn-glycero-l-phosphoserine	lipid
+4fe4s	c	cpd24682						-0.00026			[4Fe-4S] iron-sulfur cluster	cofactor
+accoa	c	cpd00022								-5E-05	Acetyl-CoA	cofactor
+adocblhbi	c	cpd15834								-0.00474	Adenosylcobalamin-HBI	cofactor
+adp	c	cpd00008	53.95	53.95	53.95	53.95	59.81	53.95	104.997414	29.998	ADP	cofactor
+ala__L	c	cpd00035	-0.513689	-0.513689	-0.513689	-0.513689	-0.5137	-0.513689	-0.266902	-0.5621	L-Alanine	protein
+amet	c	cpd00017	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223			S-Adenosyl-L-methionine	cofactor
+amp	c	cpd00018							-0.00467	-0.001	AMP	cofactor
+arg__L	c	cpd00051	-0.295792	-0.295792	-0.295792	-0.295792	-0.2958	-0.295792	-0.193021	-0.3237	L-Arginine	protein
+asn__L	c	cpd00132	-0.241055	-0.241055	-0.241055	-0.241055	-0.2411	-0.241055	-0.147987	-0.2638	L-Asparagine	protein
+asp__L	c	cpd00041	-0.241055	-0.241055	-0.241055	-0.241055	-0.2411	-0.241055	-0.148014	-0.2638	L-Aspartate	protein
+atp	c	cpd00002	-54.124831	-54.124831	-54.124831	-54.124831	-59.984	-54.124831	-105.053483	-30.1846	ATP	energy
+bmocogdp	c							-0.000122			Bis-molybdopterin guanine dinucleotide	cofactor
+btn	c	cpd00104						-2E-06			Biotin	vitamin B7
+ca2	c	cpd00063	-0.005205	-0.005205	-0.005205	-0.005205	-0.004737	-0.005205	-0.003205		Calcium	cofactor
+cdlp_BS	c	cpd11426							-5E-06		Cardiolipin  B subtilis  C7172H13744O1700P200	
+cdp	c	cpd00096							-0.000251		CDP	cofactor
+cl	c	cpd00099	-0.005205	-0.005205	-0.005205	-0.005205	-0.004737	-0.005205			Chloride	cofactor
+cmp	c	cpd00046							-0.001042		CMP	cofactor
+coa	c	cpd00010	-0.000576	-0.000576	-0.000576	-0.000576	-0.000576	-0.000576		-6E-06	Coenzyme A	cofactor
+cob	c	cpd02817								-0.0005	Coenzyme b	cofactor
+cobalt2	c	cpd00149	-0.0001	-0.0001	-0.0001	-0.0001	-0.003158	-2.5E-05			Co2+	cofactor
+com	c	cpd02246								-0.02056	Coenzyme m	cofactor
+ctp	c	cpd00052	-0.133508	-0.133508	-0.133508	-0.133508	-0.1335	-0.133508	-0.038902	-0.1379	CTP	rna
+cu2	c	cpd00058	-0.000709	-0.000709	-0.000709	-0.000709	-0.003158	-0.000709			Cu2+	cofactor
+cys__L	c	cpd00084	-0.09158	-0.09158	-0.09158	-0.09158	-0.09158	-0.09158	-0.05699	-0.1002	L-Cysteine	protein
+d12dg_BS	c	cpd11428							-0.00011		Diglucosyl 1 2 diacylglycerol C4636H8672O1500	lipid
+datp	c	cpd00115	-0.026166	-0.026166	-0.026166	-0.026166	-0.02617	-0.026166	-0.022982	-0.03312	DATP	dna
+dctp	c	cpd00356	-0.027017	-0.027017	-0.027017	-0.027017	-0.02702	-0.027017	-0.01738	-0.02153	DCTP	dna
+dgtp	c	cpd00241	-0.027017	-0.027017	-0.027017	-0.027017	-0.02702	-0.027017	-0.017398	-0.02153	DGTP	dna
+dpgpe	c	cpd15858				-0.025				-0.000674	2,3-O-phytanyl-sn-glycero-1-phosphoethanolamine	lipid
+dpgpg	c	cpd15859				-0.025				-0.000674	2,3-di-O-phytanyl-sn-glycerol-1-phospho-3'-sn-glycerol	lipid
+dpgpi	c	cpd15860				-0.025				-0.002698	2,3-O-phytanyl-sn-glycero-1-phospho-myo-inositol	lipid
+dpgps	c	cpd15861				-0.025				-0.001349	2,3-O-phytanyl-sn-glycero-1-phosphoserine	lipid
+dttp	c	cpd00357	-0.026166	-0.026166	-0.026166	-0.026166	-0.02617	-0.026166	-0.022899	-0.03312	DTTP	dna
+f390a	c	cpd15862								-5E-06	Coenzyme F390 (adenosine)	cofactor
+f390g	c	cpd15863								-5E-06	Coenzyme F390 (guanosine)	cofactor
+f420_2	c	cpd00649								-4.3E-05	Coenzyme ferredoxin 420-2 (oxidized)	cofactor
+f420_3	c	cpd15868								-2.6E-05	Coenzyme ferredoxin 420-3	cofactor
+f420_4	c	cpd15869								-0.000374	Coenzyme ferredoxin 420-4	cofactor
+f420_5	c	cpd15870								-0.000299	Coenzyme ferredoxin 420-5	cofactor
+f420_6	c	cpd15871								-1.1E-05	Coenzyme ferredoxin 420-6	cofactor
+f420_7	c	cpd15872								-1E-06	Coenzyme ferredoxin 420-7	cofactor
+f430	c									-0.002	Coenzyme F430	cofactor
+fad	c	cpd00015	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223			FAD	cofactor
+fe2	c	cpd10515	-0.006715	-0.006715	-0.006715	-0.006715	-0.007106	-0.006715			Fe2+	cofactor
+fe3	c	cpd10516	-0.007808	-0.007808	-0.007808	-0.007808	-0.007106	-0.007808	-0.00345		Fe3+	cofactor
+gdp	c	cpd00031							-0.00018		GDP	cofactor
+gdpgpi	c	cpd15880				-0.025				-0.01619	Glucosaminyl archaetidyl-myo-inositol	lipid
+gln__L	c	cpd00053	-0.26316	-0.26316	-0.26316	-0.26316	-0.2632	-0.26316	-0.260335	-0.288	L-Glutamine	protein
+glu__L	c	cpd00023	-0.26316	-0.26316	-0.26316	-0.26316	-0.2632	-0.26316	-0.260378	-0.288	L-Glutamate	protein
+gly	c	cpd00033	-0.612638	-0.612638	-0.612638	-0.612638	-0.6126	-0.612638	-0.408288	-0.6704	Glycine	protein
+glycogen	c	cpd00155								-0.01543	Glycogen	carbohydrate
+gmp	c	cpd00126							-0.000503		GMP	cofactor
+gtca1_45_BS	c	cpd15667		-0.001					-0.003624		Glycerol teichoic acid  n45   unlinked  unsubstituted C151H297N2O238P46	cellwall
+gtca2_45_BS	c	cpd15668		-0.001					-0.002347		Glycerol teichoic acid  n45   unlinked  D ala substituted C286H612N47O328P46	cellwall
+gtca3_45_BS	c	cpd15669		-0.001					-0.001819		Glycerol teichoic acid  n45   unlinked  glucose substituted C421H749N2O464P46	cellwall
+gtp	c	cpd00038	-0.215096	-0.215096	-0.215096	-0.215096	-0.2151	-0.215096	-0.062667	-0.2222	GTP	rna
+h	c	cpd00067	53.95	53.95	53.95	53.95	59.81	53.95	105	29.99755	H+	proton
+h2o	c	cpd00001	-48.601527	-48.601527	-48.601527	-48.601527	-54.462	-48.601527	-105	-30	H2O	water
+h4spt	c	cpd15884								-0.02362	Tetrahydrosarcinapterin	cofactor
+his__L	c	cpd00119	-0.094738	-0.094738	-0.094738	-0.094738	-0.09474	-0.094738	-0.081739	-0.1037	L-Histidine	protein
+hspmd	c	cpd03802								-0.0047	Sym-Homospermidine	
+ile__L	c	cpd00322	-0.290529	-0.290529	-0.290529	-0.290529	-0.2905	-0.290529	-0.269905	-0.3179	L-Isoleucine	protein
+k	c	cpd00205	-0.195193	-0.195193	-0.195193	-0.195193	-0.1776	-0.195193	-0.706312		Potassium	cofactor
+kdo2lipid4	p	cpd03586			-0.019456						KDO(2)-lipid IV(A)	lipid
+kdo2lipid4	e	cpd03586					-0.01945	-0.019456			KDO(2)-lipid IV(A)	lipid
+leu__L	c	cpd00107	-0.450531	-0.450531	-0.450531	-0.450531	-0.4505	-0.450531	-0.346445	-0.493	L-Leucine	protein
+lipo1_24_BS	c	cpd11445		-5E-05					-7E-06		Lipoteichoic acid  n24   linked  glucose substituted C26236H47072O25500P2400	
+lipo2_24_BS	c	cpd11446		-5E-05					-6E-06		Lipoteichoic acid  n24   linked  N acetyl D glucosamine C31036H54272N2400O25500P2400	
+lipo3_24_BS	c	cpd11447		-5E-05					-1.8E-05		Lipoteichoic acid  n24   linked  D alanine substituted C19036H39872N2400O18300P2400	
+lipo4_24_BS	c	cpd11448		-5E-05					-1.5E-05		Lipoteichoic acid  n24   linked  unsubstituted C11836H23072O13500P2400	
+lys__L	c	cpd00039	-0.343161	-0.343161	-0.343161	-0.343161	-0.3432	-0.343161	-0.323093	-0.3755	L-Lysine	protein
+met__L	c	cpd00060	-0.153686	-0.153686	-0.153686	-0.153686	-0.1537	-0.153686	-0.113326	-0.1682	L-Methionine	protein
+mg2	c	cpd00254	-0.008675	-0.008675	-0.008675	-0.008675	-0.007895	-0.008675	-0.101714		Magnesium	cofactor
+mlthf	c	cpd00125	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223			5,10-Methylenetetrahydrofolate	cofactor
+mn2	c	cpd00030	-0.000691	-0.000691	-0.000691	-0.000691	-0.003158	-0.000691			Mn2+	cofactor
+mobd	c	cpd11574					-0.003158	-7E-06			Molybdate	
+mql7	c	cpd11451							-0.000266		Menaquinol 7 C46H66O2	
+mql8	c	cpd15499	-0.0001	-0.0001	-0.0001	-0.0001					Menaquinol 8	vitamin K2
+murein5px4p	p	cpd15514			-0.013894		-0.01389	-0.013894			Two disacharide linked murein units, pentapeptide crosslinked tetrapeptide (A2pm->D-ala) (middle of chain)	
+nad	c	cpd00003	-0.001831	-0.001831	-0.001831	-0.001831	-0.001831	-0.001831	-0.016164	-0.00215	NAD	cofactor
+nadh	c	cpd00004								-5E-05	Nicotinamide adenine dinucleotide - reduced	
+nadp	c	cpd00006	-0.000447	-0.000447	-0.000447	-0.000447	-0.000447	-0.000447	-0.000934	-0.00013	NADP	cofactor
+nadph	c	cpd00005							-0.000216	-0.0004	NAPDH	cofactor
+nh4	c	cpd00013					-0.011843	-0.013013			Ammonium	nitrogen source
+ni2	c	cpd20862						-0.000323			Nickel	
+pe160	c	cpd15531			-0.017868		-0.02233	-0.017868			Phosphatidylethanolamine (dihexadecanoyl, n-C16:0)	
+pe160	p	cpd15531			-0.045946		-0.04148	-0.045946			Phosphatidylethanolamine (dihexadecanoyl, n-C16:0)	
+pe161	c	cpd29055			-0.054154		-0.02632	-0.054154			Phosphatidylethanolamine (dihexadec-9enoyl, n-C16:1)	
+pe161	p	cpd29055			-0.02106		-0.04889	-0.02106			Phosphatidylethanolamine (dihexadec-9enoyl, n-C16:1)	
+peptido_BS	c	cpd15665		-0.01					-0.101817		Peptidoglycan_polymer_n_subunits	cellwall
+pgly_BS	c	cpd11453							-0.000176		Phosphatidylglycerol  B subtils  C3736H7272O1000P100	
+phe__L	c	cpd00066	-0.185265	-0.185265	-0.185265	-0.185265	-0.1759	-0.185265	-0.175939	-0.2027	L-Phenylalanine	protein
+pheme	c	cpd00028			-0.000223		-0.000223	-0.000223			Protoheme	cofactor
+pi	c	cpd00009	53.945662	53.945662	53.945662	53.945662	59.806	53.945662	104.985613	30	Phosphate	cofactor
+ppi	c	cpd00012	0.773903	0.773903	0.773903	0.773903	0.7739	0.773903	-0.000918	0.799	Diphosphate	
+pro__L	c	cpd00129	-0.221055	-0.221055	-0.221055	-0.221055	-0.2211	-0.221055	-0.160642	-0.2419	L-Proline	protein
+psetha_BS	c	cpd29688							-0.00056		Phosphatidylethanolamine  B subtilis  C3636H7172N100O800P100	
+ptrc	c	cpd00118								-0.0262	Putrescine	
+pydx5p	c	cpd00016	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223			Pyridoxal 5'-phosphate	cofactor
+ribflv	c	cpd00220	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223			Riboflavin	cofactor
+ser__L	c	cpd00054	-0.215792	-0.215792	-0.215792	-0.215792	-0.2158	-0.215792	-0.216213	-0.2361	L-Serine	protein
+sheme	c	cpd00557			-0.000223		-0.000223	-0.000223			Siroheme	cofactor
+so4	c	cpd00048	-0.004338	-0.004338	-0.004338	-0.004338	-0.003948	-0.004338			Sulfate	cofactor
+succoa	c	cpd00078								-3E-06	Succinyl-CoA	
+t12dg_BS	c	cpd11458							-6.6E-05		Triglucosyl 1 2 diacylglycerol C5236H9672O2000	
+tcam_BS	c	cpd11459							-0.003112		Minor teichoic acid  acetylgalactosamine glucose phosphate  n30  C420H750N30O420P30	cellwall
+thf	c	cpd00087	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223		-6.1E-05	Tetrahydrofolate	cofactor
+thmpp	c	cpd00056	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223	-0.000223			Thiamine diphosphate	cofactor
+thr__L	c	cpd00161	-0.253687	-0.253687	-0.253687	-0.253687	-0.2537	-0.253687	-0.186317	-0.2776	L-Threonine	protein
+trp__L	c	cpd00065	-0.056843	-0.056843	-0.056843	-0.056843	-0.05684	-0.056843	-0.054336	-0.0622	L-Tryptophan	protein
+tyr__L	c	cpd00069	-0.137896	-0.137896	-0.137896	-0.137896	-0.1379	-0.137896	-0.110824	-0.1509	L-Tyrosine	protein
+uaagmda	c	cpd03495	-0.1								Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-D-glutamyl-meso-2,6-diaminopimeloyl-D-alanyl-D-alanine	Most common precursor for peptidoglycans
+udcpdp	c	cpd25775					-5.5E-05	-5.5E-05			Undecaprenyl diphosphate	
+utp	c	cpd00062	-0.144104	-0.144104	-0.144104	-0.144104	-0.1441	-0.144104	-0.041501	-0.1489	UTP	rna
+val__L	c	cpd00156	-0.423162	-0.423162	-0.423162	-0.423162	-0.4232	-0.423162	-0.306734	-0.4631	L-Valine	protein
+zn2	c	cpd00034	-0.000341	-0.000341	-0.000341	-0.000341	-0.003158	-0.000341			Zinc	cofactor
