@@ -47,7 +47,10 @@ def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow
         model_specific_data = project_dir + config.get('generated', 'model_specific_data')
 
         if not biomass:
-            biomass = config.get('universe', 'default_biomass')
+            if taxa == 'archaea':
+                biomass = 'archaea'
+            else:
+                biomass = config.get('universe', 'default_biomass')
 
         if outputfile:
             universe_final = outputfile

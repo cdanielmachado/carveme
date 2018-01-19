@@ -18,6 +18,13 @@ from multiprocessing import Pool
 from glob import glob
 
 
+def build_model_id(name):
+    model_id = sanitize_id(name)
+    if not model_id[0].isalpha():
+        model_id = 'm_' + model_id
+    return model_id
+
+
 def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
          ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, blind_gapfill=False, init=None, mediadb=None,
          default_score=None, uptake_score=None, soft_score=None, soft=None, hard=None, recursive_mode=False):
@@ -37,7 +44,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
             model_id = os.path.splitext(os.path.basename(inputfile))[0]
             outputfile = os.path.splitext(inputfile)[0] + '.xml'
 
-    model_id = sanitize_id(model_id)
+    model_id = build_model_id(model_id)
 
     outputfolder = os.path.abspath(os.path.dirname(outputfile))
 
@@ -205,6 +212,9 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         if verbose:
             m2, n2 = len(model.metabolites), len(model.reactions)
             print 'Added {} reactions and {} metabolites'.format((n2 - n1), (m2 - m1))
+
+        if init_env:  #Should initialize enviroment again as new exchange reactions can be acquired during gap-filling
+            init_env.apply(model, inplace=True, warning=False)
 
         save_cbmodel(model, outputfile, flavor=flavor)
 
