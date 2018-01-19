@@ -23,6 +23,7 @@ if __name__ == '__main__':
         'data/generated/universe_bacteria.xml.gz',
         'data/generated/universe_grampos.xml.gz',
         'data/generated/universe_gramneg.xml.gz',
+        'data/generated/universe_archaea.xml.gz',
     ]
 
     for file_path in downloads:
