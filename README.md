@@ -8,7 +8,7 @@ CarveMe is a python-based tool for genome-scale metabolic model reconstruction.
 
 For more details please check: http://carveme.readthedocs.io/
  
-### Instalation
+### Installation
 
 Can be easily installed using **pip**:
 ```
