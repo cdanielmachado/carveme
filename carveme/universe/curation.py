@@ -365,7 +365,8 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
     # manually curated reactions
     if manually_curated is not None:
         for r_id, (lb, ub) in manually_curated.iterrows():
-            model.set_flux_bounds(r_id, lb, ub)
+            if r_id in model.reactions:
+                model.set_flux_bounds(r_id, lb, ub)
 
     print 'done\n'
 
