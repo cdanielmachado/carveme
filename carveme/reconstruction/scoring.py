@@ -11,7 +11,9 @@ def merge_subunits(genes):
         str: boolean rule
 
     """
-    if any(genes.isnull()):
+    genes = genes.dropna()
+
+    if len(genes) == 0:
         return None
     else:
         protein = ' and '.join(sorted(genes))
@@ -23,8 +25,7 @@ def merge_subunits(genes):
 
 def merge_subunit_scores(scores):
     """ Merge scores of all genes in a protein complex.
-    Calculates the minimum score among all subunits.
-    If any subunit is missing (NaN) the result is NaN.
+    Calculates the mean score among all subunits.
 
     Args:
         scores: individual gene scores
@@ -33,7 +34,8 @@ def merge_subunit_scores(scores):
         float: merged score
 
     """
-    return scores.min(skipna=False)
+
+    return scores.fillna(0).mean()
 
 
 def merge_proteins(proteins):
