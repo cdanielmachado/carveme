@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![PyPI version](https://badge.fury.io/py/carveme.svg)](https://badge.fury.io/py/carveme) [![Documentation Status](http://readthedocs.org/projects/carveme/badge/?version=latest)](http://carveme.readthedocs.io/en/latest/?badge=latest)
 
-![CarveMe](logo.png =350x350)
+![CarveMe](logo.png)
 
 ## Genome-scale metabolic model reconstruction with CarveMe
 
