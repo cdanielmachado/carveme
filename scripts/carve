@@ -191,6 +191,8 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
                                 init_env=init_env,
                                 debug_output=debug_output)
     else:
+        if verbose:
+            print 'Building an ensemble of', ensemble_size, 'models'
         build_ensemble(universe_model, scores, ensemble_size, outputfile, flavor, init_env=init_env)
 
     if gapfill and model is not None:
