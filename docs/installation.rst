@@ -4,7 +4,7 @@
 Installation
 ============
 
-**CarveMe** requires Python 2.7, which is available for all major operating systems. We recommend the `Anaconda python
+**CarveMe** currently supports Python 2.7 and Python 3.6, which are available for all major operating systems. We recommend the `Anaconda python
 distribution <https://www.continuum.io/downloads>`_.
 
 It can be easily installed using the **pip** package manager:

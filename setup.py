@@ -9,9 +9,9 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    "framed",
-    "pandas",
-    "requests"
+    "framed==0.5.0",
+    "pandas>=0.20.0",
+    "requests>=2.18"
 ]
 
 script_list = [
