@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 from carveme import config, project_dir
 import argparse
 import os
@@ -113,7 +114,7 @@ def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow
                         remove_blocked=(not allow_blocked))
 
     else:
-        print 'Unrecognized option:', mode
+        print('Unrecognized option:', mode)
 
 
 if __name__ == '__main__':

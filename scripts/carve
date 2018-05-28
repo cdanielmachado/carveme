@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 from carveme import config, project_dir
 from carveme import __version__ as version
 from carveme.reconstruction.carving import carve_model, build_ensemble
@@ -52,7 +53,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         try:
             os.makedirs(outputfolder)
         except:
-            print 'Unable to create output folder:', outputfolder
+            print('Unable to create output folder:', outputfolder)
             return
 
     if soft:
@@ -74,32 +75,32 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
     if input_type == 'refseq' or input_type == 'genbank':
 
         if verbose:
-            print 'Downloading genome {} from NCBI...'.format(inputfile)
+            print('Downloading genome {} from NCBI...'.format(inputfile))
 
         ncbi_table = load_ncbi_table(project_dir + config.get('ncbi', input_type))
         inputfile = download_ncbi_genome(inputfile, ncbi_table)
 
         if not inputfile:
-            print 'Failed to download genome from NCBI.'
+            print('Failed to download genome from NCBI.')
             return
 
         input_type = 'protein' if inputfile.endswith('.faa.gz') else 'dna'
 
     if input_type == 'protein' or input_type == 'dna':
         if verbose:
-            print 'Running diamond...'
+            print('Running diamond...')
         diamond_db = project_dir + config.get('input', 'diamond_db')
         blast_output = os.path.splitext(inputfile)[0] + '.tsv'
         exit_code = run_blast(inputfile, input_type, blast_output, diamond_db, diamond_args, verbose)
 
         if exit_code is None:
-            print 'Unable to run diamond (make sure diamond is available in your PATH).'
+            print('Unable to run diamond (make sure diamond is available in your PATH).')
             return
 
         if exit_code != 0:
-            print 'Failed to run diamond.'
+            print('Failed to run diamond.')
             if diamond_args is not None:
-                print 'Incorrect diamond args? Please check documentation or use default args.'
+                print('Incorrect diamond args? Please check documentation or use default args.')
             return
 
         annotations = load_diamond_results(blast_output)
@@ -111,7 +112,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         raise ValueError('Invalid input type: ' + input_type)
 
     if verbose:
-        print 'Loading universe model...'
+        print('Loading universe model...')
 
     if not universe_file:
         if universe:
@@ -129,7 +130,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
     if gapfill or init:
 
         if verbose:
-            print 'Loading media library...'
+            print('Loading media library...')
 
         if not mediadb:
             mediadb = project_dir + config.get('input', 'media_library')
@@ -140,7 +141,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
             raise IOError('Failed to load media library:' + mediadb)
 
     if verbose:
-        print 'Scoring reactions...'
+        print('Scoring reactions...')
 
     bigg_gprs = project_dir + config.get('generated', 'bigg_gprs')
     gprs = pd.read_csv(bigg_gprs)
@@ -150,7 +151,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
     scores = reaction_scoring(annotations, gprs, debug_output=debug_output)
 
     if scores is None:
-        print 'The input genome did not match sufficient genes/reactions in the database.'
+        print('The input genome did not match sufficient genes/reactions in the database.')
         return
 
     if not flavor:
@@ -162,13 +163,13 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         if init in media_db:
             init_env = Environment.from_compounds(media_db[init])
         else:
-            print 'Error: medium {} not in media database.'.format(init)
+            print('Error: medium {} not in media database.'.format(init))
 
     universe_model.metadata['Description'] = 'This model was built with CarveMe version ' + version
 
     if ensemble_size is None or ensemble_size <= 1:
         if verbose:
-            print 'Reconstructing a single model'
+            print('Reconstructing a single model')
         if not gapfill:
             carve_model(universe_model, scores,
                         outputfile=outputfile,
@@ -192,7 +193,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
                                 debug_output=debug_output)
     else:
         if verbose:
-            print 'Building an ensemble of', ensemble_size, 'models'
+            print('Building an ensemble of', ensemble_size, 'models')
         build_ensemble(universe_model, scores, ensemble_size, outputfile, flavor, init_env=init_env)
 
     if gapfill and model is not None:
@@ -201,7 +202,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
 
         if verbose:
             m1, n1 = len(model.metabolites), len(model.reactions)
-            print 'Gap filling for {}...'.format(', '.join(media))
+            print('Gap filling for {}...'.format(', '.join(media)))
 
         max_uptake = config.getint('gapfill', 'max_uptake')
 
@@ -213,7 +214,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
 
         if verbose:
             m2, n2 = len(model.metabolites), len(model.reactions)
-            print 'Added {} reactions and {} metabolites'.format((n2 - n1), (m2 - m1))
+            print('Added {} reactions and {} metabolites'.format((n2 - n1), (m2 - m1)))
 
         if init_env:  #Should initialize enviroment again as new exchange reactions can be acquired during gap-filling
             init_env.apply(model, inplace=True, warning=False)
@@ -221,7 +222,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         save_cbmodel(model, outputfile, flavor=flavor)
 
     if verbose:
-        print 'Done.'
+        print('Done.')
 
 
 if __name__ == '__main__':

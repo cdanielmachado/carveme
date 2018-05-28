@@ -10,7 +10,8 @@ with open('README.rst') as readme_file:
 
 requirements = [
     "framed",
-    "pandas"
+    "pandas",
+    "requests"
 ]
 
 script_list = [

@@ -1,5 +1,7 @@
+from future import standard_library
+standard_library.install_aliases()
 import os
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 from framed import set_default_solver, set_default_parameter, Parameter
 
 __version__ = '1.1.0'

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 from framed.model.transformation import disconnected_metabolites
 from carveme.reconstruction.utils import create_exchange_reactions, add_biomass_equation, create_sink_reactions, \
@@ -312,15 +313,15 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
         essencial reactions/metabolites that would otherwise be structurally blocked).
     """
 
-    print 'Starting universe curation...'
-    print '(initial size: {} x {})\n'.format(len(model.metabolites), len(model.reactions))
+    print('Starting universe curation...')
+    print('(initial size: {} x {})\n'.format(len(model.metabolites), len(model.reactions)))
 
     trusted_models = bigg_models.query('trusted == True').index.tolist()
 
     add_bounds_from_extracted_data(model, model_specific_data, trusted_models)
 
     if taxa:
-        print 'Filtering by taxa:', taxa
+        print('Filtering by taxa:', taxa)
         kingdom_map = bigg_models['domain'].to_dict()
 
         if taxa in {'cyanobacteria', 'bacteria'}:
@@ -340,10 +341,10 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
         other_compartments = set(model.compartments.keys()) - valid_compartments
         model.remove_compartments(other_compartments, delete_metabolites=True, delete_reactions=True)
 
-        print '(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions))
+        print('(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions)))
 
     if thermodynamics_data is not None:
-        print 'Computing thermodynamics...',
+        print('Computing thermodynamics...', end=' ')
 
         dG0 = thermodynamics_data['dG0'].to_dict()
         sdG0 = thermodynamics_data['sdG0'].to_dict()
@@ -354,10 +355,10 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
             x0 = None
 
         compute_flux_bounds(model, dG0, sdG0, x0, method=thermodynamics_method, inplace=True, override_trusted=False)
-        print 'done\n'
+        print('done\n')
 
 
-    print 'Applying manual curation rules...',
+    print('Applying manual curation rules...', end=' ')
 
     if use_heuristics:
         reversibility_heuristics(model, no_reverse_atp=True, no_proton_pumps=False, override_trusted=False)
@@ -368,7 +369,7 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
             if r_id in model.reactions:
                 model.set_flux_bounds(r_id, lb, ub)
 
-    print 'done\n'
+    print('done\n')
 
     if remove_unbalanced:
 
@@ -377,11 +378,11 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
             for m_id in ['M_photon_e', 'M_photon_p', 'M_photon_c']:
                 model.metabolites[m_id].metadata['FORMULA'] = ''
 
-        print 'Removing unbalanced reactions...'
+        print('Removing unbalanced reactions...')
         remove_unbalanced_reactions(model)
-        print '(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions))
+        print('(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions)))
 
-    print 'Creating pseudo-reactions...'
+    print('Creating pseudo-reactions...')
 
     create_exchange_reactions(model, default_lb=-1000, default_ub=1000)
 
@@ -392,14 +393,14 @@ def curate_universe(model, model_specific_data, bigg_models, biomass_eq, taxa=No
 
     add_maintenance_atp(model)
 
-    print '(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions))
+    print('(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions)))
 
     if remove_blocked:
-        print 'Removing blocked reactions and dead-end metabolites...'
+        print('Removing blocked reactions and dead-end metabolites...')
         simplify(model)
-        print '(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions))
+        print('(size: {} x {})\n'.format(len(model.metabolites), len(model.reactions)))
 
     if outputfile:
         save_cbmodel(model, outputfile)
 
-    print 'Done.'
+    print('Done.')

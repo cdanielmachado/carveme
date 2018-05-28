@@ -1,3 +1,6 @@
+from __future__ import division
+from builtins import zip
+from past.utils import old_div
 import pandas as pd
 import numpy as np
 from framed import load_cbmodel
@@ -100,7 +103,7 @@ def calculate_deltaG0s(model, kegg_compounds, pH=default_pH, I=default_I, T=defa
 
     """
     kegg_rxns = build_kegg_reactions(model, kegg_compounds)
-    kmodel = KeggModel.from_formulas(kegg_rxns.values(), raise_exception=True)
+    kmodel = KeggModel.from_formulas(list(kegg_rxns.values()), raise_exception=True)
     kmodel.add_thermo(CC.init())
     dG0, sdG0, _ = kmodel.get_transformed_dG0(pH, I, T)
 
@@ -170,7 +173,7 @@ def dG_bounds(model, r_id, dG0, sdG0=None, x0=None, excluded=None, T=default_T):
         if m_id in excluded:
             continue
         elif m_id in x0:
-            x_min = x0[m_id] / sqrt(measured_fold_change)
+            x_min = old_div(x0[m_id], sqrt(measured_fold_change))
             x_max = x0[m_id] * sqrt(measured_fold_change)
         else:
             x_min = concentration_min
@@ -183,8 +186,8 @@ def dG_bounds(model, r_id, dG0, sdG0=None, x0=None, excluded=None, T=default_T):
             prod_min.append(x_min ** coeff)
             prod_max.append(x_max ** coeff)
 
-    dG_min = dG0[r_id] - sdG0[r_id] + R * T * np.log(np.prod(prod_min) / np.prod(reac_max))
-    dG_max = dG0[r_id] + sdG0[r_id] + R * T * np.log(np.prod(prod_max) / np.prod(reac_min))
+    dG_min = dG0[r_id] - sdG0[r_id] + R * T * np.log(old_div(np.prod(prod_min), np.prod(reac_max)))
+    dG_max = dG0[r_id] + sdG0[r_id] + R * T * np.log(old_div(np.prod(prod_max), np.prod(reac_min)))
 
     return dG_min, dG_max
 

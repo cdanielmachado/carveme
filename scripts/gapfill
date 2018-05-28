@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 from carveme import config, project_dir
 from carveme.reconstruction.gapfilling import multiGapFill
 from carveme.reconstruction.utils import load_media_db
@@ -12,7 +13,7 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
          exchange_format=None, verbose=False):
 
     if verbose:
-        print 'Loading model...'
+        print('Loading model...')
 
     try:
         model = load_cbmodel(inputfile, flavor=flavor)
@@ -20,7 +21,7 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
         raise IOError('Failed to load model:' + inputfile)
 
     if verbose:
-        print 'Loading reaction universe...'
+        print('Loading reaction universe...')
 
     if not universe_file:
         if universe:
@@ -37,7 +38,7 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
             raise IOError('Failed to load universe model:' + universe_file)
 
     if verbose:
-        print 'Loading media...'
+        print('Loading media...')
 
     if not mediadb:
         mediadb = project_dir + config.get('input', 'media_library')
@@ -49,7 +50,7 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
 
     if verbose:
         m1, n1 = len(model.metabolites), len(model.reactions)
-        print 'Gap filling for {}...'.format(', '.join(media))
+        print('Gap filling for {}...'.format(', '.join(media)))
 
     max_uptake = config.getint('gapfill', 'max_uptake')
     multiGapFill(model, universe_model, media, media_db, max_uptake=max_uptake, inplace=True,
@@ -57,10 +58,10 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
 
     if verbose:
         m2, n2 = len(model.metabolites), len(model.reactions)
-        print 'Added {} reactions and {} metabolites'.format((n2 - n1), (m2 - m1))
+        print('Added {} reactions and {} metabolites'.format((n2 - n1), (m2 - m1)))
 
     if verbose:
-        print 'Saving SBML file...'
+        print('Saving SBML file...')
 
     if not outputfile:
         outputfile = os.path.splitext(inputfile)[0] + '_gapfill.xml'
@@ -71,7 +72,7 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
     save_cbmodel(model, outputfile, flavor=flavor)
 
     if verbose:
-        print 'Done.'
+        print('Done.')
 
 
 if __name__ == '__main__':
