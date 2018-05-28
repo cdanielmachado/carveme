@@ -1,5 +1,8 @@
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
 import pandas as pd
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import os
 
 
@@ -11,7 +14,7 @@ def load_ncbi_table(inputfile):
 def download_ncbi_genome(accession, refseq_table, prefer_protein=True):
 
     if accession not in refseq_table.index:
-        print 'Invalid accession code'
+        print('Invalid accession code')
         return
 
     entry = refseq_table.loc[accession, :]
@@ -24,9 +27,9 @@ def download_ncbi_genome(accession, refseq_table, prefer_protein=True):
 
         outputfile = '{}.faa.gz'.format(accession)
 
-        _, result = urllib.urlretrieve(url, outputfile)
+        _, result = urllib.request.urlretrieve(url, outputfile)
 
-        if result.gettype() != 'application/x-gzip':
+        if result.get_content_type() != 'application/x-gzip':
             os.remove(outputfile)
         else:
             downloaded = True
@@ -37,9 +40,9 @@ def download_ncbi_genome(accession, refseq_table, prefer_protein=True):
 
         outputfile = '{}.fna.gz'.format(accession)
 
-        _, result = urllib.urlretrieve(url, outputfile)
+        _, result = urllib.request.urlretrieve(url, outputfile)
 
-        if result.gettype() != 'application/x-gzip':
+        if result.get_content_type() != 'application/x-gzip':
             os.remove(outputfile)
         else:
             downloaded = True

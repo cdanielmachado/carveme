@@ -1,3 +1,9 @@
+from __future__ import division
+from __future__ import print_function
+from builtins import str
+from builtins import map
+from builtins import range
+from past.utils import old_div
 import requests
 import pandas as pd
 import sys
@@ -15,7 +21,7 @@ models_url =  base_url + 'models/'
 
 
 def progress(i, n):
-    p = int(((i+1)*100.0)/n)
+    p = int(old_div(((i+1)*100.0),n))
     sys.stdout.write("\r{}%".format(p))
     sys.stdout.flush()
 
@@ -43,9 +49,9 @@ def get_request(url, max_tries=10):
             break
     
     if data is None:
-        print 'max number of attempts exceeded:', max_tries
+        print('max number of attempts exceeded:', max_tries)
     elif i > 0:
-        print 'failed attempts', i
+        print('failed attempts', i)
     
     return data
 
@@ -188,7 +194,7 @@ def build_bigg_universe_model(outputfile=None):
         CBModel: universe model
     """
 
-    print 'Downloading universal data from BiGG...'
+    print('Downloading universal data from BiGG...')
     model = CBModel('bigg_universe')
     bigg_rxns = get_request(reactions_url)
 
@@ -197,7 +203,7 @@ def build_bigg_universe_model(outputfile=None):
         build_reaction(model, entry['bigg_id'])
         progress(i, n)
 
-    print '\n'
+    print('\n')
 
     if outputfile:
         save_cbmodel(model, outputfile)
@@ -221,7 +227,7 @@ def download_model_specific_data(outputfile=None):
 
     """
 
-    print 'Downloading model-specific data from BiGG...'
+    print('Downloading model-specific data from BiGG...')
 
     data = get_request(models_url)
     rows = []
@@ -247,7 +253,7 @@ def download_model_specific_data(outputfile=None):
             rows.append((r_id, model_id, lb, ub, subsystem, gpr))
 
         progress(i, n)
-    print '\n'
+    print('\n')
 
     columns = ['reaction', 'model',  'lower_bound', 'upper_bound', 'subsystem', 'GPR']
     df = pd.DataFrame(rows, columns=columns)

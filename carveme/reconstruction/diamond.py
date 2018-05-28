@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pandas as pd
 from subprocess import call
 import os
@@ -63,7 +64,7 @@ def run_blast(inputfile, input_type, outputfile, database, args=None, verbose=Tr
     cmd += args.split()
 
     if verbose:
-        print ' '.join(cmd)
+        print(' '.join(cmd))
 
     with open(os.devnull, 'w') as devnull:
         try:

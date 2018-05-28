@@ -19,5 +19,7 @@ carveme.egg-info/*
 
 *.pyc
 
+.eggs/*
+
 docs/_build/*
 Dockerfile

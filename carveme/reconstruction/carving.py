@@ -1,3 +1,6 @@
+from __future__ import print_function
+from builtins import zip
+from builtins import range
 import numpy as np
 import warnings
 import pandas as pd
@@ -66,7 +69,7 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
     objective = {}
 
     scores = scores.copy()
-    reactions = scores.keys()
+    reactions = list(scores.keys())
 
     if not soft_constraints:
         soft_constraints = {}
@@ -94,11 +97,11 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
         solver.pos_vars = []
 
         for r_id in reactions:
-            if model.reactions[r_id].lb < 0 or model.reactions[r_id].lb is None:
+            if model.reactions[r_id].lb is None or model.reactions[r_id].lb < 0:
                 y_r = 'yr_' + r_id
                 solver.add_variable(y_r, 0, 1, vartype=VarType.BINARY, update_problem=False)
                 solver.neg_vars.append(y_r)
-            if model.reactions[r_id].ub > 0 or model.reactions[r_id].ub is None:
+            if model.reactions[r_id].ub is None or model.reactions[r_id].ub > 0:
                 y_f = 'yf_' + r_id
                 solver.add_variable(y_f, 0, 1, vartype=VarType.BINARY, update_problem=False)
                 solver.pos_vars.append(y_f)
@@ -226,7 +229,7 @@ def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=Tr
     if sol.status == Status.OPTIMAL:
         inactive = inactive_reactions(model, sol)
     else:
-        print "MILP solver failed: {}".format(sol.message)
+        print("MILP solver failed: {}".format(sol.message))
         return
 
     if debug_output:
@@ -245,7 +248,7 @@ def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=Tr
                 gpr = parse_gpr_rule(row['GPR'], prefix='G_')
                 model.set_gpr_association(r_id, gpr, add_genes=True)
             except:
-                print 'Failed to parse:', row['GPR']
+                print('Failed to parse:', row['GPR'])
 
     cleanup_metadata(model)
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import argparse
 import os
 from framed import load_cbmodel, save_cbmodel, Environment
@@ -8,7 +9,7 @@ from carveme import config, project_dir
 from carveme.reconstruction.utils import load_media_db
 
 
-def main(inputfiles, flavor=None, split_pool=False, no_biomass=False, init=None, mediadb=None, outputfile=None):
+def main(inputfiles, flavor=None, split_pool=False, no_biomass=False, init=None, mediadb=None, ext_comp_id=None, outputfile=None):
 
     if not flavor:
         flavor = config.get('sbml', 'default_flavor')
@@ -19,10 +20,13 @@ def main(inputfiles, flavor=None, split_pool=False, no_biomass=False, init=None,
         model_id = 'community'
         outputfile = 'community.xml'
 
+    if ext_comp_id is None:
+        ext_comp_id = 'C_e'
+
     models = [load_cbmodel(inputfile, flavor=flavor) for inputfile in inputfiles]
 
     community = Community(model_id, models,
-                          extracellular_compartment_id='C_e',
+                          extracellular_compartment_id=ext_comp_id,
                           merge_extracellular_compartments=(not split_pool),
                           create_biomass=(not no_biomass))
 
@@ -64,15 +68,16 @@ if __name__ == '__main__':
                         help="Initialize model with given medium")
 
     parser.add_argument('--mediadb', help="Media database file")
+    parser.add_argument('--ext', help="Extracellular compartment identifier in the models (default 'C_e').")
 
     sbml = parser.add_mutually_exclusive_group()
-    sbml.add_argument('--cobra', action='store_true', help="Output SBML in old cobra format")
-    sbml.add_argument('--fbc2', action='store_true', help="Output SBML in sbml-fbc2 format")
+    sbml.add_argument('--cobra', action='store_true', help="SBML input/output in old cobra format")
+    sbml.add_argument('--fbc2', action='store_true', help="SBML input/output in sbml-fbc2 format")
 
     args = parser.parse_args()
 
     if len(args.input) < 2:
-        print args.input
+        print(args.input)
         parser.error("Please provide two or more single species models as input files.")
 
     if args.fbc2:
@@ -88,6 +93,7 @@ if __name__ == '__main__':
          no_biomass=args.no_biomass,
          init=args.init,
          mediadb=args.mediadb,
+         ext_comp_id=args.ext,
          outputfile=args.output)
 
 

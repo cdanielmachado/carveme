@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import zip
 from collections import OrderedDict
 from warnings import warn
 
