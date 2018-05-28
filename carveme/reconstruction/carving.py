@@ -242,7 +242,7 @@ def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=Tr
         r_id = row['reaction']
         if r_id in model.reactions:
             try:
-                gpr = parse_gpr_rule(row['GPR'])
+                gpr = parse_gpr_rule(row['GPR'], prefix='G_')
                 model.set_gpr_association(r_id, gpr, add_genes=True)
             except:
                 print 'Failed to parse:', row['GPR']
