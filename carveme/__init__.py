@@ -4,7 +4,7 @@ import os
 from configparser import ConfigParser
 from framed import set_default_solver, set_default_parameter, Parameter
 
-__version__ = '1.2.0'
+__version__ = '1.2.1'
 
 project_dir = os.path.abspath(os.path.dirname(__file__)) + '/'
 
