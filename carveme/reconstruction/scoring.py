@@ -1,5 +1,4 @@
 from __future__ import division
-from past.utils import old_div
 import pandas as pd
 
 
@@ -120,7 +119,7 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
         reaction_scores.to_csv(debug_output + '_reaction_scores.tsv', sep='\t', index=False)
 
     if avg_score != 0:
-        reaction_scores['normalized_score'] = old_div(reaction_scores['score'], avg_score)
+        reaction_scores['normalized_score'] = reaction_scores['score'] / avg_score
         return reaction_scores
     else:
         return None

@@ -3,7 +3,6 @@ from __future__ import print_function
 from builtins import str
 from builtins import map
 from builtins import range
-from past.utils import old_div
 import requests
 import pandas as pd
 import sys
@@ -21,7 +20,7 @@ models_url =  base_url + 'models/'
 
 
 def progress(i, n):
-    p = int(old_div(((i+1)*100.0),n))
+    p = int((i+1)*100.0 / n)
     sys.stdout.write("\r{}%".format(p))
     sys.stdout.flush()
 

@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import print_function
-from past.utils import old_div
 from carveme.reconstruction.utils import medium_to_constraints
 from framed.model.transformation import disconnected_metabolites
 from framed.solvers import solver_instance
@@ -63,7 +62,7 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
 
         solver.update()
 
-    objective = {'y_'+r_id: old_div(1.0, (1.0 + scores.get(r_id, 0.0))) for r_id in new_reactions}
+    objective = {'y_'+r_id: 1.0 / (1.0 + scores.get(r_id, 0.0)) for r_id in new_reactions}
 
     solution = solver.solve(linear=objective, minimize=True, constraints=constraints)
 
