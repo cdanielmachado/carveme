@@ -2,6 +2,5 @@ matplotlib
 numpy
 scipy
 python-libsbml
-framed==0.5.1
 pandas>=0.20.0
 requests>=2.18
