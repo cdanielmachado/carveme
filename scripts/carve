@@ -27,8 +27,9 @@ def build_model_id(name):
 
 
 def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
-         ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, blind_gapfill=False, init=None, mediadb=None,
-         default_score=None, uptake_score=None, soft_score=None, soft=None, hard=None, recursive_mode=False):
+         ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, blind_gapfill=False, init=None,
+         mediadb=None, default_score=None, uptake_score=None, soft_score=None, soft=None, hard=None, reference=None,
+         ref_score=None, recursive_mode=False):
 
     if recursive_mode:
         model_id = os.path.splitext(os.path.basename(inputfile))[0]
@@ -127,6 +128,17 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         available = '\n'.join(glob("{}{}universe_*.xml.gz".format(project_dir, config.get('generated', 'folder'))))
         raise IOError('Failed to load universe model: {}\nAvailable universe files:\n{}'.format(universe_file, available))
 
+    if reference:
+        if verbose:
+            print('Loading reference model...')
+
+        try:
+            ref_model = load_cbmodel(reference)
+        except:
+            raise IOError('Failed to load reference model.')
+    else:
+        ref_model = None
+
     if gapfill or init:
 
         if verbose:
@@ -170,6 +182,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
     if ensemble_size is None or ensemble_size <= 1:
         if verbose:
             print('Reconstructing a single model')
+
         if not gapfill:
             carve_model(universe_model, scores,
                         outputfile=outputfile,
@@ -179,6 +192,8 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
                         soft_score=soft_score,
                         soft_constraints=soft_constraints,
                         hard_constraints=hard_constraints,
+                        ref_model=ref_model,
+                        ref_score=ref_score,
                         init_env=init_env,
                         debug_output=debug_output)
         else:
@@ -189,6 +204,8 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
                                 soft_score=soft_score,
                                 soft_constraints=soft_constraints,
                                 hard_constraints=hard_constraints,
+                                ref_model=ref_model,
+                                ref_score=ref_score,
                                 init_env=init_env,
                                 debug_output=debug_output)
     else:
@@ -276,12 +293,14 @@ if __name__ == '__main__':
     parser.add_argument('--soft', help="Soft constraints file")
     parser.add_argument('--hard', help="Hard constraints file")
 
-    parser.add_argument('--default-score', type=float, help=argparse.SUPPRESS)
-    parser.add_argument('--uptake-score', type=float, help=argparse.SUPPRESS)
-    parser.add_argument('--soft-score', type=float, help=argparse.SUPPRESS)
+    parser.add_argument('--reference', help="Manually curated model of a close reference species.")
+
+    parser.add_argument('--default-score', type=float, default=-1.0, help=argparse.SUPPRESS)
+    parser.add_argument('--uptake-score', type=float, default=0.0, help=argparse.SUPPRESS)
+    parser.add_argument('--soft-score', type=float, default=1.0, help=argparse.SUPPRESS)
+    parser.add_argument('--reference-score', type=float, default=0.0, help=argparse.SUPPRESS)
 
     parser.add_argument('--blind-gapfill', action='store_true', help=argparse.SUPPRESS)
-
 
     args = parser.parse_args()
 
@@ -340,7 +359,9 @@ if __name__ == '__main__':
             uptake_score=args.uptake_score,
             soft_score=args.soft_score,
             soft=args.soft,
-            hard=args.hard
+            hard=args.hard,
+            reference=args.reference,
+            ref_score=args.reference_score
         )
 
     else:
@@ -365,6 +386,8 @@ if __name__ == '__main__':
                 soft_score=args.soft_score,
                 soft=args.soft,
                 hard=args.hard,
+                reference=args.reference,
+                ref_score=args.reference_score,
                 recursive_mode=True
             )
 
