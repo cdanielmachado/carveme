@@ -21,9 +21,11 @@ Additionally, you must install diamond and CPLEX (please check the documentation
 
 ### Credits and License
 
-Developed at the European Molecular Biology Laboratory (2017-2018).
+For citation purposes please refer to our paper:
 
-For citation purposes please refer to our paper
-(pre-print currently available on biorXiv: https://www.biorxiv.org/content/early/2018/01/12/223198).
+D. Machado et al, "Fast automated reconstruction of genome-scale metabolic models for microbial species and communities", Nucleic Acids Research, gky537, 2018. 
 
-Released under an Apache License.
+DOI: https://doi.org/10.1093/nar/gky537
+
+Developed at the European Molecular Biology Laboratory (2017-2018). Released under an Apache License.
+
