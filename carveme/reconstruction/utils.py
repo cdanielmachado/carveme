@@ -103,11 +103,14 @@ def biomass_weight(biomass_id, coeffs, model):
     for m_id, coeff in coeffs.items():
         metabolite = model.metabolites[m_id]
         if 'FORMULA' in metabolite.metadata:
-            formulae = metabolite.metadata['FORMULA'].split(';')
-            met_weight = np.mean([molecular_weight(formula) for formula in formulae])
-            contribution = -coeff * met_weight
-            bio_weight += contribution
-#            print '\t'.join([biomass_id, m_id, str(met_weight), str(coeff), str(contribution)])
+            try:
+                formulae = metabolite.metadata['FORMULA'].split(';')
+                met_weight = np.mean([molecular_weight(formula) for formula in formulae])
+                contribution = -coeff * met_weight
+                bio_weight += contribution
+            except:
+                warn('Unable to normalize {} due to invalid formula for {}:'.format(biomass_id, m_id))
+                break
         else:
             warn('Unable to normalize {} due to missing formula for {}:'.format(biomass_id, m_id))
             break
