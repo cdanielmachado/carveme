@@ -94,7 +94,7 @@ If you already have a model, and you just want to gap-fill it, you can do it wit
 
 .. code-block:: console
 
-    $ gapfill model.xml -g M9 -o new_model.xml
+    $ gapfill model.xml -m M9 -o new_model.xml
 
 Please note that the result is not the same if you gap-fill during reconstruction. When you gap-fill during
 reconstruction, the gene annotation scores are used to prioritize the reactions selected for gap-filling based on
