@@ -37,8 +37,9 @@ def inactive_reactions(model, solution):
     return inactive + inactive_ext
 
 
-def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM=1e3, default_score=-1, uptake_score=0,
-                     soft_score=1, soft_constraints=None, hard_constraints=None, solver=None, debug_output=None):
+def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM=1e3, default_score=-1.0,
+                     uptake_score=0.0, soft_score=1.0, soft_constraints=None, hard_constraints=None,
+                     ref_reactions=None, ref_score=0.0, solver=None, debug_output=None):
     """ Apply minmax reduction algorithm (MILP).
 
     Computes a binary reaction vector that optimizes the agreement with reaction scores (maximizes positive scores,
@@ -71,19 +72,27 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
     scores = scores.copy()
     reactions = list(scores.keys())
 
-    if not soft_constraints:
+    if soft_constraints:
+        reactions += [r_id for r_id in soft_constraints if r_id not in reactions]
+    else:
         soft_constraints = {}
 
-    reactions += [r_id for r_id in soft_constraints if r_id not in reactions]
+    if not ref_reactions:
+        ref_reactions = {}
 
     if hard_constraints:
         solver.set_bounds(hard_constraints)
 
-    # Add default score
     if default_score != 0:
         for r_id in model.reactions:
-            if r_id not in reactions and not r_id.startswith('R_EX') and r_id != 'R_ATPM':
+            if r_id not in reactions and r_id not in ref_reactions and not r_id.startswith('R_EX') and r_id != 'R_ATPM':
                 scores[r_id] = default_score
+                reactions.append(r_id)
+
+    if ref_score != 0:
+        for r_id in ref_reactions:
+            if r_id not in reactions and r_id != 'R_ATPM':
+                scores[r_id] = ref_score
                 reactions.append(r_id)
 
     if not hasattr(solver, '_carveme_flag'):
@@ -147,16 +156,20 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
                 w_f, w_r = -soft_score, -soft_score
 
         if y_f in solver.pos_vars:
-            if r_id in scores:
-                objective[y_f] = scores[r_id]
             if r_id in soft_constraints:
-                objective[y_f] = w_f
+                 objective[y_f] = w_f
+            elif r_id in ref_reactions:
+                objective[y_f] = 2 * scores[r_id] + ref_score
+            else:
+                objective[y_f] = scores[r_id]
 
         if y_r in solver.neg_vars:
-            if r_id in scores:
-                objective[y_r] = scores[r_id]
             if r_id in soft_constraints:
                 objective[y_r] = w_r
+            elif r_id in ref_reactions:
+                objective[y_r] = 2 * scores[r_id] + ref_score
+            else:
+                objective[y_r] = scores[r_id]
 
     if uptake_score != 0:
         for r_id in model.reactions:
@@ -175,7 +188,7 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
 
 def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=True,
                 default_score=-1.0, uptake_score=0.0, soft_score=1.0,
-                soft_constraints=None, hard_constraints=None,
+                soft_constraints=None, hard_constraints=None, ref_model=None, ref_score=0.0,
                 init_env=None, debug_output=None):
     """ Reconstruct a metabolic model using the CarveMe approach.
 
@@ -201,15 +214,6 @@ def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=Tr
 
     scores = dict(reaction_scores[['reaction', 'normalized_score']].values)
 
-    if default_score is None:
-        default_score = -1.0
-
-    if uptake_score is None:
-        uptake_score = 0.0
-
-    if soft_score is None:
-        soft_score = 1.0
-
     if soft_constraints:
         not_in_model = set(soft_constraints) - set(model.reactions)
         if not_in_model:
@@ -222,9 +226,14 @@ def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=Tr
             hard_constraints = {r_id: (lb, ub) for r_id, (lb, ub) in hard_constraints.items() if r_id in model.reactions}
             warnings.warn("Hard constraints contain reactions not in the model:\n" + "\n".join(not_in_model))
 
+    if ref_model:
+        ref_reactions = set(model.reactions) & set(ref_model.reactions)
+    else:
+        ref_reactions = None
+
     sol = minmax_reduction(model, scores, default_score=default_score, uptake_score=uptake_score, soft_score=soft_score,
                            soft_constraints=soft_constraints, hard_constraints=hard_constraints,
-                           debug_output=debug_output)
+                           ref_reactions=ref_reactions, ref_score=ref_score, debug_output=debug_output)
 
     if sol.status == Status.OPTIMAL:
         inactive = inactive_reactions(model, sol)

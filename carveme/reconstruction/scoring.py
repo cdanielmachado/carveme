@@ -113,13 +113,15 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
 
     avg_score = reaction_scores['score'].median()
 
+    if avg_score != 0:
+        reaction_scores['normalized_score'] = reaction_scores['score'] / avg_score
+
     if debug_output:
         gene_scores.to_csv(debug_output + '_gene_scores.tsv', sep='\t', index=False)
         protein_scores.to_csv(debug_output + '_protein_scores.tsv', sep='\t', index=False)
         reaction_scores.to_csv(debug_output + '_reaction_scores.tsv', sep='\t', index=False)
 
     if avg_score != 0:
-        reaction_scores['normalized_score'] = reaction_scores['score'] / avg_score
         return reaction_scores
     else:
         return None
