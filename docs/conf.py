@@ -56,14 +56,14 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'CarveMe'
-copyright = u"2017, Daniel Machado and Sergej Andrejev (EMBL)"
+copyright = u"2019, Daniel Machado and Sergej Andrejev (EMBL)"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
 # the built documents.
 #
 # The short X.Y version.
-version = '1.2.1'
+version = '1.2.2'
 # The full version, including alpha/beta/rc tags.
 release = version
 
