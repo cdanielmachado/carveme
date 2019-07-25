@@ -17,7 +17,12 @@ Can be easily installed using **pip**:
 pip install carveme
 ```
 
-Additionally, you must install diamond and CPLEX (please check the documentation for details). 
+Additionally, you must install diamond and GUROBI:
+
+    - https://github.com/bbuchfink/diamond
+    
+    - https://www.gurobi.com/academia/academic-program-and-licenses/
+
 
 ### Credits and License
 
