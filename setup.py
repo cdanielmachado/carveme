@@ -9,7 +9,7 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    "framed==0.5.1",
+    "framed>=0.5",
     "pandas>=0.20.0",
     "requests>=2.18"
 ]

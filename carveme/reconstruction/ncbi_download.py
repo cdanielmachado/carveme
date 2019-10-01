@@ -11,7 +11,7 @@ def load_ncbi_table(inputfile):
     return table
 
 
-def download_ncbi_genome(accession, refseq_table, prefer_protein=True):
+def download_ncbi_genome(accession, refseq_table, prefer_protein=True, overwrite=False):
 
     if accession not in refseq_table.index:
         print('Invalid accession code')
@@ -27,6 +27,10 @@ def download_ncbi_genome(accession, refseq_table, prefer_protein=True):
 
         outputfile = '{}.faa.gz'.format(accession)
 
+        if os.path.exists(outputfile) and not overwrite:
+            print('File exists, skipping.')
+            return outputfile
+
         _, result = urllib.request.urlretrieve(url, outputfile)
 
         if result.get_content_type() != 'application/x-gzip':
@@ -39,6 +43,10 @@ def download_ncbi_genome(accession, refseq_table, prefer_protein=True):
             entry['ftp_path'][6:], entry['ftp_path'].split('/')[-1])
 
         outputfile = '{}.fna.gz'.format(accession)
+
+        if os.path.exists(outputfile) and not overwrite:
+            print('File exists, skipping.')
+            return outputfile
 
         _, result = urllib.request.urlretrieve(url, outputfile)
 
