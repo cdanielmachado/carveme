@@ -9,11 +9,11 @@ from carveme.reconstruction.utils import load_media_db, load_soft_constraints, l
 from carveme.reconstruction.ncbi_download import load_ncbi_table, download_ncbi_genome
 from carveme.reconstruction.scoring import reaction_scoring
 from carveme.reconstruction.diamond import run_blast, load_diamond_results
-from framed import load_cbmodel, Environment
+from reframed import load_cbmodel, save_cbmodel, Environment
+from reframed.io.sbml import sanitize_id
 import argparse
 import os
 import pandas as pd
-from framed.io.sbml import save_cbmodel, sanitize_id
 from multiprocessing import Pool
 from glob import glob
 

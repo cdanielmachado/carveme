@@ -41,10 +41,10 @@ def main(inputfiles, flavor=None, split_pool=False, no_biomass=False, init=None,
             raise IOError('Failed to load media library:' + mediadb)
 
         if split_pool:
-            exchange_format = "'R_EX_M_{}_e_pool'"
+            fmt_func = lambda x: f"R_EX_M_{x}_e_pool"
         else:
-            exchange_format = "'R_EX_{}_e'"
-        init_env = Environment.from_compounds(media_db[init], exchange_format=exchange_format)
+            fmt_func = lambda x: f"R_EX_{x}_e"
+        init_env = Environment.from_compounds(media_db[init], fmt_func=fmt_func)
         init_env.apply(merged, inplace=True)
 
     save_cbmodel(merged, outputfile, flavor=flavor)

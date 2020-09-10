@@ -1,8 +1,9 @@
 from carveme.reconstruction.utils import medium_to_constraints
-from framed.model.transformation import disconnected_metabolites
-from framed.solvers import solver_instance
-from framed.solvers.solver import VarType, Status
-from framed import FBA
+from reframed.core.transformation import disconnected_metabolites
+from reframed.solvers import solver_instance
+from reframed.solvers.solver import VarType
+from reframed.solvers.solution import Status
+from reframed import FBA
 
 
 def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inplace=True, bigM=1e3, abstol=1e-9,
@@ -36,7 +37,7 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
 
     for r_id in new_reactions:
         if r_id.startswith('R_EX'):
-            model.set_lower_bound(r_id, 0)
+            model.set_flux_bounds(r_id, lb=0)
 
     if not solver:
         solver = solver_instance(model)
@@ -48,16 +49,16 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
         solver._gapfill_flag = True
 
         for r_id in new_reactions:
-            solver.add_variable('y_' + r_id, 0, 1, vartype=VarType.BINARY, update_problem=False)
+            solver.add_variable('y_' + r_id, 0, 1, vartype=VarType.BINARY, update=False)
 
         solver.update()
 
         for r_id in new_reactions:
-            solver.add_constraint('lb_' + r_id, {r_id: 1, 'y_'+r_id: bigM}, '>', 0, update_problem=False)
-            solver.add_constraint('ub_' + r_id, {r_id: 1, 'y_'+r_id: -bigM}, '<', 0, update_problem=False)
+            solver.add_constraint('lb_' + r_id, {r_id: 1, 'y_'+r_id: bigM}, '>', 0, update=False)
+            solver.add_constraint('ub_' + r_id, {r_id: 1, 'y_'+r_id: -bigM}, '<', 0, update=False)
 
         biomass = model.biomass_reaction
-        solver.add_constraint('min_growth', {biomass: 1}, '>', min_growth, update_problem=False)
+        solver.add_constraint('min_growth', {biomass: 1}, '>', min_growth, update=False)
 
         solver.update()
 
@@ -81,7 +82,7 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
 
 
 def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10, scores=None, inplace=True, bigM=1e3,
-                 exchange_format=None, spent_model=None):
+                 spent_model=None):
     """ Gap Fill a metabolic model for multiple environmental conditions
 
     Args:
@@ -94,7 +95,6 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
         scores (dict): reaction scores (optional, see *gapFill* for details)
         inplace (bool): modify given model in place (default: True)
         bigM (float): maximal reaction flux (default: 1000)
-        exchange_format (str): format string to convert compounds to exchange reactions (default: "'R_EX_{}_e'")
         spent_model (CBModel): additional species to generate spent medium compounds
 
     Returns:
@@ -113,7 +113,7 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
 
     for r_id in new_reactions:
         if r_id.startswith('R_EX'):
-            universe.set_lower_bound(r_id, 0)
+            universe.set_flux_bounds(r_id, lb=0)
 
     merged_model = merge_models(model, universe, inplace=False)
     solver = solver_instance(merged_model)
@@ -125,12 +125,10 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
         if medium_name in media_db:
             compounds = set(media_db[medium_name])
 
-            constraints = medium_to_constraints(merged_model, compounds, max_uptake=max_uptake, inplace=False,
-                                                exchange_format=exchange_format, verbose=False)
+            constraints = medium_to_constraints(merged_model, compounds, max_uptake=max_uptake, inplace=False, verbose=False)
 
             if spent_model:
-                constraints0 = medium_to_constraints(spent_model, compounds, max_uptake=max_uptake, inplace=False,
-                                                     exchange_format=exchange_format, verbose=False)
+                constraints0 = medium_to_constraints(spent_model, compounds, max_uptake=max_uptake, inplace=False, verbose=False)
                 for r_id in spent_model.get_exchange_reactions():
                     if r_id in constraints:
                         sol = FBA(spent_model, objective={r_id: 1}, constraints=constraints0, solver=solver0, get_values=False)

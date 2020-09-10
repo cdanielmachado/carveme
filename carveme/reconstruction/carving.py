@@ -2,11 +2,12 @@ import numpy as np
 import warnings
 import pandas as pd
 
-from framed.cobra.ensemble import EnsembleModel, save_ensemble
-from framed.io.sbml import parse_gpr_rule, save_cbmodel
-from framed.model.transformation import disconnected_metabolites
-from framed.solvers import solver_instance
-from framed.solvers.solver import VarType, Status
+from reframed.cobra.ensemble import EnsembleModel, save_ensemble
+from reframed.io.sbml import parse_gpr_rule, save_cbmodel
+from reframed.core.transformation import disconnected_metabolites
+from reframed.solvers import solver_instance
+from reframed.solvers.solver import VarType
+from reframed.solvers.solution import Status
 
 
 def inactive_reactions(model, solution):
@@ -96,8 +97,8 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
         solver._carveme_flag = True
 
         biomass = model.biomass_reaction
-        solver.add_constraint('min_growth', {biomass: 1}, '>', min_growth, update_problem=False)
-        solver.add_constraint('min_atpm', {'R_ATPM': 1}, '>', min_atpm, update_problem=False)
+        solver.add_constraint('min_growth', {biomass: 1}, '>', min_growth, update=False)
+        solver.add_constraint('min_atpm', {'R_ATPM': 1}, '>', min_atpm, update=False)
 
         solver.neg_vars = []
         solver.pos_vars = []
@@ -105,37 +106,37 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
         for r_id in reactions:
             if model.reactions[r_id].lb is None or model.reactions[r_id].lb < 0:
                 y_r = 'yr_' + r_id
-                solver.add_variable(y_r, 0, 1, vartype=VarType.BINARY, update_problem=False)
+                solver.add_variable(y_r, 0, 1, vartype=VarType.BINARY, update=False)
                 solver.neg_vars.append(y_r)
             if model.reactions[r_id].ub is None or model.reactions[r_id].ub > 0:
                 y_f = 'yf_' + r_id
-                solver.add_variable(y_f, 0, 1, vartype=VarType.BINARY, update_problem=False)
+                solver.add_variable(y_f, 0, 1, vartype=VarType.BINARY, update=False)
                 solver.pos_vars.append(y_f)
 
         if uptake_score != 0:
             for r_id in model.reactions:
                 if r_id.startswith('R_EX'):
-                    solver.add_variable('y_' + r_id, 0, 1, vartype=VarType.BINARY, update_problem=False)
+                    solver.add_variable('y_' + r_id, 0, 1, vartype=VarType.BINARY, update=False)
 
         solver.update()
 
         for r_id in reactions:
             y_r, y_f = 'yr_' + r_id, 'yf_' + r_id
             if y_r in solver.neg_vars and y_f in solver.pos_vars:
-                solver.add_constraint('lb_' + r_id, {r_id: 1, y_f: -eps, y_r: bigM}, '>', 0, update_problem=False)
-                solver.add_constraint('ub_' + r_id, {r_id: 1, y_f: -bigM, y_r: eps}, '<', 0, update_problem=False)
-                solver.add_constraint('rev_' + r_id, {y_f: 1, y_r: 1}, '<', 1, update_problem=False)
+                solver.add_constraint('lb_' + r_id, {r_id: 1, y_f: -eps, y_r: bigM}, '>', 0, update=False)
+                solver.add_constraint('ub_' + r_id, {r_id: 1, y_f: -bigM, y_r: eps}, '<', 0, update=False)
+                solver.add_constraint('rev_' + r_id, {y_f: 1, y_r: 1}, '<', 1, update=False)
             elif y_f in solver.pos_vars:
-                solver.add_constraint('lb_' + r_id, {r_id: 1, y_f: -eps}, '>', 0, update_problem=False)
-                solver.add_constraint('ub_' + r_id, {r_id: 1, y_f: -bigM}, '<', 0, update_problem=False)
+                solver.add_constraint('lb_' + r_id, {r_id: 1, y_f: -eps}, '>', 0, update=False)
+                solver.add_constraint('ub_' + r_id, {r_id: 1, y_f: -bigM}, '<', 0, update=False)
             elif y_r in solver.neg_vars:
-                solver.add_constraint('lb_' + r_id, {r_id: 1, y_r: bigM}, '>', 0, update_problem=False)
-                solver.add_constraint('ub_' + r_id, {r_id: 1, y_r: eps}, '<', 0, update_problem=False)
+                solver.add_constraint('lb_' + r_id, {r_id: 1, y_r: bigM}, '>', 0, update=False)
+                solver.add_constraint('ub_' + r_id, {r_id: 1, y_r: eps}, '<', 0, update=False)
 
         if uptake_score != 0:
             for r_id in model.reactions:
                 if r_id.startswith('R_EX'):
-                    solver.add_constraint('lb_' + r_id, {r_id: 1, 'y_' + r_id: bigM}, '>', 0, update_problem=False)
+                    solver.add_constraint('lb_' + r_id, {r_id: 1, 'y_' + r_id: bigM}, '>', 0, update=False)
 
         solver.update()
 
