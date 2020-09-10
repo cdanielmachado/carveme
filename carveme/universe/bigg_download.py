@@ -1,8 +1,3 @@
-from __future__ import division
-from __future__ import print_function
-from builtins import str
-from builtins import map
-from builtins import range
 import requests
 import pandas as pd
 import sys

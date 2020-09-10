@@ -1,6 +1,3 @@
-from __future__ import print_function
-from builtins import zip
-from builtins import range
 import numpy as np
 import warnings
 import pandas as pd

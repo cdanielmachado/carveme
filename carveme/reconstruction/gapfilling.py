@@ -1,5 +1,3 @@
-from __future__ import division
-from __future__ import print_function
 from carveme.reconstruction.utils import medium_to_constraints
 from framed.model.transformation import disconnected_metabolites
 from framed.solvers import solver_instance

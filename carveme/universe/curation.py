@@ -1,4 +1,3 @@
-from __future__ import print_function
 import numpy as np
 from framed.model.transformation import disconnected_metabolites
 from carveme.reconstruction.utils import create_exchange_reactions, add_biomass_equation, create_sink_reactions, \

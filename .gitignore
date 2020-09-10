@@ -8,3 +8,5 @@ docs/_build/*
 Dockerfile
 .idea/encodings.xml
 *.DS_Store
+carveme/data/input/bigg_proteins.dmnd
+carveme/data/input/bigg_proteins.dmnd
