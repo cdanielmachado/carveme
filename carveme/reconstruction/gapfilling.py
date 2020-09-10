@@ -4,6 +4,7 @@ from carveme.reconstruction.utils import medium_to_constraints
 from framed.model.transformation import disconnected_metabolites
 from framed.solvers import solver_instance
 from framed.solvers.solver import VarType, Status
+from framed import FBA
 
 
 def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inplace=True, bigM=1e3, abstol=1e-9,
@@ -71,7 +72,6 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
         inactive = [r_id for r_id in new_reactions if abs(solution.values[r_id]) < abstol]
 
     else:
-#        inactive = new_reactions
         raise RuntimeError('Failed to gapfill model for medium {}'.format(tag))
 
     model.remove_reactions(inactive)
@@ -83,7 +83,7 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
 
 
 def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10, scores=None, inplace=True, bigM=1e3,
-                 exchange_format=None):
+                 exchange_format=None, spent_model=None):
     """ Gap Fill a metabolic model for multiple environmental conditions
 
     Args:
@@ -96,6 +96,8 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
         scores (dict): reaction scores (optional, see *gapFill* for details)
         inplace (bool): modify given model in place (default: True)
         bigM (float): maximal reaction flux (default: 1000)
+        exchange_format (str): format string to convert compounds to exchange reactions (default: "'R_EX_{}_e'")
+        spent_model (CBModel): additional species to generate spent medium compounds
 
     Returns:
         CBModel: gap filled model (if inplace=False)
@@ -103,6 +105,8 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
     Notes:
         *media_db* is a dict from medium name to the list of respective compounds.
     """
+
+    ABSTOL = 1e-6
 
     if not inplace:
         model = model.copy()
@@ -116,11 +120,25 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
     merged_model = merge_models(model, universe, inplace=False)
     solver = solver_instance(merged_model)
 
+    if spent_model:
+        solver0 = solver_instance(spent_model)
+
     for medium_name in media:
         if medium_name in media_db:
-            compounds = media_db[medium_name]
+            compounds = set(media_db[medium_name])
+
             constraints = medium_to_constraints(merged_model, compounds, max_uptake=max_uptake, inplace=False,
                                                 exchange_format=exchange_format, verbose=False)
+
+            if spent_model:
+                constraints0 = medium_to_constraints(spent_model, compounds, max_uptake=max_uptake, inplace=False,
+                                                     exchange_format=exchange_format, verbose=False)
+                for r_id in spent_model.get_exchange_reactions():
+                    if r_id in constraints:
+                        sol = FBA(spent_model, objective={r_id: 1}, constraints=constraints0, solver=solver0, get_values=False)
+                        if sol.fobj > ABSTOL:
+                            constraints[r_id] = (-max_uptake, None)
+                            print("added", r_id[5:-2], "to", medium_name)
 
             gapFill(model, universe, constraints=constraints, min_growth=min_growth,
                     scores=scores, inplace=True, bigM=bigM, solver=solver, tag=medium_name)

@@ -10,7 +10,7 @@ import os
 
 
 def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outputfile=None, flavor=None,
-         exchange_format=None, verbose=False):
+         exchange_format=None, spent=None, verbose=False):
 
     if verbose:
         print('Loading model...')
@@ -19,6 +19,17 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
         model = load_cbmodel(inputfile, flavor=flavor)
     except IOError:
         raise IOError('Failed to load model:' + inputfile)
+
+    if spent:
+        if verbose:
+            print('Loading model for spent medium species...')
+
+        try:
+            spent_model = load_cbmodel(spent, flavor=flavor)
+        except IOError:
+            raise IOError('Failed to load model:' + spent)
+    else:
+        spent_model = None
 
     if verbose:
         print('Loading reaction universe...')
@@ -54,7 +65,7 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
 
     max_uptake = config.getint('gapfill', 'max_uptake')
     multiGapFill(model, universe_model, media, media_db, max_uptake=max_uptake, inplace=True,
-                 exchange_format=exchange_format)
+                 exchange_format=exchange_format, spent_model=spent_model)
 
     if verbose:
         m2, n2 = len(model.metabolites), len(model.reactions)
@@ -83,6 +94,9 @@ if __name__ == '__main__':
 
     parser.add_argument('-m', '--media', dest='media', required=True, help="List of media (comma-separated)")
     parser.add_argument('--mediadb', help="Media database file")
+
+    parser.add_argument('--spent-medium', metavar='SPECIES', dest='spent',
+                        help="Add spent medium compounds generated from given species (SBML model).")
 
     univ = parser.add_mutually_exclusive_group()
     univ.add_argument('-u', '--universe', dest='universe', help="Pre-built universe model (default: bacteria)")
@@ -115,4 +129,5 @@ if __name__ == '__main__':
          outputfile=args.output,
          flavor=flavor,
          exchange_format=args.exchange_format,
+         spent=args.spent,
          verbose=args.verbose)
