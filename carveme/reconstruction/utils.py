@@ -1,12 +1,10 @@
-from builtins import str
-from builtins import zip
 from collections import OrderedDict
 from warnings import warn
 
 import pandas as pd
-from framed import Environment
-from framed import CBReaction
-from framed.experimental.elements import molecular_weight
+from reframed import Environment
+from reframed import CBReaction
+from reframed.core.elements import molecular_weight
 import numpy as np
 
 
@@ -68,12 +66,9 @@ def load_media_db(filename, sep='\t', medium_col='medium', compound_col='compoun
     return media_db[compound_col].to_dict()
 
 
-def medium_to_constraints(model, compounds, max_uptake=10, inplace=False, verbose=False, exchange_format=None):
+def medium_to_constraints(model, compounds, max_uptake=10, inplace=False, verbose=False):
 
-    if not exchange_format:
-        exchange_format = "'R_EX_{}_e'"
-
-    env = Environment.from_compounds(compounds, max_uptake=max_uptake, exchange_format=exchange_format)
+    env = Environment.from_compounds(compounds, max_uptake=max_uptake)
     return env.apply(model, inplace=inplace, warning=verbose)
 
 

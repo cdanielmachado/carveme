@@ -1,15 +1,10 @@
-from __future__ import division
-from __future__ import print_function
-from builtins import str
-from builtins import map
-from builtins import range
 import requests
 import pandas as pd
 import sys
 
-from framed import CBModel, CBReaction, Metabolite, Compartment
-from framed import save_cbmodel
-from framed.io.sbml import parse_gpr_rule
+from reframed import CBModel, CBReaction, Metabolite, Compartment
+from reframed import save_cbmodel
+from reframed.io.sbml import parse_gpr_rule
 
 
 base_url = 'http://bigg.ucsd.edu/api/v2/'
