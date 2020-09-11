@@ -9,17 +9,9 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    "framed>=0.5",
+    "reframed>=1.1",
     "pandas>=0.20.0",
     "requests>=2.18"
-]
-
-script_list = [
-    "scripts/carveme_init",
-    "scripts/build_universe",
-    "scripts/carve",
-    "scripts/gapfill",
-    "scripts/merge_community"
 ]
 
 included_files = {
@@ -38,13 +30,21 @@ included_files = {
 
 setup(
     name='carveme',
-    version='1.2.2',
+    version='1.3.0',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
     author="Daniel Machado, Sergej Andrejev",
     author_email='cdanielmachado@gmail.com',
     url='https://github.com/cdanielmachado/carveme',
-    scripts=script_list,
+    entry_points={
+        'console_scripts': [
+            'build_universe=carveme.cli.build_universe:main',
+            'carve=carveme.cli.carve:main',
+            'carveme_init=carveme.cli.carveme_init:main',
+            'gapfill=carveme.cli.gapfill:main',
+            'merge_community=carveme.cli.merge_community:main',
+        ],
+    },
 #    package_dir={'':'src'},
     packages=find_packages(),
     include_package_data=True,
@@ -58,7 +58,8 @@ setup(
         'Environment :: Console', 
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'License :: OSI Approved :: Apache Software License',
     ],
     setup_requires=['setuptools_scm']
