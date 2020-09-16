@@ -1,0 +1,66 @@
+bigg_id	compound	growth	seed
+4abut	g-Amino-N-Butyric acid	++	cpd00281
+5aptn	d-Amino-N-Valeric acid	--	cpd00339
+5oxpro	L-Pyroglutamic acid	++	cpd01293
+6ax	e-Amino-N-Caproic acid	--	cpd01588
+acgal	N-Acetyl-D-Galactosamine	--	cpd00832
+acgam	N-Acetyl-D-Glucosamine	--	cpd00122
+acglu	N-Acetyl-L-Glutamic acid	--	cpd00477
+acmana	N-Acetyl-D-Mannosamine	--	cpd00492
+ade	Adenine	++	cpd00128
+adn	Adenosine	--	cpd00182
+agm	Agmatine	--	cpd00152
+ala__D	D-Alanine	++	cpd00117
+ala__L	L-Alanine	++	cpd00035
+alltn	Allantoin	--	cpd01092
+arg__L	L-Arginine	--	cpd00051
+asn__L	L-Asparagine	++	cpd00132
+asp__D	D-Aspartic acid	++	cpd00320
+asp__L	L-Aspartic acid	++	cpd00041
+citr__L	L-Citrulline	++	cpd00274
+csn	Cytosine	--	cpd00307
+cys__L	L-Cysteine	++	cpd00084
+cytd	Cytidine	--	cpd00367
+etha	Ethanolamine	--	cpd00162
+frmd	Formamide	--	cpd00378
+gam	D-Glucosamine	--	cpd00276
+gln__L	L-Glutamine	++	cpd00053
+glu__D	D-Glutamic acid	--	cpd00186
+glu__L	L-Glutamic acid	++	cpd00023
+gly	Glycine	++	cpd00033
+gsn	Guanosine	--	cpd00311
+gua	Guanine	--	cpd00207
+his__L	L-Histidine	++	cpd00119
+hista	Histamine	--	cpd00312
+hom__L	L-Homoserine	--	cpd00227
+ile__L	L-Isoleucine	--	cpd00322
+ins	Inosine	--	cpd00246
+leu__L	L-Leucine	--	cpd00107
+lys__D	D-Lysine	--	cpd00549
+lys__L	L-Lysine	--	cpd00039
+met__L	L-Methionine	--	cpd00060
+mma	Methylamine	--	cpd10226
+nh4	Ammonia	++	cpd00013
+no2	Nitrite	++	cpd00075
+no3	Nitrate	++	cpd00209
+orn	L-Ornithine	--	cpd00064
+peamn	b-Phenylethylamine	--	cpd03161
+phe__L	L-Phenylalanine	--	cpd00066
+pro__L	L-Proline	--	cpd00129
+ptrc	Putrescine	--	cpd00118
+ser__D	D-Serine	--	cpd00550
+ser__L	L-Serine	++	cpd00054
+thr__L	L-Threonine	++	cpd00161
+thym	Thymine	--	cpd00151
+thymd	Thymidine	--	cpd00184
+trp__L	L-Tryptophan	++	cpd00065
+tym	Tyramine	--	cpd00374
+tyr__L	L-Tyrosine	++	cpd00069
+ura	Uracil	--	cpd00092
+urate	Uric acid	--	cpd00300
+urea	Urea	++	cpd00073
+uri	Uridine	--	cpd00249
+val__D	D-Valine	--	cpd03840
+val__L	L-Valine	--	cpd00156
+xan	Xanthine	++	cpd00309
+xtsn	Xanthosine	--	cpd01217

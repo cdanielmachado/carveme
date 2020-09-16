@@ -1,0 +1,70 @@
+bigg_id	compound	growth	seed
+4hbz	4-Hydroxybenzoic Acid	--	cpd00136
+ac	Potassium acetate	++	cpd09238
+acgam	N-Acetyl-D-Glucosamine	++	cpd00122
+adn	Adenosine	++	cpd00182
+ala__D	D-Alanine	--	cpd00035
+ala__L	L-Alanine	--	cpd00035
+arab__D	D-Arabinose	--	cpd00185
+arab__L	L-Arabinose	--	cpd00224
+arg__L	L-Arginine	--	cpd00051
+asn__L	L-Asparagine	--	cpd00132
+asp__L	L-Aspartic Acid	--	cpd00041
+but	Sodium butyrate	--	cpd30649
+cellb	D-Cellobiose	--	cpd03845
+cit	Citric Acid	--	cpd00137
+citr__L	L-Citrulline	--	cpd00274
+crn	Carnitine Hydrochloride	--	cpd00266
+csn	Cytosine	--	cpd00307
+cytd	Cytidine	++	cpd00367
+drib	2-Deoxy-D-Ribose	--	cpd01242
+etoh	Ethanol	--	cpd00363
+fru	D-Fructose	--	cpd00082
+fuc__L	L-Fucose	--	cpd00751
+gal	D-Galactose	--	cpd00108
+glc__D	D-Glucose	--	cpd00027
+glcn	D-Gluconic Acid sodium salt	--	cpd00222
+glcur	D-Glucuronic Acid	--	cpd00164
+gln__L	L-Glutamine	++	cpd00053
+gly	Glycine	--	cpd00033
+glyc	Glycerol	--	cpd00100
+glyclt	Glycolic Acid	--	cpd00139
+his__L	L-Histidine	--	cpd00119
+ile__L	L-Isoleucine	++	cpd00322
+inost	m-Inositol	--	cpd00121
+ins	Inosine	++	cpd00246
+itacon	Itaconic Acid	--	cpd00380
+lac__L	Sodium D,L-Lactate	++	cpd00159
+lac__L	Sodium L-Lactate	++	cpd00159
+lcts	Beta-Lactose	--	cpd00208
+leu__L	L-Leucine	--	cpd00107
+lys__L	L-Lysine	--	cpd00039
+mal__D	D,L-Malic Acid	--	cpd00386
+mal__L	L-Malic acid disodium salt monohydrate	--	cpd00130
+malt	D-Maltose monohydrate	--	cpd00179
+man	D-Mannose	--	cpd00138
+met__L	L-Methionine	--	cpd00060
+mnl	D-Mannitol	--	cpd00314
+octa	Sodium octanoate	--	cpd30664
+phe__L	L-Phenylalanine	--	cpd00066
+ppa	Sodium propionate	++	cpd00141
+pro__L	L-Proline	--	cpd00129
+ptrc	Putrescine Dihydrochloride	--	cpd00118
+pyr	Sodium pyruvate	++	cpd00020
+raffin	D-Raffinose pentahydrate	--	cpd00382
+rib__D	D-Ribose	--	cpd00105
+salcn	D-Salicin	--	cpd01030
+sbt__D	D-Sorbitol	--	cpd00588
+ser__D	D-Serine	--	cpd00550
+ser__L	L-Serine	--	cpd00054
+srb__L	L-Sorbose	--	cpd00212
+sucr	Sucrose	--	cpd00076
+tag__D	D-Tagatose	--	cpd00589
+thr__L	L-Threonine	++	cpd00161
+thym	Thymine	--	cpd00151
+thymd	Thymidine	--	cpd00184
+tre	D-Trehalose dihydrate	--	cpd00794
+trp__L	L-Tryptophan	--	cpd00065
+uri	Uridine	++	cpd00249
+xyl__D	D-Xylose	--	cpd00154
+xylt	Xylitol	--	cpd00306

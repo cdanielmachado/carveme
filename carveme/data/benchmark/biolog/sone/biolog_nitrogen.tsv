@@ -1,0 +1,33 @@
+bigg_id	compound	growth	seed
+nh4	Ammonium chloride	++	cpd19118
+gam	D-Glucosamine Hydrochloride	--	cpd05263
+no2	Sodium nitrite	--	cpd30687
+thym	Thymine	--	cpd00151
+acgam	N-Acetyl-D-Glucosamine	++	cpd00122
+adn	Adenosine	--	cpd00182
+ala__D	D-Alanine	--	cpd00035
+ala__L	L-Alanine	++	cpd00035
+arg__L	L-Arginine	++	cpd00051
+asn__L	L-Asparagine	++	cpd00132
+citr__L	L-Citrulline	--	cpd00274
+crn	Carnitine Hydrochloride	--	cpd00266
+csn	Cytosine	--	cpd00307
+cytd	Cytidine	--	cpd00367
+gln__L	L-Glutamine	++	cpd00053
+gly	Glycine	++	cpd00033
+his__L	L-Histidine	++	cpd00119
+ile__L	L-Isoleucine	++	cpd00322
+ins	Inosine	--	cpd00246
+leu__L	L-Leucine	++	cpd00107
+lys__L	L-Lysine	--	cpd00039
+met__L	L-Methionine	++	cpd00060
+phe__L	L-Phenylalanine	++	cpd00066
+pro__L	L-Proline	--	cpd00129
+ptrc	Putrescine Dihydrochloride	++	cpd00118
+ser__D	D-Serine	--	cpd00054
+ser__L	L-Serine	++	cpd00054
+thr__L	L-Threonine	++	cpd00161
+thymd	Thymidine	--	cpd00184
+trp__L	L-Tryptophan	--	cpd00065
+urea	Urea	--	cpd00073
+uri	Uridine	--	cpd00249

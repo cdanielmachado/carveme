@@ -1,0 +1,76 @@
+bigg_id	compound	growth	seed
+2obut	α-Keto Butyric Acid	--	cpd00094
+4abut	4-aminobutyrate	++	cpd00281
+4hphac	p-Hydroxy Phenylacetic Acid	++	cpd00489
+abt__D	D-Arabitol	--	cpd01307
+ac	Acetate	++	cpd00029
+acgala	N-Acetyl__D-Galactosamine	--	cpd27607
+acgam	N-Acetyl__D-Glucosamine	++	cpd00122
+acon_C	Cis-Aconitic Acid	++	cpd00331
+akg	oxoglutarate	++	cpd00024
+ala__D	D-alanine	++	cpd00117
+ala__L	L-alanine	++	cpd00035
+arab__L	L-Arabinose	--	cpd19109
+asn__L	L-asparagine	++	cpd00132
+asp__L	L-aspartate	++	cpd00041
+btd_RR	2,3-Butanediol	--	
+cellb	D-Cellobiose	--	cpd03845
+cit	Citrate	++	cpd00137
+crn	D,L-Carnitine	++	cpd00266
+dxtrn	Dextrin	--	cpd11594
+etha	2-Aminoethanol	++	cpd00162
+for	Formic Acid	++	cpd00047
+fru	D-fructose	++	cpd00082
+fuc__L	L-Fucose	--	cpd00751
+g1p	α__D-Glucose-1-Phosphate	--	cpd00089
+g6p	D-Glucose-6-Phosphate	--	cpd00079
+gal	D-Galactose	--	cpd00108
+galctn__D	D-Galactonic Acid Lactone	--	cpd00653
+galur	D-Galacturonic Acid	--	cpd00280
+gam	D-Glucosaminic Acid	--	cpd00276
+glc__D	D-Glucose	++	cpd00027
+glcn__D	Gluconate	++	cpd00222
+glcr	D-Saccharic Acid	--	cpd00609
+glcur	D-Glucuronic Acid	--	cpd00164
+glu__L	L-Glutamic Acid	++	cpd00023
+gly_asp__L	Glycyl__L-AsparticAcid	--	cpd11589
+gly_glu__L	Glycyl__L-GlutamicAcid	--	cpd11592
+glyc	Glycerol	++	cpd00100
+glyc3p	D,L-α-Glycerol Phosphate	--	cpd00080
+glycogen	Glycogen	--	cpd00155
+his__L	L-histidine	++	cpd00119
+inost	m-Inositol	--	cpd00121
+ins	Inosine	++	cpd00246
+itacon	Itaconic Acid	++	cpd00380
+lac__D	D,L__Lactate	++	cpd00221
+lac__L	D,L__Lactate	++	cpd00159
+lcts	D__Lactose	--	cpd00208
+leu__L	L__Leucine	-	cpd00107
+maln	malonate	++	cpd00308
+malt	Maltose	--	cpd00179
+man	D-mannose	--	cpd00138
+mbdg	β-Methyl__D-Glucoside	--	cpd15585
+melib	D-Melibiose	--	cpd03198
+mnl	D-mannitol	++	cpd00314
+orn__L	L-ornithine	++	cpd00064
+peamn	Phenyethyl-amine	--	cpd03161
+phe__L	L-phenylalanine	--	cpd00066
+ppa	Propionic Acid	++	cpd00141
+pro__L	L-proline	++	cpd00129
+ptrc	putrescine	++	cpd00118
+quin	Quinic Acid	++	cpd00248
+raffin	D-Raffinose	--	cpd00382
+rbt	Adonitol	--	cpd00366
+rmn	L-Rhamnose	--	cpd00396
+sbt__D	D-Sorbitol	--	cpd00588
+sebacid	Sebacic Acid	--	cpd05192
+ser__D	D-Serine	--	cpd00550
+ser__L	L-serine	++	cpd00054
+succ	succinate	++	cpd00036
+sucr	Sucrose	--	cpd00076
+thr__L	L-Threonine	--	cpd00161
+thymd	Thymidine	--	cpd00184
+tre	trehalose	--	cpd00794
+urcan	Urocanic Acid	++	cpd00581
+uri	Uridine	--	cpd00249
+xylt	Xylitol	--	cpd00306

@@ -1,0 +1,26 @@
+bigg_id	compound	growth	seed
+2pg	D-2-Phospho-Glyceric Acid	+	cpd00482
+2pglyc	Phospho-Glycolic Acid	+	cpd00727
+3amp	Adenosine- 3’-Monophosphate	++	cpd00988
+3cmp	Cytidine- 3’- Monophosphate	+	cpd03454
+3gmp	Guanosine- 3’-Monophosphate	+	cpd03701
+3pg	D-3-Phospho-Glyceric Acid	+	cpd00169
+3ump	Uridine- 3’- Monophosphate	+	cpd00989
+6pgc	6-Phospho-Gluconic Acid	++	cpd00284
+amp	Adenosine- 5’-Monophosphate	++	cpd00018
+argp	Phospho-L-Arginine	+	cpd03535
+cmp	Cytidine- 5’- Monophosphate	+	cpd00046
+dtmp	Thymidine- 5’-Monophosphate	+	cpd00298
+g1p	D-Glucose-1-Phosphate	+	cpd00089
+g6p	D-Glucose-6-Phosphate	+	cpd00079
+gam6p	D-Glucosamine-6-Phosphate	+	cpd00288
+glyc3p	D,L-a-Glycerol Phosphate	+	cpd00080
+gmp	Guanosine- 5’-Monophosphate	+	cpd00126
+man1p	D-Mannose-1-Phosphate	++	cpd00485
+man6p	D-Mannose-6-Phosphate	+	cpd00235
+pep	Phosphoenol Pyruvate	+	cpd00061
+ppi	Pyrophosphate	+	cpd00012
+pser__D	O-Phospho-D-Serine	+	cpd01665
+pser__L	O-Phospho-L-Serine	+	cpd00738
+tmp	Trimetaphosphate	+	cpd01622
+ump	Uridine- 5’- Monophosphate	+	cpd00091

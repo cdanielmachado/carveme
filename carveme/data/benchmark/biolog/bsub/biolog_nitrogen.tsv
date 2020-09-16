@@ -1,0 +1,32 @@
+bigg_id	compound	growth	seed
+4abut	g-Amino-N-Butyric Acid	+	cpd00281
+acgam	N-Acetyl-D-Glucosamine	+	cpd00122
+ade	Adenine	-	cpd00128
+ala__D	D-Alanine	++	cpd00117
+ala__L	L-Alanine	+	cpd00035
+arg__L	L-Arginine	++	cpd00051
+asn__L	L-Asparagine	++	cpd00132
+asp__L	L-Aspartic Acid	++	cpd00041
+citr__L	L-Citrulline	+	cpd00274
+cys__L	L-Cysteine	++	cpd00084
+cytd	Cytidine	++	cpd00367
+etha	Ethanolamine	++	cpd00162
+gam	D-Glucosamine	++	cpd00276
+gln__L	L-Glutamine	++	cpd00053
+glu__D	D-Glutamic Acid	+	cpd00186
+glu__L	L-Glutamic Acid	+	cpd00023
+gly	Glycine	+	cpd00033
+ins	Inosine	-	cpd00246
+met__L	L-Methionine	+	cpd00060
+nh4	Ammonia	++	cpd00013
+orn__L	L-Ornithine	+	cpd00064
+pro__L	L-Proline	++	cpd00129
+ser__L	L-Serine	++	cpd00054
+thr__L	L-Threonine	+	cpd00161
+thym	Thymine	-	cpd00151
+ura	Uracil	-	cpd00092
+urate	Uric Acid	+	cpd00300
+urea	Urea	+	cpd00073
+uri	Uridine	-	cpd00249
+val__L	L-Valine	+	cpd00156
+xan	Xanthine	++	cpd00309
