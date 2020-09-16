@@ -1,0 +1,85 @@
+bigg_id	compound	growth	seed
+4abut	g-Amino-Butyric Acid	-	cpd00281
+abt__L	L-Arabitol	+	cpd00417
+ac	Acetic Acid	++	cpd00029
+acac	Acetoacetic Acid	++	cpd00142
+acgam	N-Acetyl-D-Glucosamine	++	cpd00122
+acmana	N-Acetyl-b-D-Mannosamine	+	cpd00492
+acnam	N-Acetyl-Neuraminic Acid	++	cpd00232
+adn	Adenosine	++	cpd00182
+akg	a-Keto-Glutaric Acid	+	cpd00024
+ala__D	D-Alanine	++	cpd00117
+ala__L	L-Alanine	+	cpd00035
+arab__D	D-Arabinose	++	cpd00185
+arab__L	L-Arabinose	+	cpd19109
+arbt	Arbutin	++	cpd03696
+asn__L	L-Asparagine	++	cpd00132
+asp__L	L-Aspartic Acid	++	cpd00041
+btd_RR	2,3-Butanediol	-	
+cellb	D-Cellobiose	++	cpd03845
+cit	Citric Acid	+	cpd00137
+crn	D,L-Carnitine	--	cpd00266
+dad_2	2`-Deoxy-Adenosine	++	cpd00438
+dextrin	Dextrin	++	cpd11594
+dha	Dihydroxy-Acetone	+	cpd00157
+drib	2-Deoxy-D-Ribose	++	cpd01242
+f6p	D-Fructose-6-Phosphate	++	cpd19035
+for	Formic Acid	+	cpd00047
+fru	D-Fructose	++	cpd00082
+fum	Fumaric Acid	++	cpd00106
+g1p	D-Glucose-1-Phosphate	++	cpd00089
+g6p	D-Glucose-6-Phosphate	++	cpd00079
+gal	D-Galactose	++	cpd00108
+galctr__D	Mucic Acid	++	cpd00652
+galt	Dulcitol	++	cpd01171
+galur	D-Galacturonic Acid	++	cpd00280
+gam	D-Glucosamine	++	cpd00276
+glc__D	a-D-Glucose	++	cpd00027
+glcn__D	D-Gluconic Acid	++	cpd00222
+glcr	D-Saccharic Acid	++	cpd00609
+glcur	D-Glucuronic Acid	++	cpd00164
+gln__L	L-Glutamine	++	cpd00053
+glu__L	L-Glutamic Acid	++	cpd00023
+glx	Glyoxylic Acid	+	cpd00040
+gly	Glycine	--	cpd00033
+glyc	Glycerol	++	cpd00100
+glyc3p	D,L-a-Glycerol- Phosphate	++	cpd00080
+glyclt	Glycolic Acid	+	cpd00139
+glycogen	Glycogen	++	cpd00155
+ile__L	L-Isoleucine	--	cpd00322
+ins	Inosine	++	cpd00246
+lac__L	L-Lactic Acid	++	cpd00159
+leu__L	L-Leucine	--	cpd00107
+lys__L	L-Lysine	--	cpd00039
+mal__D	D-Malic Acid	++	cpd00386
+mal__L	D,L-Malic Acid	++	cpd00130
+mal__L	L-Malic Acid	++	cpd00130
+malt	Maltose	++	cpd00179
+malttr	Maltotriose	++	cpd01262
+man	D-Mannose	++	cpd00138
+mbdg	b-Methyl-D-Glucoside	++	cpd15585
+melib	D-Melibiose	++	cpd03198
+met__L	L-Methionine	--	cpd00060
+mnl	D-Mannitol	++	cpd00314
+orn__L	L-Ornithine	+	cpd00064
+pala	Palatinose	++	cpd01200
+phe__L	L-Phenylalanine	--	cpd00066
+ppa	Propionic Acid	+	cpd00141
+pro__L	L-Proline	++	cpd00129
+pyr	Pyruvic Acid	+	cpd00020
+raffin	D-Raffinose	++	cpd00382
+rib__D	D-Ribose	++	cpd00105
+rmn	L-Rhamnose	+	cpd00396
+salcn	Salicin	++	cpd01030
+sbt__D	D-Sorbitol	++	cpd00588
+ser__D	D-Serine	++	cpd00550
+ser__L	L-Serine	++	cpd00054
+srb__L	L-Sorbose	+	cpd00212
+succ	Succinic Acid	++	cpd00036
+sucr	Sucrose	++	cpd00076
+thr__L	L-Threonine	++	cpd00161
+thymd	Thymidine	++	cpd00184
+tre	D-Trehalose	++	cpd00794
+uri	Uridine	++	cpd00249
+val__L	L-Valine	--	cpd00156
+xyl__D	D-Xylose	++	cpd00154

@@ -1,0 +1,20 @@
+bigg_id	compound	growth	seed
+3sala	L-Cysteine Sulfinic acid	++	cpd00467
+Lcyst	L-Cysteic acid	--	cpd00395
+cys__D	D-Cysteine	--	cpd00587
+cys__L	L-Cysteine	++	cpd00084
+cysam	Cysteamine	--	cpd01160
+cyst__L	Cystathionine	--	cpd19019
+djenk	L-Djenkolic acid	--	cpd05190
+gthrd	Glutathione	--	cpd00042
+hyptaur	Hypotaurine	--	cpd00406
+isetac	2-Hydroxyethane Sulfonic acid	--	cpd03048
+lanth	Lanthionine	--	cpd11577
+met__D	D-Methionine	++	cpd00637
+met__L	L-Methionine	--	cpd00060
+metsox_S__L	L-Methionine Sulfoxide	++	cpd01914
+mso3	Methane Sulfonic acid	--	cpd08023
+so4	Sulfate	--	cpd00048
+taur	Taurine	--	cpd00210
+tchola	Taurocholic acid	--	cpd03047
+tsul	Thiosulfate	--	cpd00268

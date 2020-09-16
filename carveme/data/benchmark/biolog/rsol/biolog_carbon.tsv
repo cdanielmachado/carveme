@@ -1,0 +1,130 @@
+bigg_id	compound	growth	seed
+12ppd__S	1,2-Propanediol	--	cpd19024
+2a2dglc	D-Glucosaminic acid	--	
+2hb	a-Hydroxybutyric acid	--	cpd03561
+2obut	a-Ketobutyric acid	--	cpd00094
+4abut	g-Amino-N-Butyric acid	++	cpd00281
+4hbz	4-Hydroxybenzoic acid	--	cpd00136
+4hphac	p-Hydroxyphenyl Acetic acid	--	cpd00489
+4hpro_LT	Hydroxy-L-Proline	--	cpd00851
+5aptn	d-Amino Valeric acid	--	cpd00339
+5dglcn	5-Keto-D-Gluconic acid	--	cpd00781
+5oxpro	L-Pyroglutamic acid	--	cpd01293
+abt	L-Arabitol	--	cpd00417
+abt__D	D-Arabitol	--	cpd01307
+ac	Acetic acid	++	cpd00029
+acac	Acetoacetic acid	--	cpd00142
+acgal	N-Acetyl-D-Galactosamine	--	cpd00832
+acgam	N-Acetyl-D-Glucosamine	--	cpd00122
+acglu	N-Acetyl-L-Glutamic acid	--	cpd00477
+acmana	N-Acetyl-D-Mannosamine	--	cpd00492
+acnam	N-Acetyl-Neuraminic acid	--	cpd00232
+ad	Acetamide	--	cpd03734
+adn	Adenosine	--	cpd00182
+akg	a-Ketoglutaric acid	++	cpd00024
+ala__D	D-Alanine	--	cpd00117
+ala__L	L-Alanine	++	cpd00035
+all__D	b-D-Allose	--	cpd01055
+arab__D	D-Arabinose	--	cpd00185
+arab__L	L-Arabinose	--	cpd19109
+arbt	Arbutin	--	cpd03696
+arg__L	L-Arginine	--	cpd00051
+asn__L	L-Asparagine	++	cpd00132
+asp__D	D-Aspartic acid	--	cpd00320
+asp__L	L-Aspartic acid	++	cpd00041
+bhb	b-Hydroxybutyric acid	--	cpd00797
+bromosucc	Bromosuccinic acid	++	cpd23859
+but	Butyric acid	--	cpd00211
+cellb	D-Cellobiose	--	cpd03845
+cit	Citric acid	++	cpd00137
+crn	D,L-Carnitine	--	cpd00266
+dad_2	2`-Deoxyadenosine	--	cpd00438
+dca	Capric acid	--	
+dextrin	Dextrin	--	cpd11594
+dha	Dihydroxyacetone	--	cpd00157
+etha	2-Aminoethanol	--	cpd00162
+f6p	D-Fructose-6-Phosphate	--	cpd19035
+for	Formic acid	--	cpd00047
+fru	D-Fructose	--	cpd00082
+fuc__D	D-Fucose	--	cpd00750
+fuc__L	L-Fucose	--	cpd00751
+fum	Fumaric acid	++	cpd00106
+g1p	D-Glucose-1-Phosphate	--	cpd00089
+g6p	D-Glucose-6-Phosphate	--	cpd00079
+gal	D-Galactose	++	cpd00108
+galct__D	Mucic acid	--	cpd00652
+galt	Dulcitol	++	cpd01171
+galur	D-Galacturonic acid	++	cpd00280
+gam	D-Glucosamine	--	cpd00276
+glc__D	a-D-Glucose	++	cpd00027
+glc__L	L-Glucose	--	cpd24421
+glcn	D-Gluconic acid	++	cpd00222
+glcr	D-Saccharic acid	++	cpd00609
+glcur	D-Glucuronic acid	++	cpd00164
+gln__L	L-Glutamine	++	cpd00053
+glu__L	L-Glutamic acid	++	cpd00023
+glx	Glyoxylic acid	--	cpd00040
+gly	Glycine	--	cpd00033
+glyc	Glycerol	++	cpd00100
+glyclt	Glycolic acid	++	cpd00139
+glycogen	Glycogen	--	cpd00155
+his__L	L-Histidine	--	cpd00119
+hom__L	L-Homoserine	--	cpd00227
+3hoxpac	m-Hydroxyphenyl Acetic acid	--	cpd03320
+hxa	Caproic acid	--	cpd01113
+ile__L	L-Isoleucine	--	cpd00322
+inost	m-Inositol	--	cpd00121
+ins	Inosine	--	cpd00246
+itacon	Itaconic acid	--	cpd00380
+lac__L	L-Lactic acid	++	cpd00159
+lcts	a-D-Lactose	--	cpd00208
+leu__L	L-Leucine	--	cpd00107
+lys__L	L-Lysine	--	cpd00039
+lyx__L	L-Lyxose	--	cpd01067
+mal__D	D-Malic acid	--	cpd00386
+mal__L	L-Malic acid	++	cpd00130
+mal__L	DL-Malic acid	++	cpd00130
+malt	Maltose	--	cpd00179
+malttr	Maltotriose	--	cpd01262
+man	D-Mannose	--	cpd00138
+mannan	Mannan	--	cpd11685
+mbdg	b-Methyl-D-Glucoside	--	cpd15585
+melib	D-Melibiose	--	cpd03198
+met__L	L-Methionine	--	cpd00060
+mnl	D-Mannitol	++	cpd00314
+orn	L-Ornithine	--	cpd00064
+oxa	Oxalic acid	--	cpd00180
+pala	Palatinose	--	cpd01200
+peamn	Phenylethylamine	--	cpd03161
+pectin	Pectin	++	cpd27835
+phe__L	L-Phenylalanine	--	cpd00066
+ppa	Propionic acid	--	cpd00141
+pro__L	L-Proline	--	cpd00129
+ptrc	Putrescine	--	cpd00118
+pyr	Pyruvic acid	++	cpd00020
+quin	Quinic acid	++	cpd00248
+raffin	D-Raffinose	--	cpd00382
+rbt	Adonitol	--	cpd00366
+rib__D	D-Ribose	--	cpd00105
+rmn	L-Rhamnose	--	cpd00396
+salc	2-Hydroxybenzoic acid	--	cpd00599
+salcn	Salicin	--	cpd01030
+sbt__D	D-Sorbitol	++	cpd00588
+ser__D	D-Serine	--	cpd00550
+ser__L	L-Serine	--	cpd00054
+srb__L	L-Sorbose	--	cpd00212
+succ	Succinic acid	++	cpd00036
+sucr	Sucrose	++	cpd00076
+tag__D	D-Tagatose	--	cpd00589
+tartr__M	m-Tartaric acid	--	cpd00432
+tartr__D	D-Tartaric acid	--	cpd19018
+tartr__L	L-Tartaric acid	++	cpd00666
+thr__D	D-Threonine	--	cpd00611
+thr__L	L-Threonine	--	cpd00161
+thymd	Thymidine	--	cpd00184
+tre	D-Trehalose	++	cpd00794
+tym	Tyramine	--	cpd00374
+uri	Uridine	--	cpd00249
+val__L	L-Valine	--	cpd00156
+xyl__D	D-Xylose	--	cpd00154
+xylt	Xylitol	--	cpd00306

@@ -1,0 +1,39 @@
+bigg_id	compound	growth	seed
+23ccmp	Cytidine 2`,3`-Cyclic Monophosphate	--	cpd01571
+23cgmp	Guanosine 2`,3`-Cyclic Monophosphate	--	cpd03702
+23cump	Uridine 2`,3`-Cyclic Monophosphate	--	cpd01572
+2ameph	2-Aminoethyl Phosphonic acid	--	cpd02233
+2pg	D-2-Phospho-Glyceric acid	--	cpd00482
+2pglyc	Phospho-Glycolic acid	--	cpd00727
+35ccmp	Cytidine 3`,5`-Cyclic Monophosphate	--	cpd00696
+35cgmp	Guanosine 3`,5`-Cyclic Monophosphate	--	cpd00697
+3amp	Adenosine 3`-Monophosphate	--	cpd00988
+3gmp	Guanosine 3`-Monophosphate	--	cpd03701
+3pg	D-3-Phospho-Glyceric acid	--	cpd00169
+3ump	Uridine 3`-Monophosphate	--	cpd00989
+amp	Adenosine 5`-Monophosphate	--	cpd00018
+argp	Phospho-L-Arginine	--	cpd03535
+camp	Adenosine 3`,5`-Cyclic Monophosphate	--	cpd00446
+cbp	Carbamyl Phosphate	++	cpd00146
+cholp	Phosphoryl Choline	--	cpd00457
+cmp	Cytidine 5`-Monophosphate	++	cpd00046
+ethamp	O-Phosphoryl-Ethanolamine	--	cpd00285
+g1p	D-Glucose-1-Phosphate	--	cpd00089
+g6p	D-Glucose-6-Phosphate	--	cpd00079
+gam6p	D-Glucosamine-6-Phosphate	--	cpd00288
+glyc2p	b-Glycerol Phosphate	--	cpd01908
+gmp	Guanosine 5`-Monophosphate	--	cpd00126
+man1p	D-Mannose-1-Phosphate	--	cpd00485
+man6p	D-Mannose-6-Phosphate	--	cpd00235
+minohp	Inositol Hexaphosphate	--	cpd00885
+pcreat	Phosphocreatine	--	cpd01550
+pep	Phosphoenol Pyruvate	--	cpd00061
+pi	Phosphate	--	cpd00009
+ppi	Pyrophosphate	--	cpd00012
+pppi	Tripolyphosphate	--	cpd00421
+pser__D	O-Phospho-D-Serine	--	cpd01665
+pser__L	O-Phospho-L-Serine	--	cpd00738
+thrp	O-Phospho-L-Threonine	--	cpd08928
+tmp	Trimetaphosphate	--	cpd01622
+tyrp	O-Phospho-L-Tyrosine	--	cpd03912
+ump	Uridine 5`-Monophosphate	--	cpd00091

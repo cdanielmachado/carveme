@@ -70,12 +70,12 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
     else:
         hard_constraints = None
 
-    if input_type == 'refseq' or input_type == 'genbank':
+    if input_type == 'refseq':
 
         if verbose:
             print('Downloading genome {} from NCBI...'.format(inputfile))
 
-        ncbi_table = load_ncbi_table(project_dir + config.get('ncbi', input_type))
+        ncbi_table = load_ncbi_table(project_dir + config.get('input', 'refseq'))
         inputfile = download_ncbi_genome(inputfile, ncbi_table)
 
         if not inputfile:
@@ -255,7 +255,6 @@ def main():
     input_type_args.add_argument('--egg', action='store_true', help="Build from eggNOG-mapper output file")
     input_type_args.add_argument('--diamond', action='store_true', help=argparse.SUPPRESS)
     input_type_args.add_argument('--refseq', action='store_true', help="Download genome from NCBI RefSeq and build")
-    input_type_args.add_argument('--genbank', action='store_true', help="Download genome from NCBI GenBank and build")
 
     parser.add_argument('--diamond-args', help="Additional arguments for running diamond")
 
@@ -310,8 +309,8 @@ def main():
     if args.mediadb and not args.gapfill:
         parser.error('--mediadb can only be used with --gapfill')
 
-    if args.recursive and (args.refseq or args.genbank):
-        parser.error('-r cannot be combined with --refseq or --genbank')
+    if args.recursive and args.refseq:
+        parser.error('-r cannot be combined with --refseq')
 
     if args.egg:
         input_type = 'eggnog'
@@ -321,8 +320,6 @@ def main():
         input_type = 'diamond'
     elif args.refseq:
         input_type = 'refseq'
-    elif args.genbank:
-        input_type = 'genbank'
     else:
         input_type = 'protein'
 
