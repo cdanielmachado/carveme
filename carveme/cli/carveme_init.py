@@ -10,8 +10,7 @@ def main():
     downloads = [
         'data/input/bigg_proteins.faa',
         'data/input/equilibrator_compounds.tsv.gz',
-        'data/input/refseq_release_92.tsv.gz',
-        'data/input/genbank_release_230.tsv.gz',
+        'data/input/refseq_release_201.tsv.gz',
         'data/generated/bigg_gprs.csv.gz',
         'data/generated/model_specific_data.csv.gz',
         'data/generated/universe_draft.xml.gz',
