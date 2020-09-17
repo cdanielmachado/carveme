@@ -43,6 +43,7 @@ setup(
             'carveme_init=carveme.cli.carveme_init:main',
             'gapfill=carveme.cli.gapfill:main',
             'merge_community=carveme.cli.merge_community:main',
+            'benchmark=carveme.cli.benchmark:main',
         ],
     },
 #    package_dir={'':'src'},
