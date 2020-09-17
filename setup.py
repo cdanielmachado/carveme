@@ -9,7 +9,7 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    "reframed>=1.1",
+    "reframed>=1.2",
     "pandas>=0.20.0",
     "requests>=2.18"
 ]
@@ -23,7 +23,18 @@ included_files = {
         'data/input/media_db.tsv',
         'data/input/metabolomics_park2016.csv',
         'data/input/unbalanced_metabolites.csv',
-        'data/generated/bigg_gibbs.csv'
+        'data/input/bigg_proteins.faa',
+        'data/input/bigg_proteins.dmnd',
+        'data/input/equilibrator_compounds.tsv.gz',
+        'data/input/refseq_release_201.tsv.gz',
+        'data/generated/bigg_gibbs.csv',
+        'data/generated/bigg_gprs.csv.gz',
+        'data/generated/model_specific_data.csv.gz',
+        'data/generated/universe_draft.xml.gz',
+        'data/generated/universe_bacteria.xml.gz',
+        'data/generated/universe_grampos.xml.gz',
+        'data/generated/universe_gramneg.xml.gz',
+        'data/generated/universe_archaea.xml.gz',
     ]
 }
 
@@ -33,20 +44,19 @@ setup(
     version='1.3.0',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
-    author="Daniel Machado, Sergej Andrejev",
+    author="Daniel Machado",
     author_email='cdanielmachado@gmail.com',
     url='https://github.com/cdanielmachado/carveme',
     entry_points={
         'console_scripts': [
             'build_universe=carveme.cli.build_universe:main',
             'carve=carveme.cli.carve:main',
-            'carveme_init=carveme.cli.carveme_init:main',
             'gapfill=carveme.cli.gapfill:main',
             'merge_community=carveme.cli.merge_community:main',
             'benchmark=carveme.cli.benchmark:main',
         ],
     },
-#    package_dir={'':'src'},
+    #   package_dir={'':'src'},
     packages=find_packages(),
     include_package_data=True,
     package_data=included_files,
@@ -64,6 +74,6 @@ setup(
         'License :: OSI Approved :: Apache Software License',
     ],
     setup_requires=['setuptools_scm']
-#    test_suite='tests',
-#    tests_require=test_requirements,
+    #    test_suite='tests',
+    #    tests_require=test_requirements,
 )

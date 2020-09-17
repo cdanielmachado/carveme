@@ -1,11 +1,11 @@
 import numpy as np
-from reframed.model.transformation import disconnected_metabolites
+from reframed.core.transformation import disconnected_metabolites
 from carveme.reconstruction.utils import create_exchange_reactions, add_biomass_equation, create_sink_reactions, \
     add_maintenance_atp
 from reframed import simplify
 from reframed import save_cbmodel
 from carveme.universe.thermodynamics import compute_flux_bounds
-from reframed.experimental.elements import parse_formula
+from reframed.core.elements import parse_formula
 
 
 def elemental_balance(formulas, tol=1e-6):

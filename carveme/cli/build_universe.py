@@ -5,7 +5,8 @@ import argparse
 import os
 import pandas as pd
 
-from carveme.universe.bigg_download import build_bigg_universe_model, download_model_specific_data, create_gpr_table
+from carveme.universe.bigg_download import build_bigg_universe_model, download_model_specific_data, create_gpr_table,\
+    download_gene_sequences
 from carveme.universe.curation import curate_universe
 from carveme.universe.thermodynamics import compute_bigg_gibbs_energy
 from carveme.reconstruction.utils import load_biomass_db
@@ -21,14 +22,17 @@ def maincall(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, a
             universe_draft = outputfile
             model_specific_data = os.path.splitext(outputfile)[0] + '.csv'
             bigg_gprs = os.path.splitext(outputfile)[0] + '_gprs.csv'
+#            fasta_file = os.path.splitext(outputfile)[0] + '.faa'
         else:
             universe_draft = project_dir + config.get('generated', 'universe_draft')
             model_specific_data = project_dir + config.get('generated', 'model_specific_data')
             bigg_gprs = project_dir + config.get('generated', 'bigg_gprs')
+#            fasta_file = project_dir + config.get('input', 'fasta_file')
 
         build_bigg_universe_model(universe_draft)
         data = download_model_specific_data(model_specific_data)
-        create_gpr_table(data, outputfile=bigg_gprs)
+        gprs = create_gpr_table(data, outputfile=bigg_gprs)
+#        download_gene_sequences(gprs, outputfile=fasta_file)
 
     elif mode == 'thermo':
         universe_draft = project_dir + config.get('generated', 'universe_draft')

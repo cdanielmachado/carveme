@@ -16,6 +16,7 @@ organisms = {
     'sone': 'Shewanella oneidensis (MR-1)'
 }
 
+
 genomes = {
     'bsub': 'Bsubtilis_168.faa',
     'ecol': 'Ecoli_K12_MG1655.faa',
