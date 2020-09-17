@@ -16,7 +16,7 @@ models_url =  base_url + 'models/'
 
 def progress(i, n):
     p = int((i+1)*100.0 / n)
-    sys.stdout.write("\r{}%".format(p))
+    sys.stdout.write(f"\r{p}%")
     sys.stdout.flush()
 
 
@@ -75,13 +75,13 @@ def build_reaction(model, bigg_id, ignore_pseudo_reactions=True, only_pseudo_rea
 
     for entry in data['metabolites']:
         comp = str(entry['compartment_bigg_id'])
-        c_id = 'C_{}'.format(comp)
+        c_id = f'C_{comp}'
 
         if c_id not in model.compartments:
             build_compartment(model, comp)
 
         met = entry['bigg_id']
-        m_id = 'M_{}_{}'.format(met, comp)
+        m_id = f'M_{met}_{comp}'
 
         if m_id not in model.metabolites:
             build_metabolite(model, met, comp)
@@ -119,11 +119,11 @@ def build_metabolite(model, bigg_id, compartment):
 
     """
     data = get_request(metabolites_url + bigg_id)
-    m_id = 'M_{}_{}'.format(bigg_id, compartment)
+    m_id = f'M_{bigg_id}_{compartment}'
     c_id = 'C_' + compartment
     name = str(data['name'])
     metabolite = Metabolite(m_id, name, c_id)
-    model.add_metabolite(metabolite, clear_tmp=False)
+    model.add_metabolite(metabolite)
     extract_metabolite_metadata(metabolite, data, compartment)
 
 
@@ -230,7 +230,7 @@ def download_model_specific_data(outputfile=None):
 
     for i, entry in enumerate(data['results']):
         model_id = entry['bigg_id']
-        model = get_request('{}{}/download'.format(models_url, model_id))
+        model = get_request(f'{models_url}{model_id}/download')
 
         for reaction in model['reactions']:
             r_id = reaction['id']
@@ -304,3 +304,17 @@ def create_gpr_table(model_specific_data, reactions=None, outputfile=None):
         df.to_csv(outputfile, index=False)
 
     return df
+
+
+def download_gene_sequences(gprs, outputfile):
+    df = gprs[['gene', 'model']].drop_duplicates()
+    data = {}
+    for _, row in df.iterrows():
+        entry = get_request(f'{models_url}/{row["model"]}/genes/{row["gene"]}')
+        data[(row['gene'], row['model'])] = entry['protein_sequence']
+
+    with open(outputfile, 'w') as f:
+        for (gene, model), seq in data.items():
+            f.write(f'>{model}.{gene}\n')
+            f.write(seq + '\n')
+
