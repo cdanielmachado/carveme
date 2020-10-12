@@ -9,3 +9,4 @@ Dockerfile
 .idea/*
 *.DS_Store
 .vscode/*
+carveme/universe/download bigg fasta.ipynb
