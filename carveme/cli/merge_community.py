@@ -5,7 +5,7 @@ from carveme import config, project_dir
 from carveme.reconstruction.utils import load_media_db
 
 
-def maincall(inputfiles, flavor=None, split_pool=False, no_biomass=False, init=None, mediadb=None, ext_comp_id=None, outputfile=None):
+def maincall(inputfiles, flavor=None, init=None, mediadb=None,  outputfile=None):
 
     if not flavor:
         flavor = config.get('sbml', 'default_flavor')
@@ -16,17 +16,9 @@ def maincall(inputfiles, flavor=None, split_pool=False, no_biomass=False, init=N
         model_id = 'community'
         outputfile = 'community.xml'
 
-    if ext_comp_id is None:
-        ext_comp_id = 'C_e'
-
     models = [load_cbmodel(inputfile, flavor=flavor) for inputfile in inputfiles]
-
-    community = Community(model_id, models,
-                          extracellular_compartment_id=ext_comp_id,
-                          merge_extracellular_compartments=(not split_pool),
-                          create_biomass=(not no_biomass))
-
-    merged = community.generate_merged_model()
+    community = Community(model_id, models)
+    model = community.merged_model
 
     if init:
         if not mediadb:
@@ -37,14 +29,10 @@ def maincall(inputfiles, flavor=None, split_pool=False, no_biomass=False, init=N
         except IOError:
             raise IOError('Failed to load media library:' + mediadb)
 
-        if split_pool:
-            fmt_func = lambda x: f"R_EX_M_{x}_e_pool"
-        else:
-            fmt_func = lambda x: f"R_EX_{x}_e"
-        init_env = Environment.from_compounds(media_db[init], fmt_func=fmt_func)
-        init_env.apply(merged, inplace=True)
+        init_env = Environment.from_compounds(media_db[init])
+        init_env.apply(model, inplace=True)
 
-    save_cbmodel(merged, outputfile, flavor=flavor)
+    save_cbmodel(model, outputfile, flavor=flavor)
 
 
 def main():
@@ -54,17 +42,10 @@ def main():
 
     parser.add_argument('-o', '--output', dest='output', help="SBML output file (community)")
 
-    parser.add_argument('--split-pool', action='store_true', dest='split_pool',
-                        help='Keep individual extracellular compartments separated from common metabolite pool.')
-
-    parser.add_argument('--no-community-biomass', action='store_true', dest='no_biomass',
-                        help='Do not create a common community biomass equation.')
-
     parser.add_argument('-i', '--init', dest='init',
                         help="Initialize model with given medium")
 
     parser.add_argument('--mediadb', help="Media database file")
-    parser.add_argument('--ext', help="Extracellular compartment identifier in the models (default 'C_e').")
 
     sbml = parser.add_mutually_exclusive_group()
     sbml.add_argument('--cobra', action='store_true', help="SBML input/output in old cobra format")
@@ -81,15 +62,12 @@ def main():
     elif args.cobra:
         flavor = 'cobra'
     else:
-        flavor = None
+        flavor = config.get('sbml', 'default_flavor')
 
     maincall(inputfiles=args.input,
          flavor=flavor,
-         split_pool=args.split_pool,
-         no_biomass=args.no_biomass,
          init=args.init,
          mediadb=args.mediadb,
-         ext_comp_id=args.ext,
          outputfile=args.output)
 
 

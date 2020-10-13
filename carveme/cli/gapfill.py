@@ -38,7 +38,7 @@ def maincall(inputfile, media, mediadb=None, universe=None, universe_file=None, 
             universe_file = project_dir + config.get('generated', 'default_universe')
 
     try:
-        universe_model = load_cbmodel(universe_file)
+        universe_model = load_cbmodel(universe_file, flavor='cobra')
     except IOError:
         if universe:
             raise IOError('Failed to load universe "{0}". Please run build_universe.py --{0}.'.format(universe))
@@ -113,7 +113,7 @@ def main():
     elif args.cobra:
         flavor = 'cobra'
     else:
-        flavor = None
+        flavor = config.get('sbml', 'default_flavor')
 
     maincall(inputfile=args.input,
          media=args.media.split(','),

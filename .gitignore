@@ -9,3 +9,5 @@ Dockerfile
 .idea/*
 *.DS_Store
 .vscode/*
+carveme/universe/download bigg fasta.ipynb
+carveme/data/generated/bigg_proteins.dmnd
