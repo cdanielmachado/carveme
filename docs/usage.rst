@@ -42,14 +42,12 @@ If you want to produce a compressed SBML file, just change the extension (this i
 
     $ carve genome.faa -o model.xml.gz
 
-Rather than providing the genome data yourself, you can also provide an NCBI RefSeq or GenBank accession code.
+Rather than providing the genome data yourself, you can also provide an NCBI RefSeq accession code.
 This will automatically download the sequence and build the model:
 
 .. code-block:: console
 
     $ carve --refseq GCF_000005845.2 -o ecoli_k12_mg1655.xml
-
-    $ carve --genbank GCA_000005845.2 -o ecoli_k12_mg1655.xml
 
 If you have downloaded multiple genome sequences, you can run *recursive mode* to build multiple models in one call.
 
@@ -149,24 +147,7 @@ or more simply:
 This generates an SBML file with a community where each organism is assigned to its own compartment and
 a common community biomass equation is also generated. You can import the merged model into any simulation tool, just
 as any normal constraint-based model and apply different types of simulation methods (FBA, FVA, etc...).
-
-You can choose not to create a community biomass equation (this allows each species to grow at a different rate):
-
-.. code-block:: console
-
-    $ merge_community [input files] --no-community-biomass
-
-By default, all organisms share the same extracellular environment. This is the most simple representation of the community,
-but also makes it more difficult to observe inter-species exchanges. Another option is to keep individual extracellular
-environments for each organism, and create a common metabolite pool for exchanges between these environments.
-The simulation results are the same (this just adds redundancy to the model) but makes it easier to analyse
-species-to-species exchanges:
-
-.. code-block:: console
-
-    $ merge_community [input files] --split-pool
-
-Finally, you can initialize the community with a pre-defined medium (just like during single-species reconstruction):
+You can initialize the community with a pre-defined medium (just like during single-species reconstruction):
 
 .. code-block:: console
 
