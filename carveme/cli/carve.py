@@ -11,9 +11,26 @@ from reframed import load_cbmodel, save_cbmodel, Environment
 from reframed.io.sbml import sanitize_id
 import argparse
 import os
+import os.path
 import pandas as pd
 from multiprocessing import Pool
 from glob import glob
+import subprocess
+
+
+def first_run_check():
+    diamond_db = project_dir + config.get('generated', 'diamond_db')
+    if not os.path.exists(diamond_db):
+        print("Running diamond for the first time, please wait while we build the internal database...")
+        fasta_file = project_dir + config.get('input', 'fasta_file')
+        cmd = ['diamond', 'makedb', '--in', fasta_file, '-d', diamond_db.split('.')[0]]
+        try:
+            exit_code = subprocess.call(cmd)
+        except OSError:
+            print('Unable to run diamond (make sure diamond is available in your PATH).')
+        else:
+            if exit_code != 0:
+                print('Failed to run diamond (wrong arguments).')
 
 
 def build_model_id(name):
@@ -87,7 +104,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
     if input_type == 'protein' or input_type == 'dna':
         if verbose:
             print('Running diamond...')
-        diamond_db = project_dir + config.get('input', 'diamond_db')
+        diamond_db = project_dir + config.get('generated', 'diamond_db')
         blast_output = os.path.splitext(inputfile)[0] + '.tsv'
         exit_code = run_blast(inputfile, input_type, blast_output, diamond_db, diamond_args, verbose)
 
@@ -230,7 +247,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
             m2, n2 = len(model.metabolites), len(model.reactions)
             print('Added {} reactions and {} metabolites'.format((n2 - n1), (m2 - m1)))
 
-        if init_env:  #Should initialize enviroment again as new exchange reactions can be acquired during gap-filling
+        if init_env:  # Initializes environment again as new exchange reactions can be acquired during gap-filling
             init_env.apply(model, inplace=True, warning=False)
 
         save_cbmodel(model, outputfile, flavor=flavor)
@@ -328,7 +345,9 @@ def main():
     elif args.cobra:
         flavor = 'cobra'
     else:
-        flavor = None
+        flavor = config.get('sbml', 'default_flavor')
+
+    first_run_check()
 
     if not args.recursive:
         if len(args.input) > 1:

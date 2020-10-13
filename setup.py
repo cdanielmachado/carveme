@@ -56,7 +56,7 @@ included_files = {
         'data/benchmark/essentiality/mgen.tsv',
         'data/benchmark/essentiality/paer.tsv',
         'data/benchmark/essentiality/sone.tsv',
-        'data/benchmark/fasta/Bsubtilis_168.faa:',
+        'data/benchmark/fasta/Bsubtilis_168.faa',
         'data/benchmark/fasta/Paeruginosa_PAO1.faa',
         'data/benchmark/fasta/Ecoli_K12_MG1655.faa',
         'data/benchmark/fasta/M_genitalium_G37.faa',
