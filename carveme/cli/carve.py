@@ -23,7 +23,7 @@ def first_run_check():
     if not os.path.exists(diamond_db):
         print("Running diamond for the first time, please wait while we build the internal database...")
         fasta_file = project_dir + config.get('input', 'fasta_file')
-        cmd = ['diamond', 'makedb', '--in', fasta_file, '-d', diamond_db.split('.')[0]]
+        cmd = ['diamond', 'makedb', '--in', fasta_file, '-d', diamond_db[:-5]]
         try:
             exit_code = subprocess.call(cmd)
         except OSError:

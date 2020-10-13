@@ -24,7 +24,6 @@ included_files = {
         'data/input/metabolomics_park2016.csv',
         'data/input/unbalanced_metabolites.csv',
         'data/input/bigg_proteins.faa',
-        'data/input/bigg_proteins.dmnd',
         'data/input/equilibrator_compounds.tsv.gz',
         'data/input/refseq_release_201.tsv.gz',
         'data/generated/bigg_gibbs.csv',
