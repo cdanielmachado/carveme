@@ -22,11 +22,12 @@ def load_eggnog_data(filename, drop_unannotated=True, drop_unused_cols=True):
         pandas.DataFrame: eggnog data
 
     """
-    columns = ['query_gene', 'seed_eggNOG_ortholog', 'evalue', 'score',
-               'predicted_gene_name', 'GO_terms', 'KEGG_pathways', 'Annotation_tax_scope', 'OGs',
-               'bestOG_evalue_score', 'COG_cat', 'eggNOG_annotation', 'BiGG_gene']
+    columns = ['query_gene', 'seed_eggNOG_ortholog', 'evalue', 'score', 'best_tax_level',
+                   'predicted_gene_name', 'GO_terms', 'EC', 'KEGG_ko','KEGG_pathways', 
+                   'KEGG_Module', 'KEGG_Reaction', 'KEGGrclass',
+                   'BRITE*','KEGG_TC','CAZy','BiGG_gene']
 
-    data = pd.read_csv(filename, comment='#', sep='\t', names=columns)
+    data = pd.read_csv(filename, comment='#', sep='\t', usecols=range(17), names=columns)
 
     if drop_unannotated:
         data.dropna(subset=['BiGG_gene'], inplace=True)
