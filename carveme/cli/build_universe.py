@@ -5,47 +5,47 @@ import argparse
 import os
 import pandas as pd
 
-from carveme.universe.bigg_download import build_bigg_universe_model, download_model_specific_data, create_gpr_table,\
-    download_gene_sequences
+from carveme.universe.download import download_universal_model, download_model_specific_data
 from carveme.universe.curation import curate_universe
-from carveme.universe.thermodynamics import compute_bigg_gibbs_energy
+from carveme.universe.annotate import annotate_with_eQuilibrator
 from carveme.reconstruction.utils import load_biomass_db
-from reframed import load_cbmodel
+from reframed import load_cbmodel, save_cbmodel
 
 
-def maincall(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow_blocked=False,
-         biomass=None, biomass_db_path=None, normalize_biomass=False, taxa=None, outputfile=None):
+def maincall(mode, inputfile=None, outputfile=None, biomass=None, biomass_db_path=None,
+             normalize_biomass=False, taxa=None):
 
-    if mode == 'draft':
+    if mode == 'build':
 
         if outputfile:
             universe_draft = outputfile
             model_specific_data = os.path.splitext(outputfile)[0] + '.csv'
             bigg_gprs = os.path.splitext(outputfile)[0] + '_gprs.csv'
-#            fasta_file = os.path.splitext(outputfile)[0] + '.faa'
+            fasta_file = os.path.splitext(outputfile)[0] + '.faa'
         else:
-            universe_draft = project_dir + config.get('generated', 'universe_draft')
+            universe_draft = project_dir + config.get('generated', 'bigg_universe')
             model_specific_data = project_dir + config.get('generated', 'model_specific_data')
             bigg_gprs = project_dir + config.get('generated', 'bigg_gprs')
-#            fasta_file = project_dir + config.get('input', 'fasta_file')
+            fasta_file = project_dir + config.get('generated', 'fasta_file')
 
-        build_bigg_universe_model(universe_draft)
-        data = download_model_specific_data(model_specific_data)
-        gprs = create_gpr_table(data, outputfile=bigg_gprs)
-#        download_gene_sequences(gprs, outputfile=fasta_file)
+        download_universal_model(universe_draft)
+        download_model_specific_data(model_specific_data, bigg_gprs, fasta_file)
 
-    elif mode == 'thermo':
-        universe_draft = project_dir + config.get('generated', 'universe_draft')
-        equilibrator_compounds = project_dir + config.get('input', 'equilibrator_compounds')
+    elif mode == 'annotate':
 
-        if outputfile:
-            bigg_gibbs = outputfile
-        else:
-            bigg_gibbs = project_dir + config.get('generated', 'bigg_gibbs')
+        if not inputfile:
+            inputfile = project_dir + config.get('generated', 'bigg_universe')
 
-        compute_bigg_gibbs_energy(universe_draft, equilibrator_compounds, bigg_gibbs)
+        if not outputfile:
+            outputfile = project_dir + config.get('generated', 'bigg_annotated')
 
-    elif mode == 'curated':
+        model = load_cbmodel(inputfile, flavor="bigg")
+
+        annotate_with_eQuilibrator(model)
+
+        save_cbmodel(model, outputfile)
+
+    elif mode == 'curate':
 
         universe_draft = project_dir + config.get('generated', 'universe_draft')
         model_specific_data = project_dir + config.get('generated', 'model_specific_data')
@@ -88,19 +88,8 @@ def maincall(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, a
             raise RuntimeError('Biomass identifier not in database. Currently in database: ' + valid_ids)
 
         biomass_eq = biomass_db[biomass]
-
-        if nothermo:
-            thermodynamics_data = None
-            metabolomics_data = None
-        else:
-            try:
-                bigg_gibbs = project_dir + config.get('generated', 'bigg_gibbs')
-                thermodynamics_data = pd.read_csv(bigg_gibbs, index_col=0)
-            except IOError:
-                raise IOError('Thermodynamic data not found. Please run --thermo first to generate thermodynamic data.')
-
-            metabolomics = project_dir + config.get('input', 'metabolomics')
-            metabolomics_data = pd.read_csv(metabolomics, index_col=1)
+        metabolomics = project_dir + config.get('input', 'metabolomics')
+        metabolomics_data = pd.read_csv(metabolomics, index_col=1)
 
         curate_universe(model,
                         taxa=taxa,
@@ -111,10 +100,7 @@ def maincall(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, a
                         metabolomics_data=metabolomics_data,
                         manually_curated=manually_curated,
                         unbalanced_metabolites=unbalanced,
-                        biomass_eq=biomass_eq,
-                        use_heuristics=(not noheuristics),
-                        remove_unbalanced=(not allow_unbalanced),
-                        remove_blocked=(not allow_blocked))
+                        biomass_eq=biomass_eq)
 
     else:
         print('Unrecognized option:', mode)
@@ -124,23 +110,17 @@ def main():
     parser = argparse.ArgumentParser(description="Generate universal model to use with CarveMe")
 
     mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument('--draft', action='store_true',
-                      help='Download all data from BiGG and save uncurated (draft) model to SBML.')
-    mode.add_argument('--thermo', action='store_true',
-                      help='Compute thermodynamics data for BiGG reactions.')
-    mode.add_argument('--curated', action='store_true',
-                      help='Generate curated universal model of bacterial metabolism.')
+    mode.add_argument('--build', action='store_true',
+                      help='Download all data from BiGG and save SBML, FASTA, and additional files.')
 
+    mode.add_argument('--annotate', action='store_true',
+                      help='Annotate universal model with formula, charge, and Gibbs free energy.')
+
+    mode.add_argument('--curate', action='store_true',
+                      help='Run semi-automated curation of universal model.')
+
+    parser.add_argument('-i', '--input', dest='input', help="Input file")
     parser.add_argument('-o', '--output', dest='output', help="Output file")
-
-    parser.add_argument('--nothermo', action='store_true',
-                        help="Advanced options: do not use thermodynamics data")
-    parser.add_argument('--noheuristics', action='store_true',
-                        help="Advanced options: do not apply heuristic reversibility rules")
-    parser.add_argument('--unbalanced', action='store_true',
-                        help="Advanced options: allow unbalanced reactions")
-    parser.add_argument('--blocked', action='store_true',
-                        help="Advanced options: allow blocked reactions")
 
     taxa = parser.add_mutually_exclusive_group(required=False)
 
@@ -157,36 +137,14 @@ def main():
     parser.add_argument('--normalize-biomass', dest='normalize_biomass', action='store_true',
                         help="Advanced options: Normalize biomass dry weight to 1 gram")
 
-
     args = parser.parse_args()
 
-    if args.nothermo and (args.draft or args.thermo):
-        parser.error('--nothermo cannot be used with --draft or --thermo')
-
-    if args.noheuristics and (args.draft or args.thermo):
-        parser.error('--noheuristics cannot be used with --draft or --thermo')
-
-    if args.unbalanced and (args.draft or args.thermo):
-        parser.error('--unbalanced cannot be used with --draft or --thermo')
-
-    if args.blocked and (args.draft or args.thermo):
-        parser.error('--blocked cannot be used with --draft or --thermo')
-
-    if args.biomass and (args.draft or args.thermo):
-        parser.error('--biomass cannot be used with --draft or --thermo')
-
-    if args.cyanobacteria and (args.draft or args.thermo):
-        parser.error('--cyanobacteria cannot be used with --draft or --thermo')
-
-    if args.archaea and (args.draft or args.thermo):
-        parser.error('--archaea cannot be used with --draft or --thermo')
-
-    if args.draft:
-        mode = 'draft'
-    elif args.thermo:
-        mode = 'thermo'
-    elif args.curated:
-        mode = 'curated'
+    if args.build:
+        mode = 'build'
+    elif args.annotate:
+        mode = 'annotate'
+    elif args.curate:
+        mode = 'curate'
 
     if args.cyanobacteria:
         taxa = 'cyanobacteria'
@@ -195,16 +153,8 @@ def main():
     else:
         taxa = 'bacteria'
 
-    maincall(mode=mode,
-         nothermo=args.nothermo,
-         noheuristics=args.noheuristics,
-         allow_unbalanced=args.unbalanced,
-         allow_blocked=args.blocked,
-         biomass=args.biomass,
-         biomass_db_path=args.biomass_db,
-         normalize_biomass=args.normalize_biomass,
-         taxa=taxa,
-         outputfile=args.output)
+    maincall(mode=mode, inputfile=args.input, outputfile=args.output, biomass=args.biomass,
+             biomass_db_path=args.biomass_db, taxa=taxa)
 
 
 if __name__ == '__main__':
