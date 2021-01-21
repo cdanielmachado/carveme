@@ -23,9 +23,12 @@ Additionally, you must install diamond and CPLEX (please check the documentation
 
 For citation purposes please refer to our paper:
 
-D. Machado et al, "Fast automated reconstruction of genome-scale metabolic models for microbial species and communities", Nucleic Acids Research, gky537, 2018. 
+D. Machado et al, "Fast automated reconstruction of genome-scale metabolic models for microbial species and communities", Nucleic Acids Research, gky537, 2018. doi: https://doi.org/10.1093/nar/gky537
 
-DOI: https://doi.org/10.1093/nar/gky537
+Developed at:
+- European Molecular Biology Laboratory (2017-2019).
+- Norwegian University of Science and Technology (Since 2020)
 
-Developed at the European Molecular Biology Laboratory (2017-2018). Released under an Apache License.
+CarveMe is now an official service of ELIXIR Norway.
 
+![ELIXIR](elixir.png)
