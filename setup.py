@@ -11,7 +11,8 @@ with open('README.rst') as readme_file:
 requirements = [
     "reframed>=1.2",
     "pandas>=0.20.0",
-    "requests>=2.18"
+    "requests>=2.18",
+    "equilibrator_api"
 ]
 
 included_files = {
@@ -84,6 +85,7 @@ setup(
     entry_points={
         'console_scripts': [
             'build_universe=carveme.cli.build_universe:main',
+            'curate_universe=carveme.cli.curate_universe:main',
             'carve=carveme.cli.carve:main',
             'gapfill=carveme.cli.gapfill:main',
             'merge_community=carveme.cli.merge_community:main',

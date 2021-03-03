@@ -69,7 +69,7 @@ def load_compartments(model):
         model.add_compartment(comp)
 
 
-def load_metabolites(json_model, model):
+def load_metabolites(json_model, model, cpds):
     metabolites = sorted(json_model['metabolites'], key=lambda x: x['id'])
 
     for entry in metabolites:
@@ -77,6 +77,9 @@ def load_metabolites(json_model, model):
         m_id = 'M_' + entry['id']
         met = Metabolite(m_id, str(entry['name']), c_id)
         extract_annotation(met, entry['annotation'])
+        if m_id[2:-2] in cpds.index:
+            met.metadata['FORMULA'] = cpds.loc[m_id[2:-2], "formula"]
+            met.metadata['CHARGE'] = str(int(cpds.loc[m_id[2:-2], "charge"]))
         model.add_metabolite(met)
 
 
@@ -99,13 +102,15 @@ def load_reactions(json_model, model):
         model.add_reaction(rxn)
 
 
-def download_universal_model(outputfile):
+def download_universal_model(outputfile, cpd_annotation):
     print("Downloading BiGG universe...")
+
+    cpds = pd.read_csv(cpd_annotation, sep="\t", index_col=0)
 
     json_model = get_request(UNIVERSE_URL)
     model = CBModel("bigg_universe")
     load_compartments(model)
-    load_metabolites(json_model, model)
+    load_metabolites(json_model, model, cpds)
     load_reactions(json_model, model)
     save_cbmodel(model, outputfile)
 

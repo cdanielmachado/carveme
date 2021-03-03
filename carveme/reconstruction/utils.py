@@ -16,12 +16,9 @@ def create_exchange_reactions(model, default_lb=0, default_ub=None):
             lb = str(default_lb) if default_lb is not None else ''
             ub = str(default_ub) if default_ub is not None else ''
             rxn_str = 'R_EX_{}: {} <-> [{},{}]'.format(m_id[2:], m_id, lb, ub)
-            r_id = model.add_reaction_from_str(rxn_str, clear_tmp=False)
+            r_id = model.add_reaction_from_str(rxn_str)
             model.reactions[r_id].is_exchange = True
             ex_rxns.append(r_id)
-
-    model._clear_temp()
-
     return ex_rxns
 
 
@@ -35,9 +32,8 @@ def create_sink_reactions(model, metabolites):
     for m_id in metabolites:
         if m_id in model.metabolites:
             rxn_str = 'R_sink_{}: {} --> '.format(m_id[2:], m_id)
-            r_id = model.add_reaction_from_str(rxn_str, clear_tmp=False)
+            r_id = model.add_reaction_from_str(rxn_str)
             model.reactions[r_id].is_sink = True
-    model._clear_temp()
 
 
 def add_maintenance_atp(model, lb=0, ub=1000):
