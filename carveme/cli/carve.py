@@ -136,7 +136,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
             universe_file = project_dir + config.get('generated', 'default_universe')
 
     try:
-        universe_model = load_cbmodel(universe_file, flavor='cobra')
+        universe_model = load_cbmodel(universe_file, flavor='bigg')
         universe_model.id = model_id
     except IOError:
         available = '\n'.join(glob("{}{}universe_*.xml.gz".format(project_dir, config.get('generated', 'folder'))))

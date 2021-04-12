@@ -26,6 +26,16 @@ genomes = {
     'sone': 'Soneidensis_MR1.faa'
 }
 
+gram_status = {
+    'bsub': 'grampos',
+    'ecol': 'gramneg,
+    'mgen': 'gramneg',
+    'paer': 'Paeruginosa_PAO1.faa',
+    'rsol': 'Rsolanacearum_GMI1000.faa',
+    'sone': 'Soneidensis_MR1.faa'
+}
+
+
 data_path = project_dir + '/data/benchmark'
 
 biolog_media = {

@@ -36,9 +36,6 @@ def curate(inputfile=None, outputfile=None, taxa=None, biomass=None, biomass_db_
     unbalanced = pd.read_csv(unbalanced, header=None)
     unbalanced = unbalanced[0].tolist()
 
-#    metabolomics = project_dir + config.get('input', 'metabolomics')
-#    metabolomics_data = pd.read_csv(metabolomics, index_col=1)
-
     try:
         model = load_cbmodel(universe_draft, flavor=config.get('sbml', 'default_flavor'))
         model_specific_data = pd.read_csv(model_specific_data)
@@ -62,7 +59,6 @@ def curate(inputfile=None, outputfile=None, taxa=None, biomass=None, biomass_db_
                     biomass_eq=biomass_eq,
                     model_specific_data=model_specific_data,
                     bigg_models=bigg_models,
-#                    metabolomics_data=metabolomics_data,
                     manually_curated=manually_curated,
                     unbalanced_metabolites=unbalanced,
                     )
