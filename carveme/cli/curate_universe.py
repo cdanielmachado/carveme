@@ -29,12 +29,12 @@ def curate(inputfile=None, outputfile=None, taxa=None, biomass=None, biomass_db_
     bigg_models = project_dir + config.get('input', 'bigg_models')
     bigg_models = pd.read_csv(bigg_models, sep='\t')
 
-#    manual_curation = project_dir + config.get('input', 'manually_curated')
-#    manually_curated = pd.read_csv(manual_curation, index_col=0)
+    manual_curation = project_dir + config.get('input', 'manually_curated')
+    manually_curated = pd.read_csv(manual_curation, index_col=0, sep='\t')
 
-#    unbalanced = project_dir + config.get('input', 'unbalanced_metabolites')
-#    unbalanced = pd.read_csv(unbalanced, header=None)
-#    unbalanced = unbalanced[0].tolist()
+    unbalanced = project_dir + config.get('input', 'unbalanced_metabolites')
+    unbalanced = pd.read_csv(unbalanced, header=None)
+    unbalanced = unbalanced[0].tolist()
 
 #    metabolomics = project_dir + config.get('input', 'metabolomics')
 #    metabolomics_data = pd.read_csv(metabolomics, index_col=1)
@@ -63,8 +63,8 @@ def curate(inputfile=None, outputfile=None, taxa=None, biomass=None, biomass_db_
                     model_specific_data=model_specific_data,
                     bigg_models=bigg_models,
 #                    metabolomics_data=metabolomics_data,
-#                    manually_curated=manually_curated,
-#                    unbalanced_metabolites=unbalanced,
+                    manually_curated=manually_curated,
+                    unbalanced_metabolites=unbalanced,
                     )
 
 

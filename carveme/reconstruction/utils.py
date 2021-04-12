@@ -15,7 +15,7 @@ def create_exchange_reactions(model, default_lb=0, default_ub=None):
         if m_id.endswith('_e'):
             lb = str(default_lb) if default_lb is not None else ''
             ub = str(default_ub) if default_ub is not None else ''
-            rxn_str = 'R_EX_{}: {} <-> [{},{}]'.format(m_id[2:], m_id, lb, ub)
+            rxn_str = f'R_EX_{m_id[2:]}: {m_id} <-> [{lb}, {ub}]'
             r_id = model.add_reaction_from_str(rxn_str)
             model.reactions[r_id].is_exchange = True
             ex_rxns.append(r_id)
@@ -31,13 +31,13 @@ def set_exchange_bounds(model, lb, ub):
 def create_sink_reactions(model, metabolites):
     for m_id in metabolites:
         if m_id in model.metabolites:
-            rxn_str = 'R_sink_{}: {} --> '.format(m_id[2:], m_id)
+            rxn_str = f'R_sink_{m_id[2:]}: {m_id} --> [0, 1000]'
             r_id = model.add_reaction_from_str(rxn_str)
             model.reactions[r_id].is_sink = True
 
 
 def add_maintenance_atp(model, lb=0, ub=1000):
-    rxn_str = 'R_ATPM: M_atp_c + M_h2o_c --> M_adp_c + M_h_c + M_pi_c [{}, {}]'.format(lb, ub)
+    rxn_str = f'R_ATPM: M_atp_c + M_h2o_c --> M_adp_c + M_h_c + M_pi_c [{lb}, {ub}]'
     model.add_reaction_from_str(rxn_str)
 
 
