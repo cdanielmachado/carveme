@@ -28,11 +28,11 @@ genomes = {
 
 gram_status = {
     'bsub': 'grampos',
-    'ecol': 'gramneg,
+    'ecol': 'gramneg',
     'mgen': 'gramneg',
-    'paer': 'Paeruginosa_PAO1.faa',
-    'rsol': 'Rsolanacearum_GMI1000.faa',
-    'sone': 'Soneidensis_MR1.faa'
+    'paer': 'gramneg',
+    'rsol': 'gramneg',
+    'sone': 'gramneg',
 }
 
 
@@ -94,7 +94,7 @@ def build_models():
 
         gapfill = f'-g "{media}" --mediadb {mediadb}' if media else ''
 
-        call(f'carve {fasta_file} -o {model_file} {gapfill} --fbc2', shell=True)
+        call(f'carve {fasta_file} -u {gram_status[org_id]} -o {model_file} {gapfill} --fbc2', shell=True)
 
 
 def load_models():
@@ -132,6 +132,9 @@ def run_biolog_benchmark(models, biolog_data, media_db):
     biolog_results = []
 
     for org_id, medium in biolog_media.items():
+        if org_id not in models:
+            continue
+
         print(f'Running biolog benchmark for {organisms[org_id]}')
         model = models[org_id]
 
