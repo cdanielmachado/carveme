@@ -1,5 +1,6 @@
 from reframed import CBModel, Compartment, Metabolite, CBReaction, save_cbmodel
 from reframed.io.sbml import parse_gpr_rule
+from ..reconstruction.utils import to_rdf_annotation
 import pandas as pd
 import requests
 import sys
@@ -52,11 +53,8 @@ def get_request(url, max_tries=10):
 
 
 def extract_annotation(elem, data):
-    for key, value in data:
-        if key in elem.metadata:
-            elem.metadata[key] += (';' + value)
-        else:
-            elem.metadata[key] = value
+    annotation = to_rdf_annotation(elem.id, [x[1] for x in data])
+    elem.metadata['XMLAnnotation'] = annotation
 
 
 def load_compartments(model):
@@ -66,6 +64,7 @@ def load_compartments(model):
     for entry in compartments:
         c_id = 'C_' + entry['bigg_id']
         comp = Compartment(c_id, entry['name'], external=(c_id == 'C_e'))
+        comp.metadata['SBOTerm'] = 'SBO:0000290'
         model.add_compartment(comp)
 
 
@@ -76,6 +75,7 @@ def load_metabolites(json_model, model, cpds):
         c_id = 'C_' + entry['id'].split('_')[-1]
         m_id = 'M_' + entry['id']
         met = Metabolite(m_id, str(entry['name']), c_id)
+        met.metadata['SBOTerm'] = 'SBO:0000247'
         extract_annotation(met, entry['annotation'])
         if m_id[2:-2] in cpds.index:
             met.metadata['FORMULA'] = cpds.loc[m_id[2:-2], "formula"]
@@ -101,6 +101,11 @@ def load_reactions(json_model, model):
         extract_annotation(rxn, entry['annotation'])
         model.add_reaction(rxn)
 
+        if len(model.get_reaction_compartments(r_id)) > 1:
+            rxn.metadata['SBOTerm'] = 'SBO:0000185'
+        else:
+            rxn.metadata['SBOTerm'] = 'SBO:0000176'
+
 
 def download_universal_model(outputfile, cpd_annotation):
     print("Downloading BiGG universe...")
@@ -115,7 +120,7 @@ def download_universal_model(outputfile, cpd_annotation):
     save_cbmodel(model, outputfile)
 
 
-def download_model_specific_data(outputfile, bigg_gprs, fastafile):
+def download_model_specific_data(outputfile, bigg_gprs, fastafile, annotations):
 
     data = get_request(MODELS_URL)
     models = sorted(data['results'], key=lambda x: x['gene_count'], reverse=True)
@@ -127,14 +132,15 @@ def download_model_specific_data(outputfile, bigg_gprs, fastafile):
         if species not in filtered and model['bigg_id'] not in no_seq_data:
             filtered[species] = model
 
-    n = len(filtered)
+    m = len(filtered)
     model_data = []
     sequences = {}
+    gene_links = []
+
     print("Downloading model-specific data...")
 
     for i, (species, entry) in enumerate(sorted(filtered.items())):
-        progress(i, n)
-
+        print(f'Downloading {species} [{i+1}/{m}]')
         model_id = entry['bigg_id']
         model = get_request(f'{MODELS_URL}/{model_id}/download')
 
@@ -150,21 +156,32 @@ def download_model_specific_data(outputfile, bigg_gprs, fastafile):
             rxn_data = (model_id, rxn['id'], lb, ub, subsystem, gpr)
             model_data.append(rxn_data)
 
-        for gene in model['genes']:
+        n = len(model['genes'])
+        for j, gene in enumerate(model['genes']):
+            progress(j, n)
             gene_id = gene["id"]
             gene_data = get_request(f'{MODELS_URL}/{model_id}/genes/{gene_id}')
-            seq = gene_data['protein_sequence']
 
+            seq = gene_data['protein_sequence']
             if seq is not None:
                 sequences[(model_id, gene_id)] = seq
 
+            if 'database_links' in gene_data:
+                for links in gene_data['database_links'].values():
+                    for link in links:
+                        gene_links.append((model_id, gene_id, link['link']))
+
+        print('')
+
     df = pd.DataFrame(model_data, columns=['model', 'reaction', 'lb', 'ub', 'subsystem', 'gpr'])
     df.to_csv(outputfile, index=False)
+
+    df2 = pd.DataFrame(gene_links, columns=['model', 'gene', 'annotation'])
+    df2.to_csv(annotations, index=False, sep='\t')
+
     write_fasta(sequences, fastafile)
-
-    print('\n')
-
     create_gpr_table(df, bigg_gprs)
+
 
 
 def write_fasta(sequences, fastafile):

@@ -77,7 +77,11 @@ biolog_compounds = {
 }
 
 
-def build_models():
+def build_models(extra_args=None):
+
+    if extra_args is None:
+        extra_args = ''
+
     for org_id, genome in genomes.items():
         print(f'Carving model for {organisms[org_id]}')
 
@@ -94,7 +98,7 @@ def build_models():
 
         gapfill = f'-g "{media}" --mediadb {mediadb}' if media else ''
 
-        call(f'carve {fasta_file} -u {gram_status[org_id]} -o {model_file} {gapfill} --fbc2', shell=True)
+        call(f'carve {fasta_file} -u {gram_status[org_id]} -o {model_file} {gapfill} --fbc2 {extra_args}', shell=True)
 
 
 def load_models():
@@ -168,10 +172,10 @@ def run_essentiality_benchmark(models, essential, non_essential, media_db):
     return pd.DataFrame(essentiality_results, columns=['org', 'gene', 'value'])
 
 
-def benchmark(rebuild=True, biolog=True, essentiality=True):
+def benchmark(rebuild=True, biolog=True, essentiality=True, extra_args=None):
 
     if rebuild:
-        build_models()
+        build_models(extra_args)
 
     models = load_models()
     media_db = load_media_db(f'{data_path}/media_db.tsv')
@@ -199,13 +203,15 @@ def main():
     parser.add_argument('--skip-biolog', action='store_true', dest='no_biolog',
                         help="Skip biolog benchmark.")
     parser.add_argument('--skip-essentiality', action='store_true', dest='no_essentiality',
-                        help="Skip biolog benchmark.")
+                        help="Skip essentiality benchmark.")
+    parser.add_argument('--carve-args', dest='carve_args', help="Additional arguments for carving.")
 
     args = parser.parse_args()
 
     benchmark(rebuild=(not args.no_rebuild),
               biolog=(not args.no_biolog),
-              essentiality=(not args.no_essentiality))
+              essentiality=(not args.no_essentiality),
+              extra_args=args.carve_args)
 
 
 if __name__ == '__main__':

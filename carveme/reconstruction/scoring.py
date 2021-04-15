@@ -92,7 +92,7 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
                           .groupby('BiGG_gene', as_index=False).apply(lambda x: x.iloc[0])
 
     # merge with gpr table
-    gprs['BiGG_gene'] = gprs.apply(lambda row: '{}.{}'.format(row['model'], row['gene'][2:]), axis=1)
+    gprs['BiGG_gene'] = gprs.apply(lambda row: f"{row['model']}.{row['gene'][2:]}", axis=1)
     gene_scores = pd.merge(gene2gene, gprs, how='right')
 
     # add default scores for spontaneous genes
@@ -112,15 +112,14 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
 
     avg_score = reaction_scores['score'].median()
 
-    if avg_score != 0:
-        reaction_scores['normalized_score'] = reaction_scores['score'] / avg_score
+    if avg_score == 0:
+        return None, gene2gene
+
+    reaction_scores['normalized_score'] = reaction_scores['score'] / avg_score
 
     if debug_output:
         gene_scores.to_csv(debug_output + '_gene_scores.tsv', sep='\t', index=False)
         protein_scores.to_csv(debug_output + '_protein_scores.tsv', sep='\t', index=False)
         reaction_scores.to_csv(debug_output + '_reaction_scores.tsv', sep='\t', index=False)
 
-    if avg_score != 0:
-        return reaction_scores
-    else:
-        return None
+    return reaction_scores, gene2gene

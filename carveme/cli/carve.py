@@ -3,10 +3,11 @@ from carveme import __version__ as version
 from carveme.reconstruction.carving import carve_model, build_ensemble
 from carveme.reconstruction.eggnog import load_eggnog_data
 from carveme.reconstruction.gapfilling import multiGapFill
-from carveme.reconstruction.utils import load_media_db, load_soft_constraints, load_hard_constraints
+from carveme.reconstruction.utils import load_media_db, load_soft_constraints, load_hard_constraints, annotate_genes
 from carveme.reconstruction.ncbi_download import load_ncbi_table, download_ncbi_genome
 from carveme.reconstruction.scoring import reaction_scoring
 from carveme.reconstruction.diamond import run_blast, load_diamond_results
+from reframed.cobra.ensemble import save_ensemble
 from reframed import load_cbmodel, save_cbmodel, Environment
 from reframed.io.sbml import sanitize_id
 import argparse
@@ -49,7 +50,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
         model_id = os.path.splitext(os.path.basename(inputfile))[0]
 
         if outputfile:
-            outputfile = '{}/{}.xml'.format(outputfile, model_id)
+            outputfile = f'{outputfile}/{model_id}.xml'
         else:
             outputfile = os.path.splitext(inputfile)[0] + '.xml'
 
@@ -90,7 +91,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
     if input_type == 'refseq':
 
         if verbose:
-            print('Downloading genome {} from NCBI...'.format(inputfile))
+            print(f'Downloading genome {inputfile} from NCBI...')
 
         ncbi_table = load_ncbi_table(project_dir + config.get('input', 'refseq'))
         inputfile = download_ncbi_genome(inputfile, ncbi_table)
@@ -131,7 +132,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
 
     if not universe_file:
         if universe:
-            universe_file = "{}{}universe_{}.xml.gz".format(project_dir, config.get('generated', 'folder'), universe)
+            universe_file = f"{project_dir}{config.get('generated', 'folder')}universe_{universe}.xml.gz"
         else:
             universe_file = project_dir + config.get('generated', 'default_universe')
 
@@ -139,8 +140,8 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
         universe_model = load_cbmodel(universe_file, flavor='bigg')
         universe_model.id = model_id
     except IOError:
-        available = '\n'.join(glob("{}{}universe_*.xml.gz".format(project_dir, config.get('generated', 'folder'))))
-        raise IOError('Failed to load universe model: {}\nAvailable universe files:\n{}'.format(universe_file, available))
+        available = '\n'.join(glob(f"{project_dir}{config.get('generated', 'folder')}universe_*.xml.gz"))
+        raise IOError(f'Failed to load universe model: {universe_file}\nAvailable universe files:\n{available}')
 
     if reference:
         if verbose:
@@ -169,12 +170,13 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
     if verbose:
         print('Scoring reactions...')
 
+    gene_annotations = pd.read_csv(project_dir + config.get('generated', 'gene_annotations'), sep='\t')
     bigg_gprs = project_dir + config.get('generated', 'bigg_gprs')
     gprs = pd.read_csv(bigg_gprs)
     gprs = gprs[gprs.reaction.isin(universe_model.reactions)]
 
     debug_output = model_id if debug else None
-    scores = reaction_scoring(annotations, gprs, debug_output=debug_output)
+    scores, gene2gene = reaction_scoring(annotations, gprs, debug_output=debug_output)
 
     if scores is None:
         print('The input genome did not match sufficient genes/reactions in the database.')
@@ -189,7 +191,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
         if init in media_db:
             init_env = Environment.from_compounds(media_db[init])
         else:
-            print('Error: medium {} not in media database.'.format(init))
+            print(f'Error: medium {init} not in media database.')
 
     universe_model.metadata['Description'] = 'This model was built with CarveMe version ' + version
 
@@ -197,43 +199,34 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
         if verbose:
             print('Reconstructing a single model')
 
-        if not gapfill:
-            carve_model(universe_model, scores,
-                        outputfile=outputfile,
-                        flavor=flavor,
-                        default_score=default_score,
-                        uptake_score=uptake_score,
-                        soft_score=soft_score,
-                        soft_constraints=soft_constraints,
-                        hard_constraints=hard_constraints,
-                        ref_model=ref_model,
-                        ref_score=ref_score,
-                        init_env=init_env,
-                        debug_output=debug_output)
-        else:
-            model = carve_model(universe_model, scores,
-                                inplace=False,
-                                default_score=default_score,
-                                uptake_score=uptake_score,
-                                soft_score=soft_score,
-                                soft_constraints=soft_constraints,
-                                hard_constraints=hard_constraints,
-                                ref_model=ref_model,
-                                ref_score=ref_score,
-                                init_env=init_env,
-                                debug_output=debug_output)
+        model = carve_model(universe_model, scores, inplace=(not gapfill), default_score=default_score,
+                            uptake_score=uptake_score, soft_score=soft_score, soft_constraints=soft_constraints,
+                            hard_constraints=hard_constraints, ref_model=ref_model, ref_score=ref_score,
+                            init_env=init_env, debug_output=debug_output)
+        annotate_genes(model, gene2gene, gene_annotations)
+
     else:
         if verbose:
             print('Building an ensemble of', ensemble_size, 'models')
-        build_ensemble(universe_model, scores, ensemble_size, outputfile, flavor, init_env=init_env)
 
-    if gapfill and model is not None:
+        ensemble = build_ensemble(universe_model, scores, ensemble_size, init_env=init_env)
 
+        annotate_genes(ensemble, gene2gene, gene_annotations)
+        save_ensemble(ensemble, outputfile, flavor=flavor)
+
+    if model is None:
+        print("Failed to build model.")
+        return
+
+    if not gapfill:
+        save_cbmodel(model, outputfile, flavor=flavor)
+
+    else:
         media = gapfill.split(',')
 
         if verbose:
             m1, n1 = len(model.metabolites), len(model.reactions)
-            print('Gap filling for {}...'.format(', '.join(media)))
+            print(f"Gap filling for {', '.join(media)}...")
 
         max_uptake = config.getint('gapfill', 'max_uptake')
 
@@ -245,7 +238,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
 
         if verbose:
             m2, n2 = len(model.metabolites), len(model.reactions)
-            print('Added {} reactions and {} metabolites'.format((n2 - n1), (m2 - m1)))
+            print(f'Added {(n2 - n1)} reactions and {(m2 - m1)} metabolites')
 
         if init_env:  # Initializes environment again as new exchange reactions can be acquired during gap-filling
             init_env.apply(model, inplace=True, warning=False)
