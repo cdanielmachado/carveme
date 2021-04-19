@@ -1,7 +1,0 @@
-framed>=0.5
-pandas>=0.20.0
-requests>=2.18
-
-
-
-

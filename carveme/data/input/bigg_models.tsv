@@ -1,0 +1,109 @@
+model	organism	genus	kingdom
+iCN718	Acinetobacter baumannii AYE	Acinetobacter	Bacteria
+iYO844	Bacillus subtilis subsp. subtilis str. 168	Bacillus	Bacteria
+iRC1080	Chlamydomonas reinhardtii	Chlamydomonas	Eukarya
+iCN900	Clostridioides difficile 630	Clostridioides	Bacteria
+iHN637	Clostridium ljungdahlii DSM 13528	Clostridium	Bacteria
+iCHOv1_DG44	Cricetulus griseus	Cricetulus	Eukarya
+iCHOv1	Cricetulus griseus	Cricetulus	Eukarya
+iECBD_1354	Escherichia coli 'BL21-Gold(DE3)pLysS AG'	Escherichia	Bacteria
+iEC042_1314	Escherichia coli 042	Escherichia	Bacteria
+iECP_1309	Escherichia coli 536	Escherichia	Bacteria
+iEC55989_1330	Escherichia coli 55989	Escherichia	Bacteria
+iECABU_c1320	Escherichia coli ABU 83972	Escherichia	Bacteria
+iAPECO1_1312	Escherichia coli APEC O1	Escherichia	Bacteria
+iEcolC_1368	Escherichia coli ATCC 8739	Escherichia	Bacteria
+iEC1349_Crooks	Escherichia coli ATCC 8739	Escherichia	Bacteria
+iECB_1328	Escherichia coli B str. REL606	Escherichia	Bacteria
+iB21_1397	Escherichia coli BL21(DE3)	Escherichia	Bacteria
+iEC1356_Bl21DE3	Escherichia coli BL21(DE3)	Escherichia	Bacteria
+iECD_1391	Escherichia coli BL21(DE3)	Escherichia	Bacteria
+iBWG_1329	Escherichia coli BW2952	Escherichia	Bacteria
+iEC1344_C	Escherichia coli C	Escherichia	Bacteria
+ic_1306	Escherichia coli CFT073	Escherichia	Bacteria
+iEcDH1_1363	Escherichia coli DH1	Escherichia	Bacteria
+iECDH1ME8569_1439	Escherichia coli DH1	Escherichia	Bacteria
+iEC1368_DH5a	Escherichia coli DH5[alpha]	Escherichia	Bacteria
+iECED1_1282	Escherichia coli ED1a	Escherichia	Bacteria
+iETEC_1333	Escherichia coli ETEC H10407	Escherichia	Bacteria
+iEcHS_1320	Escherichia coli HS	Escherichia	Bacteria
+iECIAI1_1343	Escherichia coli IAI1	Escherichia	Bacteria
+iECIAI39_1322	Escherichia coli IAI39	Escherichia	Bacteria
+iECOK1_1307	Escherichia coli IHE3034	Escherichia	Bacteria
+iEKO11_1354	Escherichia coli KO11FL	Escherichia	Bacteria
+iLF82_1304	Escherichia coli LF82	Escherichia	Bacteria
+iECNA114_1301	Escherichia coli NA114	Escherichia	Bacteria
+iECO103_1326	Escherichia coli O103:H2 str. 12009	Escherichia	Bacteria
+iECO111_1330	Escherichia coli O111:H- str. 11128	Escherichia	Bacteria
+iE2348C_1286	Escherichia coli O127:H6 str. E2348/69	Escherichia	Bacteria
+iEcE24377_1341	Escherichia coli O139:H28 str. E24377A	Escherichia	Bacteria
+iECH74115_1262	Escherichia coli O157:H7 str. EC4115	Escherichia	Bacteria
+iZ_1308	Escherichia coli O157:H7 str. EDL933	Escherichia	Bacteria
+iECs_1301	Escherichia coli O157:H7 str. Sakai	Escherichia	Bacteria
+iECSP_1301	Escherichia coli O157:H7 str. TW14359	Escherichia	Bacteria
+iECO26_1355	Escherichia coli O26:H11 str. 11368	Escherichia	Bacteria
+iG2583_1286	Escherichia coli O55:H7 str. CB9615	Escherichia	Bacteria
+iNRG857_1313	Escherichia coli O83:H1 str. NRG 857C	Escherichia	Bacteria
+iECS88_1305	Escherichia coli S88	Escherichia	Bacteria
+iECSE_1348	Escherichia coli SE11	Escherichia	Bacteria
+iECSF_1327	Escherichia coli SE15	Escherichia	Bacteria
+iEcSMS35_1347	Escherichia coli SMS-3-5	Escherichia	Bacteria
+iUMN146_1321	Escherichia coli UM146	Escherichia	Bacteria
+iECUMN_1333	Escherichia coli UMN026	Escherichia	Bacteria
+iUMNK88_1353	Escherichia coli UMNK88	Escherichia	Bacteria
+iUTI89_1310	Escherichia coli UTI89	Escherichia	Bacteria
+iEC1364_W	Escherichia coli W	Escherichia	Bacteria
+iECW_1372	Escherichia coli W	Escherichia	Bacteria
+iWFL_1372	Escherichia coli W	Escherichia	Bacteria
+iECDH10B_1368	Escherichia coli str. K-12 substr. DH10B	Escherichia	Bacteria
+iML1515	Escherichia coli str. K-12 substr. MG1655	Escherichia	Bacteria
+iJR904	Escherichia coli str. K-12 substr. MG1655	Escherichia	Bacteria
+iJO1366	Escherichia coli str. K-12 substr. MG1655	Escherichia	Bacteria
+e_coli_core	Escherichia coli str. K-12 substr. MG1655	Escherichia	Bacteria
+iAF1260	Escherichia coli str. K-12 substr. MG1655	Escherichia	Bacteria
+iAF1260b	Escherichia coli str. K-12 substr. MG1655	Escherichia	Bacteria
+iY75_1357	Escherichia coli str. K-12 substr. W3110	Escherichia	Bacteria
+iEC1372_W3110	Escherichia coli str. K-12 substr. W3110	Escherichia	Bacteria
+iAF987	Geobacter metallireducens GS-15	Geobacter	Bacteria
+iIT341	Helicobacter pylori 26695	Helicobacter	Bacteria
+Recon3D	Homo sapiens	Homo	Eukarya
+RECON1	Homo sapiens	Homo	Eukarya
+iAB_RBC_283	Homo sapiens	Homo	Eukarya
+iAT_PLT_636	Homo sapiens	Homo	Eukarya
+iYL1228	Klebsiella pneumoniae subsp. pneumoniae MGH 78578	Klebsiella	Bacteria
+iNF517	Lactococcus lactis subsp. cremoris MG1363	Lactococcus	Bacteria
+iAF692	Methanosarcina barkeri str. Fusaro	Methanosarcina	Archaea
+iMM1415	Mus musculus	Mus	Eukarya
+iEK1008	Mycobacterium tuberculosis H37Rv	Mycobacterium	Bacteria
+iNJ661	Mycobacterium tuberculosis H37Rv	Mycobacterium	Bacteria
+iLB1027_lipid	Phaeodactylum tricornutum CCAP 1055/1	Phaeodactylum	Eukarya
+iAM_Pb448	Plasmodium berghei	Plasmodium	Eukarya
+iAM_Pc455	Plasmodium cynomolgi strain B	Plasmodium	Eukarya
+iAM_Pf480	Plasmodium falciparum 3D7	Plasmodium	Eukarya
+iAM_Pk459	Plasmodium knowlesi strain H	Plasmodium	Eukarya
+iAM_Pv461	Plasmodium vivax Sal-1	Plasmodium	Eukarya
+iJN1463	Pseudomonas putida KT2440	Pseudomonas	Bacteria
+iJN746	Pseudomonas putida KT2440	Pseudomonas	Bacteria
+iMM904	Saccharomyces cerevisiae S288C	Saccharomyces	Eukarya
+iND750	Saccharomyces cerevisiae S288C	Saccharomyces	Eukarya
+STM_v1_0	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2	Salmonella	Bacteria
+iYS1720	Salmonella pan-reactome	Salmonella	Bacteria
+iSbBS512_1146	Shigella boydii CDC 3083-94	Shigella	Bacteria
+iSBO_1134	Shigella boydii Sb227	Shigella	Bacteria
+iSDY_1059	Shigella dysenteriae Sd197	Shigella	Bacteria
+iSFxv_1172	Shigella flexneri 2002017	Shigella	Bacteria
+iS_1188	Shigella flexneri 2a str. 2457T	Shigella	Bacteria
+iSF_1195	Shigella flexneri 2a str. 301	Shigella	Bacteria
+iSFV_1184	Shigella flexneri 5 str. 8401	Shigella	Bacteria
+iSSON_1240	Shigella sonnei Ss046	Shigella	Bacteria
+iSB619	Staphylococcus aureus subsp. aureus N315	Staphylococcus	Bacteria
+iYS854	Staphylococcus aureus subsp. aureus USA300_TCH1516	Staphylococcus	Bacteria
+iJB785	Synechococcus elongatus PCC 7942	Synechococcus	Bacteria
+iSynCJ816	Synechocystis sp. PCC 6803	Synechocystis	Bacteria
+iJN678	Synechocystis sp. PCC 6803	Synechocystis	Bacteria
+iLJ478	Thermotoga maritima MSB8	Thermotoga	Bacteria
+iIS312_Trypomastigote	Trypanosoma cruzi Dm28c	Trypanosoma	Eukarya
+iIS312_Epimastigote	Trypanosoma cruzi Dm28c	Trypanosoma	Eukarya
+iIS312_Amastigote	Trypanosoma cruzi Dm28c	Trypanosoma	Eukarya
+iIS312	Trypanosoma cruzi Dm28c	Trypanosoma	Eukarya
+iPC815	Yersinia pestis CO92	Yersinia	Bacteria

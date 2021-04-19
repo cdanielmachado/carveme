@@ -2,8 +2,8 @@ import numpy as np
 import warnings
 import pandas as pd
 
-from reframed.cobra.ensemble import EnsembleModel, save_ensemble
-from reframed.io.sbml import parse_gpr_rule, save_cbmodel
+from reframed.cobra.ensemble import EnsembleModel
+from reframed.io.sbml import parse_gpr_rule
 from reframed.core.transformation import disconnected_metabolites
 from reframed.solvers import solver_instance
 from reframed.solvers.solver import VarType
@@ -184,10 +184,9 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
     return solution
 
 
-def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=True,
-                default_score=-1.0, uptake_score=0.0, soft_score=1.0,
-                soft_constraints=None, hard_constraints=None, ref_model=None, ref_score=0.0,
-                init_env=None, debug_output=None):
+def carve_model(model, reaction_scores, inplace=True, default_score=-1.0, uptake_score=0.0, soft_score=1.0,
+                soft_constraints=None, hard_constraints=None, ref_model=None, ref_score=0.0, init_env=None,
+                debug_output=None):
     """ Reconstruct a metabolic model using the CarveMe approach.
 
     Args:
@@ -257,18 +256,13 @@ def carve_model(model, reaction_scores, outputfile=None, flavor=None, inplace=Tr
             except:
                 print('Failed to parse:', row['GPR'])
 
-    cleanup_metadata(model)
-
     if init_env:
         init_env.apply(model, inplace=True, warning=False)
-
-    if outputfile:
-        save_cbmodel(model, outputfile, flavor=flavor)
 
     return model
 
 
-def build_ensemble(model, reaction_scores, size, outputfile=None, flavor=None, init_env=None):
+def build_ensemble(model, reaction_scores, size, init_env=None):
     """ Reconstruct a model ensemble using the CarveMe approach.
 
     Args:
@@ -319,24 +313,3 @@ def build_ensemble(model, reaction_scores, size, outputfile=None, flavor=None, i
 
     if init_env:
         init_env.apply(ensemble.model, inplace=True, warning=False)
-
-    if outputfile:
-        cleanup_metadata(ensemble.model)
-        save_ensemble(ensemble, outputfile, flavor=flavor)
-
-
-def cleanup_metadata(model):
-
-    for met in model.metabolites.values():
-        if 'BiGG models' in met.metadata:
-            del met.metadata['BiGG models']
-        if 'CHEBI' in met.metadata:
-            del met.metadata['CHEBI']
-        if 'CHARGE' in met.metadata:
-            del met.metadata['CHARGE']
-
-    for rxn in model.reactions.values():
-        if 'BiGG models' in rxn.metadata:
-            del rxn.metadata['BiGG models']
-        if 'Reactome' in rxn.metadata:
-            del rxn.metadata['Reactome']

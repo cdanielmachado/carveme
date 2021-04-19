@@ -9,9 +9,8 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    "reframed>=1.2",
-    "pandas>=0.20.0",
-    "requests>=2.18"
+    "reframed>=1.2.1",
+    "pandas>=1.0",
 ]
 
 included_files = {
@@ -75,7 +74,7 @@ included_files = {
 
 setup(
     name='carveme',
-    version='1.4.1',
+    version='1.5.0',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
     author="Daniel Machado",
@@ -84,6 +83,7 @@ setup(
     entry_points={
         'console_scripts': [
             'build_universe=carveme.cli.build_universe:main',
+            'curate_universe=carveme.cli.curate_universe:main',
             'carve=carveme.cli.carve:main',
             'gapfill=carveme.cli.gapfill:main',
             'merge_community=carveme.cli.merge_community:main',
@@ -105,6 +105,7 @@ setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'License :: OSI Approved :: Apache Software License',
     ],
     setup_requires=['setuptools_scm']

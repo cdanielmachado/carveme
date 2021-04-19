@@ -15,13 +15,11 @@ def create_exchange_reactions(model, default_lb=0, default_ub=None):
         if m_id.endswith('_e'):
             lb = str(default_lb) if default_lb is not None else ''
             ub = str(default_ub) if default_ub is not None else ''
-            rxn_str = 'R_EX_{}: {} <-> [{},{}]'.format(m_id[2:], m_id, lb, ub)
-            r_id = model.add_reaction_from_str(rxn_str, clear_tmp=False)
+            rxn_str = f'R_EX_{m_id[2:]}: {m_id} <-> [{lb}, {ub}]'
+            r_id = model.add_reaction_from_str(rxn_str)
             model.reactions[r_id].is_exchange = True
+            model.reactions[r_id].metadata['SBOTerm'] = 'SBO:0000627'
             ex_rxns.append(r_id)
-
-    model._clear_temp()
-
     return ex_rxns
 
 
@@ -34,15 +32,16 @@ def set_exchange_bounds(model, lb, ub):
 def create_sink_reactions(model, metabolites):
     for m_id in metabolites:
         if m_id in model.metabolites:
-            rxn_str = 'R_sink_{}: {} --> '.format(m_id[2:], m_id)
-            r_id = model.add_reaction_from_str(rxn_str, clear_tmp=False)
+            rxn_str = f'R_sink_{m_id[2:]}: {m_id} --> [0, 1000]'
+            r_id = model.add_reaction_from_str(rxn_str)
             model.reactions[r_id].is_sink = True
-    model._clear_temp()
+            model.reactions[r_id].metadata['SBOTerm'] = 'SBO:0000632'
 
 
 def add_maintenance_atp(model, lb=0, ub=1000):
-    rxn_str = 'R_ATPM: M_atp_c + M_h2o_c --> M_adp_c + M_h_c + M_pi_c [{}, {}]'.format(lb, ub)
+    rxn_str = f'R_ATPM: M_atp_c + M_h2o_c --> M_adp_c + M_h_c + M_pi_c [{lb}, {ub}]'
     model.add_reaction_from_str(rxn_str)
+    model.reactions['R_ATPM'].metadata['SBOTerm'] = 'SBO:0000630'
 
 
 def tab2fasta(inputfile, outputfile, filter_by_model=None):
@@ -126,6 +125,7 @@ def add_biomass_equation(model, stoichiometry, label=None):
     name = 'Biomass reaction'
     reaction = CBReaction(r_id, name=name, reversible=False, stoichiometry=stoichiometry, objective=1.0)
     model.add_reaction(reaction)
+    model.reactions[r_id].metadata['SBOTerm'] = 'SBO:0000629'
 
 
 def load_soft_constraints(filename):
@@ -137,3 +137,39 @@ def load_hard_constraints(filename):
     df = pd.read_csv(filename, sep='\t', header=None)
     return dict(zip(df[0], zip(df[1], df[2])))
 
+
+def to_rdf_annotation(elem_id, items):
+    header = [
+        '<sbml:annotation xmlns:sbml="http://www.sbml.org/sbml/level3/version1/core">',
+        '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">',
+        f'<rdf:Description rdf:about="#{elem_id}">',
+        '<bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">',
+        '<rdf:Bag>'
+    ]
+
+    entries = [f'<rdf:li rdf:resource="{item}"/>' for item in items]
+
+    footer = [
+        '</rdf:Bag>',
+        '</bqbiol:is>',
+        '</rdf:Description>',
+        '</rdf:RDF>',
+        '</sbml:annotation>'
+    ]
+
+    return '\n'.join(header + entries + footer)
+
+
+def annotate_genes(model, g2g, ga):
+    ga['BiGG_gene'] = ga.apply(lambda row: f"{row['model']}.{row['gene']}", axis=1)
+    ga = pd.merge(g2g, ga, on=['BiGG_gene'])
+    for gene, group in ga.groupby('query_gene'):
+        g_id = 'G_' + gene
+        if g_id not in model.genes:
+            continue
+
+        annotation = to_rdf_annotation(g_id, group['annotation'])
+        model.genes[g_id].metadata['XMLAnnotation'] = annotation
+
+    for gene in model.genes.values():
+        gene.metadata['SBOTerm'] = 'SBO:0000243'
