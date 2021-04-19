@@ -183,7 +183,7 @@ def run_essentiality_benchmark(models, essential, non_essential, media_db, speci
 
         if org_id not in essentiality_media:
             continue
-            
+
         print(f'Running essentiality benchmark for {organisms[org_id]}')
         model = models[org_id]
         medium = essentiality_media[org_id]
