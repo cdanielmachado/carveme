@@ -77,15 +77,20 @@ biolog_compounds = {
 }
 
 
-def build_models(extra_args=None):
+def build_models(extra_args=None, species=None):
 
     if extra_args is None:
         extra_args = ''
 
-    for org_id, genome in genomes.items():
+    if species is None:
+        species = sorted(organisms.keys())
+    else:
+        species = [species]
+
+    for org_id in species:
         print(f'Carving model for {organisms[org_id]}')
 
-        fasta_file = f"{data_path}/fasta/{genome}"
+        fasta_file = f"{data_path}/fasta/{genomes[org_id]}"
         model_file = f"{data_path}/models/{org_id}.xml"
         mediadb = f"{data_path}/media_db.tsv"
 
@@ -131,16 +136,24 @@ def load_essentiality_data():
     return essential, non_essential
 
 
-def run_biolog_benchmark(models, biolog_data, media_db):
+def run_biolog_benchmark(models, biolog_data, media_db, species=None):
 
     biolog_results = []
 
-    for org_id, medium in biolog_media.items():
-        if org_id not in models:
+    if species is None:
+        species = sorted(organisms.keys())
+    else:
+        species = [species]
+
+    for org_id in species:
+        if org_id not in biolog_media:
             continue
 
         print(f'Running biolog benchmark for {organisms[org_id]}')
         model = models[org_id]
+        medium = biolog_media[org_id]
+
+        tp, fp, fn, tn = 0, 0, 0, 0
 
         for source in biolog_sources[org_id]:
             compounds = set(media_db[medium]) - biolog_compounds[source]
@@ -148,17 +161,35 @@ def run_biolog_benchmark(models, biolog_data, media_db):
             result = benchmark_biolog(model, compounds, data)
             result = [(org_id, source, met, res) for met, res in result.items()]
             biolog_results.extend(result)
+            tp += len([x for x in result if x[3] == 'TP'])
+            fp += len([x for x in result if x[3] == 'FP'])
+            fn += len([x for x in result if x[3] == 'FN'])
+            tn += len([x for x in result if x[3] == 'TN'])
+
+        print(f"TP: {tp} FP: {fp} FN: {fn} TN: {tn}")
 
     return pd.DataFrame(biolog_results, columns=['org', 'source', 'met', 'value'])
 
 
-def run_essentiality_benchmark(models, essential, non_essential, media_db):
+def run_essentiality_benchmark(models, essential, non_essential, media_db, species=None):
     essentiality_results = []
 
-    for org_id, medium in essentiality_media.items():
+    if species is None:
+        species = sorted(organisms.keys())
+    else:
+        species = [species]
+
+    for org_id in species:
+
+        if org_id not in essentiality_media:
+            continue
+            
         print(f'Running essentiality benchmark for {organisms[org_id]}')
         model = models[org_id]
+        medium = essentiality_media[org_id]
+
         in_vivo = {x: True for x in essential[org_id] & set(model.genes)}
+
         if non_essential[org_id]:
             in_vivo.update({x: False for x in non_essential[org_id] & set(model.genes)})
         else:
@@ -169,27 +200,36 @@ def run_essentiality_benchmark(models, essential, non_essential, media_db):
         result = [(org_id, gene, res) for gene, res in result.items()]
         essentiality_results.extend(result)
 
+        tp = len([x for x in result if x[2] == 'TP'])
+        fp = len([x for x in result if x[2] == 'FP'])
+        fn = len([x for x in result if x[2] == 'FN'])
+        tn = len([x for x in result if x[2] == 'TN'])
+        print(f"TP: {tp} FP: {fp} FN: {fn} TN: {tn}")
+
     return pd.DataFrame(essentiality_results, columns=['org', 'gene', 'value'])
 
 
-def benchmark(rebuild=True, biolog=True, essentiality=True, extra_args=None):
+def benchmark(rebuild=True, biolog=True, essentiality=True, extra_args=None, species=None):
 
+    if species is not None:
+        if species not in organisms:
+            print(f"No such species available: {species}")
     if rebuild:
-        build_models(extra_args)
+        build_models(extra_args, species)
 
     models = load_models()
     media_db = load_media_db(f'{data_path}/media_db.tsv')
 
     if biolog:
         biolog_data = load_biolog_data()
-        df_biolog = run_biolog_benchmark(models, biolog_data, media_db)
+        df_biolog = run_biolog_benchmark(models, biolog_data, media_db, species)
         df_biolog.to_csv(f'{data_path}/results/biolog.tsv', sep='\t', index=False)
         value = mcc(df_biolog)
         print(f'Biolog final MCC value: {value:.3f}')
 
     if essentiality:
         essential, non_essential = load_essentiality_data()
-        df_essentiality = run_essentiality_benchmark(models, essential, non_essential, media_db)
+        df_essentiality = run_essentiality_benchmark(models, essential, non_essential, media_db, species)
         df_essentiality.to_csv(f'{data_path}/results/essentiality.tsv', sep='\t', index=False)
         value = mcc(df_essentiality)
         print(f'Essentiality final MCC value: {value:.3f}')
@@ -204,14 +244,19 @@ def main():
                         help="Skip biolog benchmark.")
     parser.add_argument('--skip-essentiality', action='store_true', dest='no_essentiality',
                         help="Skip essentiality benchmark.")
+
     parser.add_argument('--carve-args', dest='carve_args', help="Additional arguments for carving.")
+
+    parser.add_argument('--species', dest='species', help="Benchmark only one species.")
 
     args = parser.parse_args()
 
     benchmark(rebuild=(not args.no_rebuild),
               biolog=(not args.no_biolog),
               essentiality=(not args.no_essentiality),
-              extra_args=args.carve_args)
+              extra_args=args.carve_args,
+              species=args.species
+              )
 
 
 if __name__ == '__main__':
