@@ -211,8 +211,9 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
 
         ensemble = build_ensemble(universe_model, scores, ensemble_size, init_env=init_env)
 
-        annotate_genes(ensemble, gene2gene, gene_annotations)
+        annotate_genes(ensemble.model, gene2gene, gene_annotations)
         save_ensemble(ensemble, outputfile, flavor=flavor)
+        return
 
     if model is None:
         print("Failed to build model.")
