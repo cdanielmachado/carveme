@@ -313,3 +313,5 @@ def build_ensemble(model, reaction_scores, size, init_env=None):
 
     if init_env:
         init_env.apply(ensemble.model, inplace=True, warning=False)
+
+    return ensemble
