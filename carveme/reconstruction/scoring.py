@@ -96,7 +96,7 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
     gene_scores = pd.merge(gene2gene, gprs, how='right')
 
     # add default scores for spontaneous genes
-    spontaneous = {'G_s0001', 'G_S0001', 'G_s_0001', 'G_S_0001', 'G_KPN_SPONT'}
+    spontaneous = {'G_s0001', 'G_S0001', 'G_s_0001', 'G_S_0001', 'G_KPN_SPONT', 'G_PP_s0001'}
     gene_scores.loc[gene_scores.gene.isin(spontaneous), 'score'] = spontaneous_score
     gene_scores.loc[gene_scores.gene.isin(spontaneous), 'query_gene'] = 'spontaneous'
 

@@ -183,7 +183,6 @@ def download_model_specific_data(outputfile, bigg_gprs, fastafile, annotations):
     create_gpr_table(df, bigg_gprs)
 
 
-
 def write_fasta(sequences, fastafile):
 
     with open(fastafile, 'w') as f:
@@ -215,7 +214,6 @@ def create_gpr_table(data, outputfile):
         pandas.DataFrame: GPR association table
     """
     rows = []
-    spontaneous = {'G_s0001', 'G_S0001', 'G_s_0001', 'G_S_0001', 'G_KPN_SPONT'}
 
     print("Print creating GPR table...")
 
@@ -231,7 +229,7 @@ def create_gpr_table(data, outputfile):
         if pd.notnull(gpr_str) and gpr_str != '':
             gpr = parse_gpr_rule(gpr_str, prefix='G_')
             for protein in gpr.proteins:
-                genes = sorted(set(protein.genes) - spontaneous)
+                genes = sorted(set(protein.genes))
                 p_id = 'P_' + '+'.join([gene[2:] for gene in genes])
                 for gene in genes:
                     rows.append((gene, p_id, r_id, model_id))
