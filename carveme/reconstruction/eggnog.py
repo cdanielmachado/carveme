@@ -10,32 +10,22 @@ def split_and_expand(df, col, sep):
     return df
 
 
-def load_eggnog_data(filename, drop_unannotated=True, drop_unused_cols=True):
-    """ Load and parse an eggnog results for new eggnog-mapper version.
+def load_eggnog_data(filename):
+    """ Load and parse an eggnog results from eggnog-mapper annotations.
 
     Args:
         filename (str): input file
-        drop_unannotated (bool): remove entries without BiGG annotation (default: True)
-        drop_unused_cols (bool): remove columns not used for model carving (default: True)
 
     Returns:
         pandas.DataFrame: eggnog data
 
     """
-    columns = ['query_gene', 'seed_eggNOG_ortholog', 'evalue', 'score', 'best_tax_level',
-                   'predicted_gene_name', 'GO_terms', 'EC', 'KEGG_ko','KEGG_pathways', 
-                   'KEGG_Module', 'KEGG_Reaction', 'KEGGrclass',
-                   'BRITE*','KEGG_TC','CAZy','BiGG_gene']
 
-    data = pd.read_csv(filename, comment='#', sep='\t', usecols=range(17), names=columns)
-
-    if drop_unannotated:
-        data.dropna(subset=['BiGG_gene'], inplace=True)
-
-    if drop_unused_cols:
-        data = data[['query_gene', 'BiGG_gene', 'score']]
-
-    data = split_and_expand(data, 'BiGG_gene', ',')
+    columns = ['query_gene', 'score', 'BiGG_gene']
+    data = pd.read_csv(filename, comment='#', sep='\t', usecols=[0, 3, 19], names=columns)
+    data = data[['query_gene', 'BiGG_gene', 'score']].query("BiGG_gene != '-'")
+    data['BiGG_gene'] = data['BiGG_gene'].apply(lambda x: x.split(','))
+    data = data.explode('BiGG_gene', ignore_index=True)
 
     return data
 

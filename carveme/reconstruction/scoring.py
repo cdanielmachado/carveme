@@ -110,7 +110,7 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
     reaction_scores = protein_scores.groupby(['reaction'], as_index=False) \
         .agg({'GPR': merge_proteins, 'score': merge_protein_scores}).dropna()
 
-    avg_score = reaction_scores['score'].median()
+    avg_score = reaction_scores.query('score > 0')['score'].median()
 
     if avg_score == 0:
         return None, gene2gene
