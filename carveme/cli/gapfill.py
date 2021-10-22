@@ -33,7 +33,7 @@ def maincall(inputfile, media, mediadb=None, universe=None, universe_file=None, 
 
     if not universe_file:
         if universe:
-            universe_file = "{}{}universe_{}.xml".format(project_dir, config.get('generated', 'folder'), universe)
+            universe_file = "{}{}universe_{}.xml.gz".format(project_dir, config.get('generated', 'folder'), universe)
         else:
             universe_file = project_dir + config.get('generated', 'default_universe')
 
