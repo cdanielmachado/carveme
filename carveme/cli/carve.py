@@ -8,7 +8,7 @@ from carveme.reconstruction.ncbi_download import load_ncbi_table, download_ncbi_
 from carveme.reconstruction.scoring import reaction_scoring
 from carveme.reconstruction.diamond import run_blast, load_diamond_results
 from reframed.cobra.ensemble import save_ensemble
-from reframed import load_cbmodel, save_cbmodel, Environment
+from reframed import load_cbmodel, save_cbmodel, Environment, set_default_solver
 from reframed.io.sbml import sanitize_id
 import argparse
 import os
@@ -302,6 +302,8 @@ def main():
 
     parser.add_argument('--reference', help="Manually curated model of a close reference species.")
 
+    parser.add_argument('--solver', help="Select MILP solver. Available options: cplex [default], gurobi.")
+
     parser.add_argument('--default-score', type=float, default=-1.0, help=argparse.SUPPRESS)
     parser.add_argument('--uptake-score', type=float, default=0.0, help=argparse.SUPPRESS)
     parser.add_argument('--soft-score', type=float, default=1.0, help=argparse.SUPPRESS)
@@ -340,6 +342,9 @@ def main():
         flavor = 'cobra'
     else:
         flavor = config.get('sbml', 'default_flavor')
+
+    if args.solver:
+        set_default_solver(args.solver)
 
     first_run_check()
 
