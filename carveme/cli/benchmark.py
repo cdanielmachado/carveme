@@ -1,5 +1,5 @@
 import pandas as pd
-from reframed import load_cbmodel, set_default_solver
+from reframed import load_cbmodel
 from carveme.reconstruction.utils import load_media_db
 from carveme.reconstruction.benchmark import benchmark_biolog, benchmark_essentiality, mcc
 from carveme import project_dir
@@ -249,12 +249,8 @@ def main():
 
     parser.add_argument('--species', dest='species', help="Benchmark only one species.")
 
-    parser.add_argument('--solver', help="Select MILP solver. Available options: cplex [default], gurobi.")
-
     args = parser.parse_args()
 
-    if args.solver:
-        set_default_solver(args.solver)
 
     benchmark(rebuild=(not args.no_rebuild),
               biolog=(not args.no_biolog),
