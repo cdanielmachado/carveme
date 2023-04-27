@@ -58,7 +58,7 @@ def run_blast(inputfile, input_type, outputfile, database, args=None, verbose=Tr
     cmd += ['-o', outputfile]
 
     if not args:
-        args = "--more-sensitive --top 10"
+        args = "--more-sensitive --top 10 --quiet"
 
     cmd += args.split()
 

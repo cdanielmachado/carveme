@@ -10,6 +10,7 @@ from carveme.reconstruction.diamond import run_blast, load_diamond_results
 from reframed.cobra.ensemble import save_ensemble
 from reframed import load_cbmodel, save_cbmodel, Environment, set_default_solver
 from reframed.io.sbml import sanitize_id
+from reframed.core.transformation import apply_bounds
 import argparse
 import os
 import os.path
@@ -139,6 +140,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
     try:
         universe_model = load_cbmodel(universe_file, flavor='bigg')
         universe_model.id = model_id
+        apply_bounds(universe_model)
     except IOError:
         available = '\n'.join(glob(f"{project_dir}{config.get('generated', 'folder')}universe_*.xml.gz"))
         raise IOError(f'Failed to load universe model: {universe_file}\nAvailable universe files:\n{available}')
