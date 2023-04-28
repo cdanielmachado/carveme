@@ -88,7 +88,8 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
     """
 
     # filter best match for each gene
-    gene2gene = annotation.sort_values(by='score', ascending=False) \
+    gene2gene = annotation.query('score > 100') \
+                          .sort_values(by='score', ascending=False) \
                           .groupby('BiGG_gene', as_index=False).apply(lambda x: x.iloc[0])
 
     # merge with gpr table
@@ -115,7 +116,7 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
     if avg_score == 0:
         return None, gene2gene
 
-    reaction_scores['normalized_score'] = (reaction_scores['score'] / avg_score).apply(lambda x: round(x, 2))
+    reaction_scores['normalized_score'] = (reaction_scores['score'] / avg_score).apply(lambda x: round(x, 1))
 
     if debug_output:
         gene_scores.to_csv(debug_output + '_gene_scores.tsv', sep='\t', index=False)
