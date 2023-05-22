@@ -4,10 +4,6 @@
 Installation
 ============
 
-**CarveMe** currently supports Python 3.6 and 3.7.
-We recommend using the `Anaconda python
-distribution <https://www.continuum.io/downloads>`_.
-
 CarveMe can be easily installed using the **pip** package manager:
 
 .. code-block:: console
@@ -17,10 +13,11 @@ CarveMe can be easily installed using the **pip** package manager:
 Additionally, you must manually install two external dependencies:
 
 - diamond_ (conda install -c bioconda diamond)
-- IBM CPLEX_ Optimizer
+- either the IBM CPLEX_ Optimizer or the Gurobi_ Optimizer
 
 .. _diamond: https://github.com/bbuchfink/diamond
 .. _CPLEX: https://www.ibm.com/analytics/cplex-optimizer
+.. _Gurobi: https://www.gurobi.com/downloads/gurobi-software/
 
 Note that you will need to register with IBM to obtain an `academic license for CPLEX <https://www.ibm.com/academic/home>`_.
 

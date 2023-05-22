@@ -17,7 +17,9 @@ Can be easily installed using **pip**:
 pip install carveme
 ```
 
-Additionally, you must install diamond and CPLEX (please check the documentation for details). 
+Additionally, you must install:
+   - diamond (conda install -c bioconda diamond)
+   - IBM CPLEX or Gurobi solver (full versions with respective academic licenses)
 
 ### Credits and License
 
