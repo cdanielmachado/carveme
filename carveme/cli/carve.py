@@ -347,6 +347,8 @@ def main():
 
     if args.solver:
         set_default_solver(args.solver)
+    else:
+        set_default_solver(config.get('solver', 'default_solver'))
 
     first_run_check()
 
