@@ -83,7 +83,7 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
 
     if default_score != 0:
         for r_id in model.reactions:
-            if r_id not in reactions and r_id not in ref_reactions and not r_id.startswith('R_EX') and r_id != 'R_ATPM':
+            if r_id not in reactions and r_id not in ref_reactions and not r_id.startswith('R_EX') and r_id != 'R_ATPM' and r_id != model.biomass_reaction:
                 scores[r_id] = default_score
                 reactions.append(r_id)
 
@@ -96,8 +96,7 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
     if not hasattr(solver, '_carveme_flag'):
         solver._carveme_flag = True
 
-        biomass = model.biomass_reaction
-        solver.add_constraint('min_growth', {biomass: 1}, '>', min_growth, update=False)
+        solver.add_constraint('min_growth', {model.biomass_reaction: 1}, '>', min_growth, update=False)
         solver.add_constraint('min_atpm', {'R_ATPM': 1}, '>', min_atpm, update=False)
 
         solver.neg_vars = []
