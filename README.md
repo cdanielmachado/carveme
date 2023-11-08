@@ -8,21 +8,8 @@ CarveMe is a python-based tool for genome-scale metabolic model reconstruction.
 
 ### Documentation
 
-For more details please check: http://carveme.readthedocs.io/
+For instructions on installation and usage please check: http://carveme.readthedocs.io/
  
-### Installation
-
-Can be easily installed using **pip**:
-```
-pip install carveme
-```
-
-Additionally, you must install:
-   - diamond (conda install -c bioconda diamond)
-   - SCIP solver [optional] (conda install --c conda-forge pyscipopt)
-   - IBM CPLEX or Gurobi solver [recommended] (full version with academic license)
-
-
 ### Credits and License
 
 For citation purposes please refer to our paper:
