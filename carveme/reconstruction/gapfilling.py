@@ -116,7 +116,7 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
             universe.set_flux_bounds(r_id, lb=0)
 
     merged_model = merge_models(model, universe, inplace=False)
-    solver = solver_instance(merged_model)
+#    solver = solver_instance(merged_model)
 
     if spent_model:
         solver0 = solver_instance(spent_model)
@@ -137,7 +137,8 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
                             print("added", r_id[5:-2], "to", medium_name)
 
             gapFill(model, universe, constraints=constraints, min_growth=min_growth,
-                    scores=scores, inplace=True, bigM=bigM, solver=solver, tag=medium_name)
+                    scores=scores, inplace=True, bigM=bigM, tag=medium_name)#,solver=solver, )
+            
         else:
             print('Medium {} not in database, ignored.'.format(medium_name))
 
