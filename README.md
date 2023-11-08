@@ -19,7 +19,9 @@ pip install carveme
 
 Additionally, you must install:
    - diamond (conda install -c bioconda diamond)
-   - IBM CPLEX or Gurobi solver (full versions with respective academic licenses)
+   - SCIP solver [optional] (conda install --c conda-forge pyscipopt)
+   - IBM CPLEX or Gurobi solver [recommended] (full version with academic license)
+
 
 ### Credits and License
 

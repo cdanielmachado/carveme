@@ -10,14 +10,16 @@ CarveMe can be easily installed using the **pip** package manager:
 
     $ pip install carveme
 
-Additionally, you must manually install two external dependencies:
+Additionally, you must manually install these dependencies:
 
 - diamond_ (conda install -c bioconda diamond)
-- either the IBM CPLEX_ Optimizer or the Gurobi_ Optimizer
+- SCIP_ solver [optional] (conda install --c conda-forge pyscipopt)
+- IBM CPLEX_ or Gurobi_ optimizer [recommended] (full version with academic license)
 
 .. _diamond: https://github.com/bbuchfink/diamond
+.. _SCIP: https://scipopt.org
 .. _CPLEX: https://www.ibm.com/analytics/cplex-optimizer
-.. _Gurobi: https://www.gurobi.com/downloads/gurobi-software/
+.. _Gurobi: https://www.gurobi.com/downloads/gurobi-software
 
 Note that you will need to register with IBM to obtain an `academic license for CPLEX <https://www.ibm.com/academic/home>`_.
 
