@@ -32,6 +32,12 @@ After installing CPLEX, **do not forget** to install the CPLEX python API.
 
     $ conda install --c conda-forge pyscipopt
 
+Also, remember to select the correct solver during execution:
+
+.. code-block:: console
+
+    $ carve [ARGS] --solver scip
+
 .. _diamond: https://github.com/bbuchfink/diamond
 .. _SCIP: https://scipopt.org
 .. _CPLEX: https://www.ibm.com/analytics/cplex-optimizer
