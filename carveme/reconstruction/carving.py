@@ -5,7 +5,7 @@ import pandas as pd
 from reframed.cobra.ensemble import EnsembleModel
 from reframed.io.sbml import parse_gpr_rule
 from reframed.core.transformation import disconnected_metabolites
-from reframed.solvers import solver_instance, SCIPSolver
+from reframed.solvers import solver_instance
 from reframed.solvers.solver import VarType
 from reframed.solvers.solution import Status
 
@@ -178,7 +178,7 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
     if debug_output:
         solver.write_to_file(debug_output + "_milp_problem.lp")
 
-    if isinstance(solver, SCIPSolver):
+    if solver.__class__.__name__ == 'SCIPSolver':
         solver.problem.setParam('limits/time', 600)
         solver.problem.setParam('limits/gap', 0.001)
         solution = solver.solve(suboptimal=True)
