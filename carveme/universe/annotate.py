@@ -11,10 +11,10 @@ def determine_elem_composition(model, elem, known, unknown, incomplete):
     all_unknown = unknown | set(incomplete)
 
     for m_id in unknown:
-        solver.add_variable(m_id, lb=0, vartype=VarType.INTEGER, update=False)
+        solver.add_variable(m_id, lb=0, vartype=VarType.INTEGER)
 
     for m_id, formula in incomplete.items():
-        solver.add_variable(m_id, lb=formula.get(elem, 0), update=False)
+        solver.add_variable(m_id, lb=formula.get(elem, 0))
 
     for r_id, rxn in model.reactions.items():
 
@@ -25,8 +25,8 @@ def determine_elem_composition(model, elem, known, unknown, incomplete):
             continue  # no unknowns for this reaction
 
         reactions.append(r_id)
-        solver.add_variable(f'{r_id}_e+', lb=0, update=False)
-        solver.add_variable(f'{r_id}_e-', lb=0, update=False)
+        solver.add_variable(f'{r_id}_e+', lb=0)
+        solver.add_variable(f'{r_id}_e-', lb=0)
         objective[f'{r_id}_e+'] = 1
         objective[f'{r_id}_e-'] = 1
 
@@ -44,7 +44,7 @@ def determine_elem_composition(model, elem, known, unknown, incomplete):
         lhs[f'{r_id}_e+'] = 1
         lhs[f'{r_id}_e-'] = -1
 
-        solver.add_constraint(r_id, lhs, '=', -balance, update=False)
+        solver.add_constraint(r_id, lhs, '=', -balance)
 
     solver.update()
     sol = solver.solve(objective, minimize=True)
@@ -99,14 +99,14 @@ def determine_proton_composition(model, alpha=0.5):
     objective = {}
 
     for cpd, nH in cpds_nH.items():
-        solver.add_variable(f'{cpd}_d+', lb=0, vartype=VarType.INTEGER, update=False)
-        solver.add_variable(f'{cpd}_d-', lb=0, ub=nH, vartype=VarType.INTEGER, update=False)
+        solver.add_variable(f'{cpd}_d+', lb=0, vartype=VarType.INTEGER)
+        solver.add_variable(f'{cpd}_d-', lb=0, ub=nH, vartype=VarType.INTEGER)
         objective[f'{cpd}_d+'] = alpha / len(cpds_nH)
         objective[f'{cpd}_d-'] = alpha / len(cpds_nH)
 
     for r_id in reactions:
-        solver.add_variable(f'{r_id}_e+', lb=0, vartype=VarType.INTEGER, update=False)
-        solver.add_variable(f'{r_id}_e-', lb=0, vartype=VarType.INTEGER, update=False)
+        solver.add_variable(f'{r_id}_e+', lb=0, vartype=VarType.INTEGER)
+        solver.add_variable(f'{r_id}_e-', lb=0, vartype=VarType.INTEGER)
         objective[f'{r_id}_e+'] = (1 - alpha) / len(reactions)
         objective[f'{r_id}_e-'] = (1 - alpha) / len(reactions)
 
@@ -118,7 +118,7 @@ def determine_proton_composition(model, alpha=0.5):
         lhs.update({f'{m_id[2:-2]}_d+': coeff for m_id, coeff in stoich.items()})
         lhs.update({f'{m_id[2:-2]}_d-': -coeff for m_id, coeff in stoich.items()})
         rhs = -sum(cpds_nH[m_id[2:-2]] * coeff for m_id, coeff in stoich.items())
-        solver.add_constraint(r_id, lhs, '=', rhs, update=False)
+        solver.add_constraint(r_id, lhs, '=', rhs)
 
     solver.update()
 

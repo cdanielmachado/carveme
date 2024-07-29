@@ -49,22 +49,22 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
         solver._gapfill_flag = True
 
         for r_id in new_reactions:
-            solver.add_variable('y_' + r_id, 0, 1, vartype=VarType.BINARY, update=False)
+            solver.add_variable('y_' + r_id, 0, 1, vartype=VarType.BINARY)
 
         solver.update()
 
         for r_id in new_reactions:
-            solver.add_constraint('lb_' + r_id, {r_id: 1, 'y_'+r_id: bigM}, '>', 0, update=False)
-            solver.add_constraint('ub_' + r_id, {r_id: 1, 'y_'+r_id: -bigM}, '<', 0, update=False)
+            solver.add_constraint('lb_' + r_id, {r_id: 1, 'y_'+r_id: bigM}, '>', 0)
+            solver.add_constraint('ub_' + r_id, {r_id: 1, 'y_'+r_id: -bigM}, '<', 0)
 
         biomass = model.biomass_reaction
-        solver.add_constraint('min_growth', {biomass: 1}, '>', min_growth, update=False)
+        solver.add_constraint('min_growth', {biomass: 1}, '>', min_growth)
 
         solver.update()
 
     objective = {'y_'+r_id: 1.0 / (1.0 + scores.get(r_id, 0.0)) for r_id in new_reactions}
 
-    solution = solver.solve(linear=objective, minimize=True, constraints=constraints)
+    solution = solver.solve(objective, minimize=True, constraints=constraints)
 
     if solution.status == Status.OPTIMAL:
 

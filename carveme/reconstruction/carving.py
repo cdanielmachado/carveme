@@ -96,8 +96,8 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
     if not hasattr(solver, '_carveme_flag'):
         solver._carveme_flag = True
 
-        solver.add_constraint('min_growth', {model.biomass_reaction: 1}, '>', min_growth, update=False)
-        solver.add_constraint('min_atpm', {'R_ATPM': 1}, '>', min_atpm, update=False)
+        solver.add_constraint('min_growth', {model.biomass_reaction: 1}, '>', min_growth)
+        solver.add_constraint('min_atpm', {'R_ATPM': 1}, '>', min_atpm)
 
         solver.neg_vars = []
         solver.pos_vars = []
@@ -105,37 +105,37 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
         for r_id in reactions:
             if model.reactions[r_id].lb is None or model.reactions[r_id].lb < 0:
                 y_r = 'yr_' + r_id
-                solver.add_variable(y_r, 0, 1, vartype=VarType.BINARY, update=False)
+                solver.add_variable(y_r, 0, 1, vartype=VarType.BINARY)
                 solver.neg_vars.append(y_r)
             if model.reactions[r_id].ub is None or model.reactions[r_id].ub > 0:
                 y_f = 'yf_' + r_id
-                solver.add_variable(y_f, 0, 1, vartype=VarType.BINARY, update=False)
+                solver.add_variable(y_f, 0, 1, vartype=VarType.BINARY)
                 solver.pos_vars.append(y_f)
 
         if uptake_score != 0:
             for r_id in model.reactions:
                 if r_id.startswith('R_EX'):
-                    solver.add_variable('y_' + r_id, 0, 1, vartype=VarType.BINARY, update=False)
+                    solver.add_variable('y_' + r_id, 0, 1, vartype=VarType.BINARY)
 
         solver.update()
 
         for r_id in reactions:
             y_r, y_f = 'yr_' + r_id, 'yf_' + r_id
             if y_r in solver.neg_vars and y_f in solver.pos_vars:
-                solver.add_constraint('lb_' + r_id, {r_id: 1, y_f: -eps, y_r: bigM}, '>', 0, update=False)
-                solver.add_constraint('ub_' + r_id, {r_id: 1, y_f: -bigM, y_r: eps}, '<', 0, update=False)
-                solver.add_constraint('rev_' + r_id, {y_f: 1, y_r: 1}, '<', 1, update=False)
+                solver.add_constraint('lb_' + r_id, {r_id: 1, y_f: -eps, y_r: bigM}, '>', 0)
+                solver.add_constraint('ub_' + r_id, {r_id: 1, y_f: -bigM, y_r: eps}, '<', 0)
+                solver.add_constraint('rev_' + r_id, {y_f: 1, y_r: 1}, '<', 1)
             elif y_f in solver.pos_vars:
-                solver.add_constraint('lb_' + r_id, {r_id: 1, y_f: -eps}, '>', 0, update=False)
-                solver.add_constraint('ub_' + r_id, {r_id: 1, y_f: -bigM}, '<', 0, update=False)
+                solver.add_constraint('lb_' + r_id, {r_id: 1, y_f: -eps}, '>', 0)
+                solver.add_constraint('ub_' + r_id, {r_id: 1, y_f: -bigM}, '<', 0)
             elif y_r in solver.neg_vars:
-                solver.add_constraint('lb_' + r_id, {r_id: 1, y_r: bigM}, '>', 0, update=False)
-                solver.add_constraint('ub_' + r_id, {r_id: 1, y_r: eps}, '<', 0, update=False)
+                solver.add_constraint('lb_' + r_id, {r_id: 1, y_r: bigM}, '>', 0)
+                solver.add_constraint('ub_' + r_id, {r_id: 1, y_r: eps}, '<', 0)
 
         if uptake_score != 0:
             for r_id in model.reactions:
                 if r_id.startswith('R_EX'):
-                    solver.add_constraint('lb_' + r_id, {r_id: 1, 'y_' + r_id: bigM}, '>', 0, update=False)
+                    solver.add_constraint('lb_' + r_id, {r_id: 1, 'y_' + r_id: bigM}, '>', 0)
 
         solver.update()
 
@@ -173,7 +173,7 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
             if r_id.startswith('R_EX') and r_id not in soft_constraints:
                 objective['y_' + r_id] = uptake_score
 
-    solver.set_objective(linear=objective, minimize=False)
+    solver.set_objective(objective, minimize=False)
 
     if debug_output:
         solver.write_to_file(debug_output + "_milp_problem.lp")
@@ -181,7 +181,7 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
     if solver.__class__.__name__ == 'SCIPSolver':
         solver.problem.setParam('limits/time', 600)
         solver.problem.setParam('limits/gap', 0.001)
-        solution = solver.solve(suboptimal=True)
+        solution = solver.solve()
     else:
         solution = solver.solve()
 
