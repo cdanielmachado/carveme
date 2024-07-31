@@ -64,9 +64,13 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
 
     objective = {'y_'+r_id: 1.0 / (1.0 + scores.get(r_id, 0.0)) for r_id in new_reactions}
 
-    solution = solver.solve(objective, minimize=True, constraints=constraints)
+    if solver.__class__.__name__ == 'SCIPSolver':
+        solver.problem.setParam('limits/time', 600)
+        solver.problem.setParam('limits/gap', 0.001)
+        
+    solution = solver.solve(objective, minimize=True, constraints=constraints, allow_suboptimal=True)
 
-    if solution.status == Status.OPTIMAL:
+    if solution.status == Status.OPTIMAL or solution.status == Status.SUBOPTIMAL:
 
         inactive = [r_id for r_id in new_reactions if abs(solution.values[r_id]) < abstol]
 

@@ -88,8 +88,7 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
     """
 
     # filter best match for each gene
-    gene2gene = annotation.query('score > 100') \
-                          .sort_values(by='score', ascending=False) \
+    gene2gene = annotation.sort_values(by='score', ascending=False) \
                           .groupby('BiGG_gene', as_index=False).apply(lambda x: x.iloc[0])
 
     # merge with gpr table

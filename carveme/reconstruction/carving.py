@@ -32,7 +32,7 @@ def inactive_reactions(model, solution):
         if len(set(neighbors) - set(inactive)) == 1:
             inactive_ext.append(r_id)
 
-    return inactive + inactive_ext
+    return set(inactive + inactive_ext)
 
 
 def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM=1e3, default_score=-1.0,
@@ -67,7 +67,6 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
 
     objective = {}
 
-    scores = scores.copy()
     reactions = list(scores.keys())
 
     if soft_constraints:
@@ -181,16 +180,15 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
     if solver.__class__.__name__ == 'SCIPSolver':
         solver.problem.setParam('limits/time', 600)
         solver.problem.setParam('limits/gap', 0.001)
-        solution = solver.solve()
-    else:
-        solution = solver.solve()
+    
+    solution = solver.solve(allow_suboptimal=True)
 
     return solution
 
 
 def carve_model(model, reaction_scores, inplace=True, default_score=-1.0, uptake_score=0.0, soft_score=1.0,
                 soft_constraints=None, hard_constraints=None, ref_model=None, ref_score=0.0, init_env=None,
-                debug_output=None):
+                debug_output=None, verbose=False):
     """ Reconstruct a metabolic model using the CarveMe approach.
 
     Args:
@@ -236,11 +234,23 @@ def carve_model(model, reaction_scores, inplace=True, default_score=-1.0, uptake
                            soft_constraints=soft_constraints, hard_constraints=hard_constraints,
                            ref_reactions=ref_reactions, ref_score=ref_score, debug_output=debug_output)
 
-    if sol.status == Status.OPTIMAL:
+    if sol.status == Status.OPTIMAL or sol.status == Status.SUBOPTIMAL:
         inactive = inactive_reactions(model, sol)
     else:
         print("MILP solver failed: {}".format(sol.message))
         return
+
+    if verbose:
+        pos_score = {r_id for r_id, val in scores.items() if val > 0}
+        neg_score = {r_id for r_id, val in scores.items() if val < 0}
+        active = set(model.reactions) - inactive
+        n_ai = len(pos_score & active) 
+        n_ae = len(pos_score & inactive) 
+        n_ni = len(neg_score & active) 
+        n_ne = len(neg_score & inactive)
+        print('Reaction consensus: (A)nnotated, (N)on-annotated, (I)ncluded, (E)xcluded')
+        print(f'AI: {n_ai:4n} AE: {n_ae:4n}')
+        print(f'NI: {n_ni:4n} NE: {n_ne:4n}')
 
     if debug_output:
         pd.DataFrame.from_dict(sol.values, orient='index').to_csv(debug_output + '_milp_solution.tsv',
@@ -296,7 +306,7 @@ def build_ensemble(model, reaction_scores, size, init_env=None):
 
         sol = minmax_reduction(model, all_scores, solver=solver)
 
-        if sol.status == Status.OPTIMAL:
+        if sol.status == Status.OPTIMAL or sol.status == Status.SUBOPTIMAL:
             for r_id in model.reactions:
                 active = (abs(sol.values[r_id]) >= 1e-6
                           or (sol.values.get('yf_' + r_id, 0) > 0.5)
