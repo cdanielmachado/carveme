@@ -7,7 +7,7 @@ import os
 
 
 def maincall(inputfile, media, mediadb=None, universe=None, universe_file=None, outputfile=None, flavor=None,
-         spent=None, verbose=False):
+         spent=None, verbose=False, fast_gapfill=False):
 
     if verbose:
         print('Loading model...')
@@ -62,7 +62,7 @@ def maincall(inputfile, media, mediadb=None, universe=None, universe_file=None, 
 
     max_uptake = config.getint('gapfill', 'max_uptake')
     multiGapFill(model, universe_model, media, media_db, max_uptake=max_uptake, inplace=True,
-                 spent_model=spent_model)
+                 spent_model=spent_model, fast_gapfill=fast_gapfill)
 
     if verbose:
         m2, n2 = len(model.metabolites), len(model.reactions)
@@ -106,6 +106,8 @@ def main():
     sbml.add_argument('--cobra', action='store_true', help="Input SBML in old cobra format")
     sbml.add_argument('--fbc2', action='store_true', help="Input SBML in sbml-fbc2 format")
 
+
+    parser.add_argument('--fast_gapfill', '-f', action='store_true', dest='fast_gapfill', default='store_false', help="Use fast gapfilling algorithm")
     args = parser.parse_args()
 
     if args.fbc2:
@@ -123,7 +125,8 @@ def main():
          outputfile=args.output,
          flavor=flavor,
          spent=args.spent,
-         verbose=args.verbose)
+         verbose=args.verbose,
+         fast_gapfill=args.fast_gapfill)
 
 if __name__ == '__main__':
     main()

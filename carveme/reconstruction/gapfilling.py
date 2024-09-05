@@ -7,7 +7,7 @@ from reframed import FBA
 
 
 def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inplace=True, bigM=1e3, abstol=1e-9,
-            solver=None, tag=None):
+            solver=None, tag=None, fast_gapfill=False):
     """ Gap Fill a metabolic model by adding reactions from a reaction universe
 
     Args:
@@ -21,7 +21,7 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
         abstol (float): minimum threshold to consider a reaction active (default: 1e-9)
         solver (Solver): solver instance (optional)
         tag (str): add a metadata tag to gapfilled reactions (optional)
-
+        fast_gapfill (bool): use fast gapfilling algorithm (default: False)
     Returns:
         CBModel: gap filled model (if inplace=False)
 
@@ -48,9 +48,14 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
     if not hasattr(solver, '_gapfill_flag'):
         solver._gapfill_flag = True
 
-        for r_id in new_reactions:
-            solver.add_variable('y_' + r_id, 0, 1, vartype=VarType.BINARY)
 
+    if fast_gapfill:
+        vartype= VarType.CONTINUOUS
+    else:
+        vartype =VarType.BINARY
+
+    for r_id in new_reactions:
+        solver.add_variable('y_' + r_id, 0, 1, vartype=vartype)
         solver.update()
 
         for r_id in new_reactions:
@@ -86,7 +91,7 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
 
 
 def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10, scores=None, inplace=True, bigM=1e3,
-                 spent_model=None):
+                 spent_model=None, fast_gapfill=False):
     """ Gap Fill a metabolic model for multiple environmental conditions
 
     Args:
@@ -100,6 +105,7 @@ def multiGapFill(model, universe, media, media_db, min_growth=0.1, max_uptake=10
         inplace (bool): modify given model in place (default: True)
         bigM (float): maximal reaction flux (default: 1000)
         spent_model (CBModel): additional species to generate spent medium compounds
+        fast_gapfill (bool): use fast gapfilling algorithm (default: False)
 
     Returns:
         CBModel: gap filled model (if inplace=False)
