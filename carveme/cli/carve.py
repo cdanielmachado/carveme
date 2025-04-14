@@ -15,17 +15,17 @@ import argparse
 import os
 import os.path
 import pandas as pd
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 from glob import glob
 import subprocess
 
 
-def first_run_check():
+def first_run_check(ncores):
     diamond_db = project_dir + config.get('generated', 'diamond_db')
     if not os.path.exists(diamond_db):
         print("Running diamond for the first time, please wait while we build the internal database...")
         fasta_file = project_dir + config.get('generated', 'fasta_file')
-        cmd = ['diamond', 'makedb', '--in', fasta_file, '-d', diamond_db[:-5]]
+        cmd = ['diamond', 'makedb', '--threads', str(ncores),  '--in', fasta_file, '-d', diamond_db[:-5]]
         try:
             exit_code = subprocess.call(cmd)
         except OSError:
@@ -45,7 +45,7 @@ def build_model_id(name):
 def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
          ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, blind_gapfill=False, init=None,
          mediadb=None, default_score=None, uptake_score=None, soft_score=None, soft=None, hard=None, reference=None,
-         ref_score=None, recursive_mode=False):
+             ref_score=None, recursive_mode=False, ncores=None):
 
     if recursive_mode:
         model_id = os.path.splitext(os.path.basename(inputfile))[0]
@@ -108,7 +108,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
             print('Running diamond...')
         diamond_db = project_dir + config.get('generated', 'diamond_db')
         blast_output = os.path.splitext(inputfile)[0] + '.tsv'
-        exit_code = run_blast(inputfile, input_type, blast_output, diamond_db, diamond_args, verbose)
+        exit_code = run_blast(inputfile, input_type, blast_output, diamond_db, diamond_args, ncores, verbose)
 
         if exit_code is None:
             print('Unable to run diamond (make sure diamond is available in your PATH).')
@@ -313,6 +313,16 @@ def main():
 
     parser.add_argument('--blind-gapfill', action='store_true', help=argparse.SUPPRESS)
 
+    parser.add_argument('--njobs', type=int, default=cpu_count(),
+                        help="number of concurrent tasks to run via "
+                        "multiprocessing.Pool; defaults to " +
+                        "multiprocessing.cpu_count() " +
+                        " (%(default)s)")
+    parser.add_argument('--ncores', type=int, default=1,
+                        help="number of cores to pass to "
+                        "each multiprocessing.Pool job (eg diamond); " +
+                        "jobs. default: %(default)s")
+
     args = parser.parse_args()
 
     if args.gapfill and args.ensemble:
@@ -345,12 +355,19 @@ def main():
     else:
         flavor = config.get('sbml', 'default_flavor')
 
+    if (args.ncores * args.njobs) > cpu_count():
+        parser.error(f'--ncores ({args.ncores}) multiplied by --njobs ({args.njobs}) cannot exceed {cpu_count()}')
+
     if args.solver:
         set_default_solver(args.solver)
 #    else:
 #        set_default_solver(config.get('solver', 'default_solver'))
 
-    first_run_check()
+    # give the initial diamond run all available resources
+    first_run_check(args.ncores * args.njobs)
+
+    if args.gapfill and args.ensemble:
+        parser.error('Gap fill and ensemble generation cannot currently be combined (not implemented yet).')
 
     if not args.recursive:
         if len(args.input) > 1:
@@ -377,7 +394,8 @@ def main():
             soft=args.soft,
             hard=args.hard,
             reference=args.reference,
-            ref_score=args.reference_score
+            ref_score=args.reference_score,
+            ncores=args.ncores,
         )
 
     else:
@@ -404,10 +422,11 @@ def main():
                 hard=args.hard,
                 reference=args.reference,
                 ref_score=args.reference_score,
-                recursive_mode=True
-            )
+                recursive_mode=True,
+                ncores=args.ncores,
+        )
 
-        p = Pool()
+        p = Pool(args.njobs)
         p.map(f, args.input)
 
 

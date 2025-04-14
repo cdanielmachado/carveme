@@ -25,7 +25,7 @@ def load_diamond_results(filename, drop_unused_cols=True):
     return data
 
 
-def run_blast(inputfile, input_type, outputfile, database, args=None, verbose=True):
+def run_blast(inputfile, input_type, outputfile, database, args=None, ncores=None, verbose=True):
     """ Run blast aligment with Diamond.
 
     Args:
@@ -58,7 +58,7 @@ def run_blast(inputfile, input_type, outputfile, database, args=None, verbose=Tr
     cmd += ['-o', outputfile]
 
     if not args:
-        args = "--more-sensitive --top 10 --quiet"
+        args = f"--more-sensitive --top 10 --quiet --threads {ncores}"
 
     cmd += args.split()
 

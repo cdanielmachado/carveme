@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """The setup script."""
-
+import os
+from configparser import ConfigParser
 from setuptools import setup, find_packages
 
 with open('README.rst') as readme_file:
@@ -16,19 +17,20 @@ requirements = [
 included_files = {
     'carveme': [
         'config.cfg',
-        'data/input/bigg_models.csv',
+        'data/input/bigg_models.tsv',
         'data/input/biomass_db.tsv',
-        'data/input/manually_curated.csv',
+        'data/input/manually_curated.tsv',
         'data/input/media_db.tsv',
-        'data/input/metabolomics_park2016.csv',
+#        'data/input/metabolomics_park2016.csv', deleted 5cbc611af5aa265c39882f7a88bf357f3261b170
         'data/input/unbalanced_metabolites.csv',
-        'data/input/bigg_proteins.faa',
-        'data/input/equilibrator_compounds.tsv.gz',
+        'data/generated/bigg_proteins.faa',
+        'data/input/mnx_compounds.tsv',
         'data/input/refseq_release_201.tsv.gz',
-        'data/generated/bigg_gibbs.csv',
+        'data/generated/gene_annotations.tsv.gz',
+#        'data/generated/bigg_gibbs.csv', # deleted c897f41d7d03c27ca12ecd9ee97337355338c378
         'data/generated/bigg_gprs.csv.gz',
         'data/generated/model_specific_data.csv.gz',
-        'data/generated/universe_draft.xml.gz',
+        'data/generated/bigg_universe.xml.gz',
         'data/generated/universe_bacteria.xml.gz',
         'data/generated/universe_grampos.xml.gz',
         'data/generated/universe_gramneg.xml.gz',
@@ -70,6 +72,31 @@ included_files = {
         'data/benchmark/results/essentiality.tsv',
     ]
 }
+missing_files = []
+for path in included_files["carveme"]:
+    fullpath = os.path.join("carveme", path)
+    if not os.path.exists(fullpath):
+        missing_files.append(fullpath)
+if missing_files:
+    print("files required for install are not found:\n")
+    print("\n".join(missing_files))
+    raise ValueError("missing files; exiting")
+
+config = ConfigParser()
+project_dir = "carveme"
+config.read(os.path.join(project_dir, 'config.cfg'))
+config_files = []
+for chunk in ["input", "generated"]:
+    for k,v in config[chunk].items():
+        vpath = os.path.join(project_dir, v)
+        if k in ["folder", "diamond_db"]: continue
+        if not os.path.exists(vpath):
+            raise ValueError(f'file {vpath} not found')
+        elif v not in included_files["carveme"]:
+            raise ValueError(f'config file {vpath} not included in setup.py')
+        else:
+            config_files.append(v)
+
 
 
 setup(
@@ -100,7 +127,7 @@ setup(
     keywords='carveme',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
-        'Environment :: Console', 
+        'Environment :: Console',
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Programming Language :: Python :: 3.8',

@@ -64,6 +64,15 @@ This can be combined with *-o* to change the output folder:
 
     $ carve -r myfolder/*.faa -o mymodels/
 
+To balance the number of concurrent samples run  versus the number of cores allocated to each ,
+specify the `--njobs` and `--ncores` argument.  `--njobs` gets passed to `multiprocessing.Pool()`,
+ while `--ncores` gets passed to Diamond. these default to running in single-threaded mode for all available CPUs.
+ To instead run Diamond with 4 threads on a maximum of 2 concurrent samples, this be adjusted to :
+
+.. code-block:: console
+
+    $ carve --ncores 4 --njobs 2 -r myfolder/*.faa -o mymodels/
+
 
 Gap Filling
 -----------
@@ -152,5 +161,3 @@ You can initialize the community with a pre-defined medium (just like during sin
 .. code-block:: console
 
     $ merge_community [input files] -i M9
-
-
