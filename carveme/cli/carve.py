@@ -17,22 +17,22 @@ import os.path
 import pandas as pd
 from multiprocessing import Pool
 from glob import glob
-import subprocess
+#import subprocess
 
 
-def first_run_check():
-    diamond_db = project_dir + config.get('generated', 'diamond_db')
-    if not os.path.exists(diamond_db):
-        print("Running diamond for the first time, please wait while we build the internal database...")
-        fasta_file = project_dir + config.get('generated', 'fasta_file')
-        cmd = ['diamond', 'makedb', '--in', fasta_file, '-d', diamond_db[:-5]]
-        try:
-            exit_code = subprocess.call(cmd)
-        except OSError:
-            print('Unable to run diamond (make sure diamond is available in your PATH).')
-        else:
-            if exit_code != 0:
-                print('Failed to run diamond (wrong arguments).')
+# def first_run_check():
+#     diamond_db = project_dir + config.get('generated', 'diamond_db')
+#     if not os.path.exists(diamond_db):
+#         print("Running diamond for the first time, please wait while we build the internal database...")
+#         fasta_file = project_dir + config.get('generated', 'fasta_file')
+#         cmd = ['diamond', 'makedb', '--in', fasta_file, '-d', diamond_db[:-5]]
+#         try:
+#             exit_code = subprocess.call(cmd)
+#         except OSError:
+#             print('Unable to run diamond (make sure diamond is available in your PATH).')
+#         else:
+#             if exit_code != 0:
+#                 print('Failed to run diamond (wrong arguments).')
 
 
 def build_model_id(name):
@@ -175,7 +175,7 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
     gene_annotations = pd.read_csv(project_dir + config.get('generated', 'gene_annotations'), sep='\t')
     bigg_gprs = project_dir + config.get('generated', 'bigg_gprs')
     gprs = pd.read_csv(bigg_gprs)
-    gprs = gprs[gprs.reaction.isin(universe_model.reactions)]
+    gprs = gprs[gprs.reaction.isin(list(universe_model.reactions))]
 
     debug_output = model_id if debug else None
     scores, gene2gene = reaction_scoring(annotations, gprs, debug_output=debug_output)
@@ -350,7 +350,7 @@ def main():
 #    else:
 #        set_default_solver(config.get('solver', 'default_solver'))
 
-    first_run_check()
+#    first_run_check()
 
     if not args.recursive:
         if len(args.input) > 1:

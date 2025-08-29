@@ -7,3 +7,4 @@ include carveme/data/input/media_db.tsv
 include carveme/data/input/metabolomics_park2016.csv
 include carveme/data/input/unbalanced_metabolites.csv
 include carveme/data/generated/bigg_gibbs.csv
+include carveme/data/generated/bigg_proteins.dmnd

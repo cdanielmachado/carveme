@@ -10,7 +10,7 @@ with open('README.rst') as readme_file:
 
 requirements = [
     "reframed>=1.5.4",
-    "pandas>=1.0",
+    "pandas>=2.0",
 ]
 
 included_files = {
@@ -20,13 +20,12 @@ included_files = {
         'data/input/biomass_db.tsv',
         'data/input/manually_curated.csv',
         'data/input/media_db.tsv',
-        'data/input/metabolomics_park2016.csv',
         'data/input/unbalanced_metabolites.csv',
         'data/input/bigg_proteins.faa',
-        'data/input/equilibrator_compounds.tsv.gz',
         'data/input/refseq_release_201.tsv.gz',
         'data/generated/bigg_gibbs.csv',
         'data/generated/bigg_gprs.csv.gz',
+        'data/generated/bigg_proteins.dmnd',
         'data/generated/model_specific_data.csv.gz',
         'data/generated/universe_draft.xml.gz',
         'data/generated/universe_bacteria.xml.gz',
@@ -74,7 +73,7 @@ included_files = {
 
 setup(
     name='carveme',
-    version='1.6.4',
+    version='1.6.5',
     description="CarveMe: automated metabolic model reconstruction",
     long_description=readme,
     author="Daniel Machado",

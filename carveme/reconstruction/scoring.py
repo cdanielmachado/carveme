@@ -86,6 +86,8 @@ def reaction_scoring(annotation, gprs, spontaneous_score=0.0, debug_output=None)
     Returns:
         pandas.DataFrame: reaction scores
     """
+    import warnings
+    warnings.filterwarnings("ignore", category=FutureWarning)
 
     # filter best match for each gene
     gene2gene = annotation.sort_values(by='score', ascending=False) \
