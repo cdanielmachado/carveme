@@ -124,7 +124,7 @@ def download_model_specific_data(outputfile, bigg_gprs, fastafile, annotations):
 
     data = get_request(MODELS_URL)
     models = sorted(data['results'], key=lambda x: x['gene_count'], reverse=True)
-    no_seq_data = ['iAM_Pk459', 'iRC1080', 'iYS1720', 'RECON1', 'Recon3D', 'iJB785', 'iAB_RBC_283']
+    no_seq_data = ['iAM_Pk459', 'iRC1080', 'iYS1720', 'RECON1', 'Recon3D', 'iJB785', 'iAB_RBC_283', 'iSynCJ816']
     filtered = {}
 
     for model in models:

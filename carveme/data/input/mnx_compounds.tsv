@@ -3261,7 +3261,6 @@ phetyrlys	C24H33N4O5	1.0
 phhlipa	C124H219N2O54P3	-8.0
 phlac	C9H9O3	-1.0
 phom	C4H8NO6P	-2.0
-photon	H*	0.0
 phphhlipa	C131H230N2O63P4	-10.0
 phphtna	C55H74N4O5	0.0
 phpyr	C9H7O3	-1.0
@@ -3894,3 +3893,10 @@ zn2	Zn	2.0
 zym_int2	C27H42O	0.0
 zymst	C27H44O	0.0
 zymstnl	C27H46O	0.0
+photon	Z	0.0
+pcrd	R	0.0
+pcox	R	0.0
+focytc6	R	0.0
+ficytc6	R	0.0
+pq	C8H8O2	0.0
+pqh2	C8H10O2	0.0

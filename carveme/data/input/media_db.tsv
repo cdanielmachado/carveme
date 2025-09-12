@@ -187,3 +187,22 @@ M9[glyc]	M9 minimal medium (glycerol)	o2	O2
 M9[glyc]	M9 minimal medium (glycerol)	pi	Phosphate
 M9[glyc]	M9 minimal medium (glycerol)	so4	Sulfate
 M9[glyc]	M9 minimal medium (glycerol)	zn2	Zn2+
+PHOTO	photosynthetic minimal medium	ca2	Ca2+
+PHOTO	photosynthetic minimal medium	cl	Cl-
+PHOTO	photosynthetic minimal medium	cobalt2	Co2+
+PHOTO	photosynthetic minimal medium	cu2	Cu2+
+PHOTO	photosynthetic minimal medium	fe2	Fe2+
+PHOTO	photosynthetic minimal medium	fe3	Fe3+
+PHOTO	photosynthetic minimal medium	h2o	H2O
+PHOTO	photosynthetic minimal medium	k	K+
+PHOTO	photosynthetic minimal medium	mg2	Mg
+PHOTO	photosynthetic minimal medium	mn2	Mn2+
+PHOTO	photosynthetic minimal medium	mobd	Molybdate
+PHOTO	photosynthetic minimal medium	na1	Na+
+PHOTO	photosynthetic minimal medium	nh4	Ammonium
+PHOTO	photosynthetic minimal medium	ni2	Ni2+
+PHOTO	photosynthetic minimal medium	pi	Phosphate
+PHOTO	photosynthetic minimal medium	so4	Sulfate
+PHOTO	photosynthetic minimal medium	zn2	Zn2+
+PHOTO	photosynthetic minimal medium	co2	CO2
+PHOTO	photosynthetic minimal medium	photon	light

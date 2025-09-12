@@ -51,8 +51,13 @@ def filter_reactions_by_kingdom(model, taxa, model_specific_data, bigg_models):
     print(f'Current model size: {len(model.metabolites)} x {len(model.reactions)}')
 
 
-def clean_up_atp_synthases(model):
+def clean_up_atp_synthases(model, taxa=None):
+
     rxns = set(model.search_reactions("R_ATPS")) - {"R_ATPS4rpp"}
+
+    if taxa == 'cyanobacteria':
+        rxns -= {'R_ATPSu'}
+
     model.remove_reactions(rxns)
 
 
@@ -106,11 +111,10 @@ def check_elemental_balance(model, r_id, allow_groups=False, proton_relax=False)
 
     else:
         balance = elemental_balance(formulas)
-
-        if balance == {}:
-            balanced = True
-        elif proton_relax:
-            balanced = set(balance.keys()) == {'H'}
+        balance = set(balance.keys()) - {'Z'} # remove photons
+        if proton_relax:
+            balance = balance - {'H'}        
+        balanced = len(balance) == 0
 
     return balanced
 
@@ -252,7 +256,7 @@ def curate_universe(model, outputfile, model_specific_data, bigg_models, taxa, b
     model_specific_data['reaction'] = model_specific_data['reaction'].apply(lambda x: 'R_' + x)
     filter_reactions_by_kingdom(model, taxa, model_specific_data, bigg_models)
 
-    clean_up_atp_synthases(model)
+    clean_up_atp_synthases(model, taxa)
 
     compute_missing_formulae(model)
 
