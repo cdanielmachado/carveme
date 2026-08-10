@@ -22,7 +22,8 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
         solver (Solver): solver instance (optional)
         tag (str): add a metadata tag to gapfilled reactions (optional)
         fast_gapfill (bool): use fast gapfilling algorithm (default: False)
-        backend (str): MILP backend, 'reframed' (default) or 'straindesign'
+        backend (str): MILP backend: 'reframed' (default), 'straindesign', or
+            'auto' to prefer StrainDesign when it is installed
     Returns:
         CBModel: gap filled model (if inplace=False)
 
@@ -42,6 +43,13 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
 
     if not scores:
         scores = {}
+
+    if backend == 'auto':
+        try:
+            import straindesign  # noqa: F401
+            backend = 'straindesign'
+        except ImportError:
+            backend = 'reframed'
 
     if backend == 'straindesign':
         from carveme.reconstruction.straindesign_backend import gapfill_straindesign

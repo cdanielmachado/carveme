@@ -18,37 +18,28 @@ error; and it **compresses** the network first, which the default path does not 
 on a model merged with a universe that is where the work is.
 """
 
-from math import isinf
-
-
 def _to_cobra(model, constraints=None):
-    """Build a cobrapy model from a reframed CBModel.
+    """reframed's own converter, plus CarveMe's medium constraints.
 
-    Only stoichiometry and bounds are carried across: gap-filling needs nothing else, and
-    leaving genes behind keeps StrainDesign in its reaction-based mode.
+    `to_cobrapy` already carries stoichiometry, bounds, GPRs and the objective across, so
+    there is no reason to reimplement it -- using theirs also means we track their model
+    semantics instead of drifting from them.
     """
-    from cobra import Model, Metabolite, Reaction
+    from reframed import to_cobrapy
 
-    out = Model('gapfill')
-    out.add_metabolites([Metabolite(m_id) for m_id in model.metabolites])
-    mets = {m.id: m for m in out.metabolites}
-
-    reactions = []
-    for r_id, rxn in model.reactions.items():
-        r = Reaction(r_id)
-        lb, ub = float(rxn.lb), float(rxn.ub)
-        if constraints and r_id in constraints:
-            bounds = constraints[r_id]
-            if isinstance(bounds, (tuple, list)):
-                lb, ub = float(bounds[0]), float(bounds[1])
-            else:                                    # a single value fixes the flux
-                lb = ub = float(bounds)
-        r.lower_bound, r.upper_bound = lb, ub
-        reactions.append((r, rxn))
-    out.add_reactions([r for r, _ in reactions])
-    for r, rxn in reactions:
-        out.reactions.get_by_id(r.id).add_metabolites(
-            {mets[m_id]: float(coeff) for m_id, coeff in rxn.stoichiometry.items()})
+    # Note: this builds an optlang problem that StrainDesign never touches -- its FVA and
+    # compression construct their own MILP_LP straight from the stoichiometry, and it keeps
+    # cobra's solver suppressed throughout. On a universe-sized model the conversion costs
+    # ~3.5 s for 5532 reactions, so it is worth revisiting if it ever dominates.
+    out = to_cobrapy(model)
+    for r_id, bounds in (constraints or {}).items():
+        if r_id not in out.reactions:
+            continue
+        rxn = out.reactions.get_by_id(r_id)
+        if isinstance(bounds, (tuple, list)):
+            rxn.bounds = (float(bounds[0]), float(bounds[1]))
+        else:                                        # a single value fixes the flux
+            rxn.bounds = (float(bounds), float(bounds))
     return out
 
 
