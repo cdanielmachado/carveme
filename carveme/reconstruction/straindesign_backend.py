@@ -30,14 +30,17 @@ def _to_cobra(model, constraints=None):
     """
     import cobra
     from reframed import to_cobrapy
-    from straindesign.networktools import suppress_lp_context
+    from straindesign.networktools import suppress_lp_context, set_suppressed_objective
 
     # Built inside StrainDesign's suppression context: cobra otherwise updates its optlang
     # problem on every metabolite, reaction and bound change, and nothing downstream reads it
-    # -- StrainDesign's FVA and compression build their own MILP_LP from the stoichiometry,
-    # and the module is created with skip_checks so its validation FBA never runs.
+    # -- StrainDesign's FVA and compression build their own MILP_LP from the stoichiometry.
     with suppress_lp_context(cobra.Model('shell')):
         out = to_cobrapy(model)
+        # to_cobrapy's `cb_model.objective = ...` writes into the optlang problem, which is
+        # suppressed here and has no variables to write to, so the objective would be dropped.
+        # Record it where StrainDesign reads it instead.
+        set_suppressed_objective(out, model.get_objective())
         for r_id, bounds in (constraints or {}).items():
             if r_id not in out.reactions:
                 continue
