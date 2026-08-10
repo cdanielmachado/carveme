@@ -35,8 +35,20 @@ def _to_cobra(model, constraints=None):
     # Built inside StrainDesign's suppression context: cobra otherwise updates its optlang
     # problem on every metabolite, reaction and bound change, and nothing downstream reads it
     # -- StrainDesign's FVA and compression build their own MILP_LP from the stoichiometry.
+    # Gene rules are dropped for the conversion: gap-filling buys reactions, nothing here ever
+    # looks at a gene, and cobra parses every rule into a GPR tree on assignment -- 0.34 s to
+    # build them and another 0.25 s every time the model is copied. They are put back on the
+    # caller's model immediately, so this is invisible from the outside; blanking them first is
+    # what lets us keep using reframed's own converter instead of maintaining a second one.
+    gprs = {r_id: rxn.gpr for r_id, rxn in model.reactions.items()}
     with suppress_lp_context(cobra.Model('shell')):
-        out = to_cobrapy(model)
+        try:
+            for rxn in model.reactions.values():
+                rxn.gpr = None
+            out = to_cobrapy(model)
+        finally:
+            for r_id, gpr in gprs.items():
+                model.reactions[r_id].gpr = gpr
         # to_cobrapy's `cb_model.objective = ...` writes into the optlang problem, which is
         # suppressed here and has no variables to write to, so the objective would be dropped.
         # Record it where StrainDesign reads it instead.
