@@ -7,7 +7,7 @@ from reframed import FBA
 
 
 def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inplace=True, bigM=1e3, abstol=1e-9,
-            solver=None, tag=None, fast_gapfill=False):
+            solver=None, tag=None, fast_gapfill=False, backend='reframed'):
     """ Gap Fill a metabolic model by adding reactions from a reaction universe
 
     Args:
@@ -22,6 +22,7 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
         solver (Solver): solver instance (optional)
         tag (str): add a metadata tag to gapfilled reactions (optional)
         fast_gapfill (bool): use fast gapfilling algorithm (default: False)
+        backend (str): MILP backend, 'reframed' (default) or 'straindesign'
     Returns:
         CBModel: gap filled model (if inplace=False)
 
@@ -39,11 +40,20 @@ def gapFill(model, universe, constraints=None, min_growth=0.1, scores=None, inpl
         if r_id.startswith('R_EX'):
             model.set_flux_bounds(r_id, lb=0)
 
-    if not solver:
-        solver = solver_instance(model)
-
     if not scores:
         scores = {}
+
+    if backend == 'straindesign':
+        from carveme.reconstruction.straindesign_backend import gapfill_straindesign
+        added = gapfill_straindesign(model, new_reactions, scores=scores,
+                                     min_growth=min_growth, constraints=constraints)
+        inactive = [r_id for r_id in new_reactions if r_id not in added]
+        model.remove_reactions(inactive)
+        model.remove_metabolites(disconnected_metabolites(model))
+        return None if inplace else model
+
+    if not solver:
+        solver = solver_instance(model)
 
     if not hasattr(solver, '_gapfill_flag'):
         solver._gapfill_flag = True
