@@ -18,6 +18,9 @@ error; and it **compresses** the network first, which the default path does not 
 on a model merged with a universe that is where the work is.
 """
 
+from math import inf
+
+
 def _to_cobra(model, constraints=None):
     """reframed's own converter, plus CarveMe's medium constraints.
 
@@ -25,26 +28,32 @@ def _to_cobra(model, constraints=None):
     there is no reason to reimplement it -- using theirs also means we track their model
     semantics instead of drifting from them.
     """
+    import cobra
     from reframed import to_cobrapy
+    from straindesign.networktools import suppress_lp_context
 
-    # Note: this builds an optlang problem that StrainDesign never touches -- its FVA and
-    # compression construct their own MILP_LP straight from the stoichiometry, and it keeps
-    # cobra's solver suppressed throughout. On a universe-sized model the conversion costs
-    # ~3.5 s for 5532 reactions, so it is worth revisiting if it ever dominates.
-    out = to_cobrapy(model)
-    for r_id, bounds in (constraints or {}).items():
-        if r_id not in out.reactions:
-            continue
-        rxn = out.reactions.get_by_id(r_id)
-        if isinstance(bounds, (tuple, list)):
-            rxn.bounds = (float(bounds[0]), float(bounds[1]))
-        else:                                        # a single value fixes the flux
-            rxn.bounds = (float(bounds), float(bounds))
+    # Built inside StrainDesign's suppression context: cobra otherwise updates its optlang
+    # problem on every metabolite, reaction and bound change, and nothing downstream reads it
+    # -- StrainDesign's FVA and compression build their own MILP_LP from the stoichiometry,
+    # and the module is created with skip_checks so its validation FBA never runs.
+    with suppress_lp_context(cobra.Model('shell')):
+        out = to_cobrapy(model)
+        for r_id, bounds in (constraints or {}).items():
+            if r_id not in out.reactions:
+                continue
+            rxn = out.reactions.get_by_id(r_id)
+            if isinstance(bounds, (tuple, list)):
+                # multiGapFill writes bounds like (-max_uptake, None); None means unbounded
+                lo, hi = bounds
+                rxn.bounds = (-inf if lo is None else float(lo),
+                              inf if hi is None else float(hi))
+            else:                                    # a single value fixes the flux
+                rxn.bounds = (float(bounds), float(bounds))
     return out
 
 
 def gapfill_straindesign(model, new_reactions, scores=None, min_growth=0.1, constraints=None,
-                         solver=None, time_limit=None):
+                         solver=None, time_limit=None, compress=False, skip_fvas=True):
     """Cheapest set of candidates to add so the model grows.
 
     Args:
@@ -55,6 +64,9 @@ def gapfill_straindesign(model, new_reactions, scores=None, min_growth=0.1, cons
         constraints (dict): medium and other bound overrides
         solver (str): MILP solver for StrainDesign ('gurobi', 'cplex', 'scip', 'glpk')
         time_limit (float): seconds, optional
+        compress (bool): run StrainDesign's network compression (default False)
+        skip_fvas (bool): skip StrainDesign's preprocessing FVAs (default True) -- they
+            narrow the problem for the MILP, which gap-filling does not need
 
     Returns:
         set: the candidates that must be ADDED. Everything else in `new_reactions` is
@@ -69,14 +81,21 @@ def gapfill_straindesign(model, new_reactions, scores=None, min_growth=0.1, cons
     biomass = model.biomass_reaction
     ki_cost = {r_id: 1.0 / (1.0 + scores.get(r_id, 0.0)) for r_id in new_reactions}
 
-    kwargs = dict(compress=True, solution_approach='best', max_solutions=1,
-                  ki_cost=ki_cost)
+    # compression is off by default: on a model merged with a universe it costs far more
+    # than it saves -- measured 308 s against 0.9 s for the default backend on a gap-fill
+    # that adds nothing at all
+    kwargs = dict(compress=compress, solution_approach='best', max_solutions=1,
+                  ki_cost=ki_cost, skip_preprocessing_fvas=skip_fvas)
     if solver:
         kwargs['solver'] = solver
     if time_limit:
         kwargs['time_limit'] = time_limit
 
-    module = SDModule(cobra_model, 'protect', constraints=[f'{biomass} >= {min_growth}'])
+    # skip_checks: the module's feasibility FBA reads objective coefficients one reaction at
+    # a time through cobra's optlang problem, which is the only thing here that needs a live
+    # cobra solver. Gap-filling has already established the model is the one we built.
+    module = SDModule(cobra_model, 'protect', constraints=[f'{biomass} >= {min_growth}'],
+                      skip_checks=True)
     solution = compute_strain_designs(cobra_model, sd_modules=[module], **kwargs)
 
     designs = solution.get_reaction_sd() if hasattr(solution, 'get_reaction_sd') else solution.reaction_sd
