@@ -218,9 +218,10 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
         min_growth (float): growth the completed model must reach
         min_atpm (float): maintenance flux the completed model must be able to carry
         constraints (dict): medium and other bound overrides
-        extra_conditions (list of dict): further media the model must also grow on. Each gets its
-            own flux system inside the same MILP, so a reaction shared by two conditions is paid
-            for once -- which iterated single-condition gap-filling does not achieve.
+        extra_conditions (list of dict): further media the model must also grow on. Each becomes
+            a PROTECT module over the same binaries, so every condition gets its own flux system
+            inside one MILP and a reaction shared by two of them is paid for once -- which
+            iterated single-condition gap-filling does not achieve.
         solver (str): MILP solver ('gurobi', 'cplex', 'scip', 'glpk')
         threads (int), time_limit (float), loopless (bool), verbose (bool)
 
@@ -228,7 +229,7 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
         set: reaction ids to REMOVE from the universe.
     """
     import straindesign as sd
-    from straindesign.names import COMPLETE
+    from straindesign.names import CARVEME, PROTECT, BEST
 
     score_of = dict(zip(reaction_scores['reaction'], reaction_scores['normalized_score']))
     gpr_of = dict(zip(reaction_scores['reaction'], reaction_scores.get('GPR', '')))
@@ -281,20 +282,25 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
               f'({len(duplicates)} reverse duplicates merged, {kept_apart} kept apart on '
               f'disjoint enzymes)')
 
-    module = sd.SDModule(cobra_model, COMPLETE, constraints=demands, core_reactions=core,
+    module = sd.SDModule(cobra_model, CARVEME, constraints=demands, core_reactions=core,
                          loopless=loopless, skip_checks=True)
-    kwargs = dict(ki_cost=ki_cost, compress=False)
+    # compression is off by default: on a universe it costs far more than it saves. It is a plain
+    # pipeline option here, not something this module type bypasses -- pass compress=True to use it.
+    kwargs = dict(ki_cost=ki_cost, compress=False, solution_approach=BEST, max_solutions=1,
+                  skip_preprocessing_fvas=True)
     if solver:
         kwargs['solver'] = solver
     if threads:
         kwargs['milp_threads'] = threads
     if time_limit:
         kwargs['time_limit'] = time_limit
-    if extra_conditions:
-        kwargs['extra_blocks'] = [demands + _bounds_to_constraints(cobra_model, cond)
-                                  for cond in extra_conditions]
+    modules = [module]
+    for condition in (extra_conditions or []):
+        modules.append(sd.SDModule(cobra_model, PROTECT, skip_checks=True,
+                                   constraints=demands + _bounds_to_constraints(cobra_model,
+                                                                                condition)))
 
-    solution = sd.compute_strain_designs(cobra_model, sd_modules=[module], **kwargs)
+    solution = sd.compute_strain_designs(cobra_model, sd_modules=modules, **kwargs)
     designs = solution.reaction_sd
     if not designs:
         raise RuntimeError('StrainDesign found no completion '
@@ -306,7 +312,9 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
                       f'valid -- every constraint holds -- but a cheaper one may exist. Raise '
                       f'time_limit to close the gap.')
 
-    bought = {r for r, kept in designs[0].items() if kept}
+    # read against the candidate list, not the design's keys: a candidate whose binary the MILP
+    # fixed to zero is reported in no design at all
+    bought = {r for r in candidates if designs[0].get(r)}
     inactive = (set(candidates) - bought) | duplicates
     if verbose:
         print(f'Completion kept {len(bought & annotated)}/{len(core)} annotated and bought '
