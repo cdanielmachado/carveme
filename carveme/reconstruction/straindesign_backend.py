@@ -1,4 +1,4 @@
-"""StrainDesign backend for gap-filling.
+"""StrainDesign backends for gap-filling and for carving.
 
 Gap-filling asks for the cheapest set of reactions to add from a universe so that the model
 grows. That is the same problem StrainDesign solves as a *knock-in* design: candidate
@@ -16,8 +16,12 @@ Two differences are the reason to try it. StrainDesign links binaries with **ind
 constraints** rather than a big-M, which removes the 1e3 bound as a source of numerical
 error; and it **compresses** the network first, which the default path does not do at all --
 on a model merged with a universe that is where the work is.
+
+The second entry point, :func:`complete_model`, replaces carving itself rather than the
+gap-filling that follows it. See its docstring for what changes.
 """
 
+import warnings
 from math import inf
 
 
@@ -120,3 +124,205 @@ def gapfill_straindesign(model, new_reactions, scores=None, min_growth=0.1, cons
 
     # a knock-in carries a positive value; anything else was not bought
     return {r_id for r_id, v in designs[0].items() if v > 0 and r_id in ki_cost}
+
+
+# ---------------------------------------------------------------------------------------------
+# Carving, posed as a completion
+# ---------------------------------------------------------------------------------------------
+
+SINK_COST = 50.0        # an artificial sink is a hole in the mass balance, not a reaction
+SPONT_COST = 0.1        # spontaneous chemistry needs no gene, so the genome cannot argue against it
+HET_COST = 1.0          # a reaction with no annotation support at all
+MIN_SCORE = 0.1         # floor on the reward, so a barely-supported hit is not free
+MIN_ATPM = 0.1          # maintenance demand the network must be able to meet
+EXTERNAL = 'C_e'
+
+
+def _spontaneous(gprs, reactions):
+    """Reactions whose only 'gene' is a spontaneity placeholder."""
+    if gprs is None:
+        return set()
+    is_spont = gprs.gene.astype(str).str.contains('s0001|SPONT', case=False, regex=True)
+    spont, catalysed = set(gprs[is_spont].reaction), set(gprs[~is_spont].reaction)
+    return (spont - catalysed) & set(reactions)
+
+
+def _merge_reverse_duplicates(model, annotated, score_of, gpr_of):
+    """Reactions that are the same chemistry written backwards.
+
+    BiGG carries many of these, and left alone they inflate the count of things the completion
+    can buy while adding no chemistry. Merging them is only safe when the two do not carry
+    *disjoint* enzyme evidence: two genuinely different enzymes running the same conversion in
+    opposite directions are two reactions, and collapsing them would erase one gene's support.
+    """
+    def signature(stoich, flip=False):
+        sign = -1 if flip else 1
+        return tuple(sorted((m, sign * v) for m, v in stoich.items()))
+
+    def genes_of(r_id):
+        import re
+        rule = gpr_of.get(r_id) or ''
+        return set(re.findall(r'[A-Za-z_][A-Za-z0-9_.\-]*', rule)) - {'and', 'or'}
+
+    forward = {}
+    for r_id, rxn in model.reactions.items():
+        if len(rxn.stoichiometry) >= 2:
+            forward.setdefault(signature(rxn.stoichiometry), []).append(r_id)
+
+    dropped, kept_apart = set(), 0
+    for r_id, rxn in model.reactions.items():
+        if len(rxn.stoichiometry) < 2 or r_id in dropped:
+            continue
+        for other in forward.get(signature(rxn.stoichiometry, flip=True), []):
+            if other == r_id or other in dropped:
+                continue
+            genes_a, genes_b = genes_of(r_id), genes_of(other)
+            if genes_a and genes_b and not (genes_a <= genes_b or genes_b <= genes_a):
+                kept_apart += 1
+                continue
+            # keep the annotated one, then the reversible one, so no evidence is lost
+            keep, gone = sorted((r_id, other),
+                                key=lambda x: (x in annotated, model.reactions[x].lb < 0, x),
+                                reverse=True)
+            dropped.add(gone)
+            if gone in annotated:
+                annotated.add(keep)
+                score_of[keep] = max(score_of.get(keep, 0.0), score_of.get(gone, 0.0))
+    return dropped, kept_apart
+
+
+def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=MIN_ATPM,
+                   constraints=None, extra_conditions=None, solver=None, threads=None,
+                   time_limit=None, loopless=True, verbose=False):
+    """Which reactions to leave out of the universe, chosen by completion instead of carving.
+
+    Carving picks a threshold on annotation score and deletes below it, then repairs whatever
+    broke. Nothing in that formulation ties a reaction's presence to its ability to carry flux,
+    so a draft model can contain reactions that can never run and can lose reactions the genome
+    plainly supports. Completion states both as constraints instead: an annotated reaction that
+    survives must demonstrably carry flux, and a reaction that was not bought carries none. The
+    result therefore has no blocked reactions, and the annotated reactions that could not be
+    connected at any price are named rather than silently dropped.
+
+    Costs follow CarveMe's own economics, so the two are comparable: an annotated reaction is
+    rewarded by its normalized score, an unannotated one costs 1. Two exceptions, both measured:
+    spontaneous reactions cost almost nothing, because no genome can be evidence against
+    chemistry that needs no enzyme; and artificial sinks cost 50, because a sink is a hole in the
+    mass balance that lets the network meet any demand without producing it. Pricing sinks like
+    ordinary reactions is what lets a completion satisfy biomass through a shortcut.
+
+    Args:
+        model (CBModel): universal model
+        reaction_scores (pandas.DataFrame): reaction scores, as `reaction_scoring` returns them
+        gprs (pandas.DataFrame): the BiGG GPR table, used to identify spontaneous reactions
+        min_growth (float): growth the completed model must reach
+        min_atpm (float): maintenance flux the completed model must be able to carry
+        constraints (dict): medium and other bound overrides
+        extra_conditions (list of dict): further media the model must also grow on. Each gets its
+            own flux system inside the same MILP, so a reaction shared by two conditions is paid
+            for once -- which iterated single-condition gap-filling does not achieve.
+        solver (str): MILP solver ('gurobi', 'cplex', 'scip', 'glpk')
+        threads (int), time_limit (float), loopless (bool), verbose (bool)
+
+    Returns:
+        set: reaction ids to REMOVE from the universe.
+    """
+    import straindesign as sd
+    from straindesign.names import COMPLETE
+
+    score_of = dict(zip(reaction_scores['reaction'], reaction_scores['normalized_score']))
+    gpr_of = dict(zip(reaction_scores['reaction'], reaction_scores.get('GPR', '')))
+    annotated = set(reaction_scores['reaction']) & set(model.reactions)
+
+    duplicates, kept_apart = _merge_reverse_duplicates(model, annotated, score_of, gpr_of)
+    spontaneous = _spontaneous(gprs, model.reactions)
+
+    cobra_model = _to_cobra(model, constraints)
+    biomass = model.biomass_reaction
+    atpm = next((r for r in ('R_ATPM', 'ATPM') if r in cobra_model.reactions), None)
+
+    # A merged duplicate is not something the completion may buy -- it is not in the universe.
+    # Its bounds are closed rather than the reaction deleted: this cobra model is built with a
+    # suppressed optlang problem, which cobra's remove_reactions reaches into and ours has no
+    # variables for. Excluded from the candidates below, it is inert either way.
+    from straindesign.networktools import suppress_lp_context
+    with suppress_lp_context(cobra_model):
+        for r_id in duplicates:
+            if r_id in cobra_model.reactions:
+                cobra_model.reactions.get_by_id(r_id).bounds = (0.0, 0.0)
+
+    exchange, sinks = set(), set()
+    for rxn in cobra_model.reactions:
+        if len(rxn.metabolites) != 1:
+            continue
+        (exchange if list(rxn.metabolites)[0].compartment == EXTERNAL else sinks).add(rxn.id)
+
+    fixed = exchange | duplicates | {biomass} | ({atpm} if atpm else set())
+    candidates = [r.id for r in cobra_model.reactions if r.id not in fixed]
+
+    def cost_of(r):
+        if r in sinks:
+            return SINK_COST
+        if r in annotated:
+            return -max(score_of.get(r, 1.0), MIN_SCORE)
+        if r in spontaneous:
+            return SPONT_COST
+        return HET_COST
+
+    ki_cost = {r: cost_of(r) for r in candidates}
+    core = [r for r in candidates if r in annotated]
+
+    demands = ['%s >= %g' % (biomass, min_growth)]
+    if atpm:
+        demands.append('%s >= %g' % (atpm, min_atpm))
+
+    if verbose:
+        print(f'Completion: {len(candidates)} candidates, {len(core)} annotated '
+              f'({len(duplicates)} reverse duplicates merged, {kept_apart} kept apart on '
+              f'disjoint enzymes)')
+
+    module = sd.SDModule(cobra_model, COMPLETE, constraints=demands, core_reactions=core,
+                         loopless=loopless, skip_checks=True)
+    kwargs = dict(ki_cost=ki_cost, compress=False)
+    if solver:
+        kwargs['solver'] = solver
+    if threads:
+        kwargs['milp_threads'] = threads
+    if time_limit:
+        kwargs['time_limit'] = time_limit
+    if extra_conditions:
+        kwargs['extra_blocks'] = [demands + _bounds_to_constraints(cobra_model, cond)
+                                  for cond in extra_conditions]
+
+    solution = sd.compute_strain_designs(cobra_model, sd_modules=[module], **kwargs)
+    designs = solution.reaction_sd
+    if not designs:
+        raise RuntimeError('StrainDesign found no completion '
+                           f'(status {getattr(solution, "status", "unknown")})')
+
+    status = getattr(solution, 'status', None)
+    if status != 'optimal':
+        warnings.warn(f'The completion did not prove optimality (status {status}). The model is '
+                      f'valid -- every constraint holds -- but a cheaper one may exist. Raise '
+                      f'time_limit to close the gap.')
+
+    bought = {r for r, kept in designs[0].items() if kept}
+    inactive = (set(candidates) - bought) | duplicates
+    if verbose:
+        print(f'Completion kept {len(bought & annotated)}/{len(core)} annotated and bought '
+              f'{len(bought - annotated)} unannotated reactions')
+    return inactive
+
+
+def _bounds_to_constraints(cobra_model, bounds):
+    """CarveMe writes media as {reaction: (lb, ub)}; a constraint block wants expressions."""
+    out = []
+    for r_id, bnd in (bounds or {}).items():
+        if r_id not in cobra_model.reactions:
+            continue
+        lo, hi = bnd if isinstance(bnd, (tuple, list)) else (bnd, bnd)
+        if lo is not None:
+            out.append('%s >= %g' % (r_id, lo))
+        if hi is not None:
+            out.append('%s <= %g' % (r_id, hi))
+    return out
