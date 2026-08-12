@@ -136,11 +136,6 @@ HET_COST = 1.0          # a reaction with no annotation support at all
 MIN_SCORE = 0.1         # floor on the reward, so a barely-supported hit is not free
 MIN_ATPM = 0.1          # maintenance demand the network must be able to meet
 EXTERNAL = 'C_e'
-# The universe gives reversible reactions infinite bounds, but CarveMe's own carving MILP gates
-# them with bigM = 1e3, so a flux beyond that is outside anything CarveMe models in the first
-# place. Adopting the same scale here keeps the two backends comparable and gives the must-run
-# conditions a finite value to relax to.
-FLUX_BOUND = 1000.0
 
 
 def _spontaneous(gprs, reactions):
@@ -260,8 +255,6 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
         for r_id in duplicates:
             if r_id in cobra_model.reactions:
                 cobra_model.reactions.get_by_id(r_id).bounds = (0.0, 0.0)
-        for rxn in cobra_model.reactions:
-            rxn.bounds = (max(rxn.lower_bound, -FLUX_BOUND), min(rxn.upper_bound, FLUX_BOUND))
 
     exchange, sinks = set(), set()
     for rxn in cobra_model.reactions:
