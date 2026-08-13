@@ -195,7 +195,7 @@ def _merge_reverse_duplicates(model, annotated, score_of, gpr_of):
 def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=MIN_ATPM,
                    constraints=None, extra_conditions=None, solver=None, threads=None,
                    time_limit=None, thermodynamic='loopless', verbose=False, compress=None,
-                   skip_fvas=None):
+                   skip_fvas=None, approach=None, seed=None):
     """Which reactions to leave out of the universe, chosen by completion instead of carving.
 
     Carving picks a threshold on annotation score and deletes below it, then repairs whatever
@@ -228,6 +228,10 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
         threads (int), time_limit (float), verbose (bool)
         thermodynamic (str): 'loopless' (default) forbids core reactions from satisfying their
             must-run condition inside a thermodynamically infeasible cycle; None omits it.
+        approach (str): 'best' (default) proves the cheapest reconstruction; 'any' returns the
+            first feasible one, which is far quicker and shows how much the search's arbitrary
+            choices matter.
+        seed (int): MILP seed, to sample alternative reconstructions of equal standing.
         compress, skip_fvas: StrainDesign pipeline options. Both default to off for a CarveMe
             module -- on a universe there is little to compress and most of what an FVA scans
             will not be bought. Note that coupled lumping sums knock-in costs, so
@@ -240,7 +244,12 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
     from straindesign.names import CARVEME, PROTECT, BEST
 
     score_of = dict(zip(reaction_scores['reaction'], reaction_scores['normalized_score']))
-    gpr_of = dict(zip(reaction_scores['reaction'], reaction_scores.get('GPR', '')))
+    if 'GPR' not in reaction_scores:
+        # Without rules there is no enzyme evidence to compare, and the disjoint-enzyme exception
+        # below would quietly never fire -- merging reverse duplicates that should stay apart.
+        raise ValueError('reaction_scores has no GPR column, so reverse duplicates cannot be '
+                         'merged safely. Pass the frame reaction_scoring returns.')
+    gpr_of = dict(zip(reaction_scores['reaction'], reaction_scores['GPR']))
     annotated = set(reaction_scores['reaction']) & set(model.reactions)
 
     duplicates, kept_apart = _merge_reverse_duplicates(model, annotated, score_of, gpr_of)
@@ -302,7 +311,9 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
                          thermodynamic=thermodynamic, skip_checks=True)
     # compression is off by default: on a universe it costs far more than it saves. It is a plain
     # pipeline option here, not something this module type bypasses -- pass compress=True to use it.
-    kwargs = dict(ki_cost=ki_cost, solution_approach=BEST, max_solutions=1)
+    kwargs = dict(ki_cost=ki_cost, solution_approach=approach or BEST, max_solutions=1)
+    if seed is not None:
+        kwargs['seed'] = seed
     if compress is not None:          # otherwise StrainDesign's CarveMe defaults apply
         kwargs['compress'] = compress
     if skip_fvas is not None:

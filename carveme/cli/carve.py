@@ -325,6 +325,12 @@ def main():
     if args.gapfill and args.ensemble:
         parser.error('Gap fill and ensemble generation cannot currently be combined (not implemented yet).')
 
+    if args.ensemble and args.backend != 'reframed':
+        # build_ensemble goes straight to the carving MILP, so the requested backend would be
+        # ignored without a word and the ensemble built by carving after all.
+        parser.error('Ensemble generation is only implemented for the carving backend '
+                     '(--backend reframed).')
+
     if (args.soft or args.hard) and args.ensemble:
         parser.error('Soft/hard constraints and ensemble generation cannot currently be combined (not implemented yet).')
 
