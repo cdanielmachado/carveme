@@ -343,8 +343,18 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
     solution = sd.compute_strain_designs(cobra_model, sd_modules=modules, **kwargs)
     designs = solution.reaction_sd
     if not designs:
-        raise RuntimeError('StrainDesign found no completion '
-                           f'(status {getattr(solution, "status", "unknown")})')
+        status = getattr(solution, 'status', 'unknown')
+        detail = ''
+        if status == 'time_limit':
+            # A run that spends hours and then returns nothing is the worst outcome, so say what
+            # to change rather than only what happened. 'best' proves the cheapest reconstruction
+            # and at genome scale often cannot do so within any practical budget; 'any' returns a
+            # feasible one in a fraction of the time, at the cost of being one arbitrary pick.
+            detail = (". The search proved nothing within time_limit=%s. Raise it, or use "
+                      "approach='any' for a feasible reconstruction rather than the cheapest one. "
+                      "Note also that exchanges='candidates' adds a binary per exchange reaction "
+                      "and is markedly harder to solve than the default." % time_limit)
+        raise RuntimeError(f'StrainDesign found no completion (status {status}){detail}')
 
     status = getattr(solution, 'status', None)
     if status != 'optimal':
