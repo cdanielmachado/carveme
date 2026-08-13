@@ -132,6 +132,7 @@ def gapfill_straindesign(model, new_reactions, scores=None, min_growth=0.1, cons
 
 SINK_COST = 50.0        # an artificial sink is a hole in the mass balance, not a reaction
 SPONT_COST = 0.1        # spontaneous chemistry needs no gene, so the genome cannot argue against it
+EXCHANGE_COST = 0.1     # an exchange needs no gene either, but should not be free (see below)
 HET_COST = 1.0          # a reaction with no annotation support at all
 MIN_SCORE = 0.1         # floor on the reward, so a barely-supported hit is not free
 MIN_ATPM = 0.1          # maintenance demand the network must be able to meet
@@ -265,7 +266,13 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
             continue
         (exchange if list(rxn.metabolites)[0].compartment == EXTERNAL else sinks).add(rxn.id)
 
-    fixed = exchange | duplicates | {biomass} | ({atpm} if atpm else set())
+    # Exchanges are candidates too, at a small price. Left out of the candidate set they can never
+    # be dropped, and the result then carries a transporter for every metabolite in the universe --
+    # 645 of them, nearly all unusable by the chemistry that was actually bought, and every one
+    # counted as blocked. Carving drops them for the same reason, so leaving them in would also
+    # make the two backends incomparable. The price has to be positive rather than zero: at zero
+    # an unusable exchange costs nothing to buy and the choice is arbitrary.
+    fixed = duplicates | {biomass} | ({atpm} if atpm else set())
     candidates = [r.id for r in cobra_model.reactions if r.id not in fixed]
 
     def cost_of(r):
@@ -273,6 +280,8 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
             return SINK_COST
         if r in annotated:
             return -max(score_of.get(r, 1.0), MIN_SCORE)
+        if r in exchange:
+            return EXCHANGE_COST
         if r in spontaneous:
             return SPONT_COST
         return HET_COST
