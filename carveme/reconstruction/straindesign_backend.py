@@ -193,8 +193,8 @@ def _merge_reverse_duplicates(model, annotated, score_of, gpr_of):
 
 def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=MIN_ATPM,
                    constraints=None, extra_conditions=None, solver=None, threads=None,
-                   time_limit=None, loopless=True, verbose=False, compress=False,
-                   skip_fvas=True):
+                   time_limit=None, thermodynamic='loopless', verbose=False, compress=None,
+                   skip_fvas=None):
     """Which reactions to leave out of the universe, chosen by completion instead of carving.
 
     Carving picks a threshold on annotation score and deletes below it, then repairs whatever
@@ -224,10 +224,13 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
             inside one MILP and a reaction shared by two of them is paid for once -- which
             iterated single-condition gap-filling does not achieve.
         solver (str): MILP solver ('gurobi', 'cplex', 'scip', 'glpk')
-        threads (int), time_limit (float), loopless (bool), verbose (bool)
-        compress (bool or 'coupled'): StrainDesign's network compression. Off by default on a
-            universe; 'coupled' is a cheaper middle ground than full compression.
-        skip_fvas (bool): skip StrainDesign's preprocessing FVAs (default True)
+        threads (int), time_limit (float), verbose (bool)
+        thermodynamic (str): 'loopless' (default) forbids core reactions from satisfying their
+            must-run condition inside a thermodynamically infeasible cycle; None omits it.
+        compress, skip_fvas: StrainDesign pipeline options. Both default to off for a CarveMe
+            module -- on a universe there is little to compress and most of what an FVA scans
+            will not be bought. Note that coupled lumping sums knock-in costs, so
+            compress='coupled' is the harsh option here, not the gentle one.
 
     Returns:
         set: reaction ids to REMOVE from the universe.
@@ -287,14 +290,14 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
               f'disjoint enzymes)')
 
     module = sd.SDModule(cobra_model, CARVEME, constraints=demands, core_reactions=core,
-                         loopless=loopless, skip_checks=True)
+                         thermodynamic=thermodynamic, skip_checks=True)
     # compression is off by default: on a universe it costs far more than it saves. It is a plain
     # pipeline option here, not something this module type bypasses -- pass compress=True to use it.
-    # compress=False on a universe: there is little to compress and the attempt costs more than
-    # it saves. Both are plain pipeline options, not something this module type bypasses --
-    # compress='coupled' is the cheap middle ground if a run does want some reduction.
-    kwargs = dict(ki_cost=ki_cost, compress=compress, solution_approach=BEST, max_solutions=1,
-                  skip_preprocessing_fvas=skip_fvas)
+    kwargs = dict(ki_cost=ki_cost, solution_approach=BEST, max_solutions=1)
+    if compress is not None:          # otherwise StrainDesign's CarveMe defaults apply
+        kwargs['compress'] = compress
+    if skip_fvas is not None:
+        kwargs['skip_preprocessing_fvas'] = skip_fvas
     if solver:
         kwargs['solver'] = solver
     if threads:
