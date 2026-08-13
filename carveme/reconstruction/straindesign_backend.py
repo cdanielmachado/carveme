@@ -195,7 +195,7 @@ def _merge_reverse_duplicates(model, annotated, score_of, gpr_of):
 def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=MIN_ATPM,
                    constraints=None, extra_conditions=None, solver=None, threads=None,
                    time_limit=None, thermodynamic='loopless', verbose=False, compress=None,
-                   skip_fvas=None, approach=None, seed=None):
+                   skip_fvas=None, approach=None, seed=None, exchanges='prune'):
     """Which reactions to leave out of the universe, chosen by completion instead of carving.
 
     Carving picks a threshold on annotation score and deletes below it, then repairs whatever
@@ -232,6 +232,14 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
             first feasible one, which is far quicker and shows how much the search's arbitrary
             choices matter.
         seed (int): MILP seed, to sample alternative reconstructions of equal standing.
+        exchanges (str): what to do with the universe's ~645 exchange reactions. 'prune' (default)
+            keeps them out of the MILP and drops afterwards those whose metabolite no kept
+            reaction touches. 'candidates' lets the MILP price them like anything else, which is
+            what carving effectively does and yields a slightly smaller model -- but it adds a
+            binary each, and measurably so: with them the larger universes did not reach even a
+            first feasible solution in two hours, without them the same problems solve in minutes.
+            An exchange carries no gene evidence and no must-run condition, so which of the two is
+            used changes no claim the formulation makes.
         compress, skip_fvas: StrainDesign pipeline options. Both default to off for a CarveMe
             module -- on a universe there is little to compress and most of what an FVA scans
             will not be bought. Note that coupled lumping sums knock-in costs, so
@@ -282,6 +290,8 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
     # make the two backends incomparable. The price has to be positive rather than zero: at zero
     # an unusable exchange costs nothing to buy and the choice is arbitrary.
     fixed = duplicates | {biomass} | ({atpm} if atpm else set())
+    if exchanges == 'prune':
+        fixed |= exchange
     candidates = [r.id for r in cobra_model.reactions if r.id not in fixed]
 
     def cost_of(r):
@@ -346,6 +356,23 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
     # fixed to zero is reported in no design at all
     bought = {r for r in candidates if designs[0].get(r)}
     inactive = (set(candidates) - bought) | duplicates
+    if exchanges == 'prune':
+        # An exchange can only carry flux if something else in the kept network touches its
+        # metabolite. That is a structural fact, not a decision worth a binary, so it is settled
+        # here rather than in the MILP.
+        kept = {r.id for r in cobra_model.reactions} - inactive
+        touched = set()
+        for r_id in kept:
+            if r_id in exchange:
+                continue
+            touched.update(m.id for m in cobra_model.reactions.get_by_id(r_id).metabolites)
+        stranded = {r_id for r_id in exchange
+                    if not touched & {m.id for m in
+                                      cobra_model.reactions.get_by_id(r_id).metabolites}}
+        inactive |= stranded
+        if verbose:
+            print(f'Pruned {len(stranded)} exchange reactions whose metabolite nothing else '
+                  f'touches')
     if verbose:
         print(f'Completion kept {len(bought & annotated)}/{len(core)} annotated and bought '
               f'{len(bought - annotated)} unannotated reactions')
