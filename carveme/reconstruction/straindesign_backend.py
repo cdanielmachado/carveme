@@ -195,7 +195,8 @@ def _merge_reverse_duplicates(model, annotated, score_of, gpr_of):
 def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=MIN_ATPM,
                    constraints=None, extra_conditions=None, solver=None, threads=None,
                    time_limit=None, thermodynamic='loopless', verbose=False, compress=None,
-                   skip_fvas=None, approach=None, seed=None, exchanges='prune'):
+                   skip_fvas=None, approach=None, seed=None, exchanges='prune',
+                   max_cost=None, bigm=1000.0):
     """Which reactions to leave out of the universe, chosen by completion instead of carving.
 
     Carving picks a threshold on annotation score and deletes below it, then repairs whatever
@@ -232,6 +233,17 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
             first feasible one, which is far quicker and shows how much the search's arbitrary
             choices matter.
         seed (int): MILP seed, to sample alternative reconstructions of equal standing.
+        bigm (float): the constant M for gating rows whose bound is infinite. Defaults to 1e3,
+            the same value carving uses. Passing None leaves those rows as indicator constraints,
+            which is StrainDesign's default and is far slower here: an indicator contributes
+            nothing to the LP relaxation, so a formulation built from thousands of them starts
+            with almost no bound. Measured on E. coli -- indicators, over 10,817 s and no proof;
+            M = 1e3, 543 s and proven optimal, same reconstruction.
+
+            Sound only because StrainDesign pins the integrality tolerance (CPLEX 0, Gurobi and
+            SCIP 1e-9). At a solver's default of 1e-5 this same encoding leaks M x tol = 1e-2 of
+            flux through a reaction that reads as switched off -- which is how carving, using the
+            same M, ships reactions that cannot carry flux.
         exchanges (str): what to do with the universe's ~645 exchange reactions. 'prune' (default)
             keeps them out of the MILP and drops afterwards those whose metabolite no kept
             reaction touches. 'candidates' lets the MILP price them like anything else, which is
@@ -324,6 +336,14 @@ def complete_model(model, reaction_scores, gprs=None, min_growth=0.1, min_atpm=M
     kwargs = dict(ki_cost=ki_cost, solution_approach=approach or BEST, max_solutions=1)
     if seed is not None:
         kwargs['seed'] = seed
+    if bigm is not None:
+        kwargs['M'] = bigm
+    if max_cost is not None:
+        # Bounds the total intervention cost. Since annotated reactions are priced negatively,
+        # a negative bound is a floor on how much annotation the result has to retain -- which is
+        # what makes approach='any' usable: without it the first feasible network satisfies growth
+        # and keeps almost none of the evidence.
+        kwargs['max_cost'] = max_cost
     if compress is not None:          # otherwise StrainDesign's CarveMe defaults apply
         kwargs['compress'] = compress
     if skip_fvas is not None:

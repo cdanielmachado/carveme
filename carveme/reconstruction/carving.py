@@ -189,7 +189,8 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
 def carve_model(model, reaction_scores, inplace=True, default_score=-1.0, uptake_score=0.0, soft_score=1.0,
                 soft_constraints=None, hard_constraints=None, ref_model=None, ref_score=0.0, init_env=None,
                 debug_output=None, verbose=False, backend='reframed', gprs=None, solver=None,
-                threads=None, time_limit=None, min_growth=0.1):
+                threads=None, time_limit=None, min_growth=0.1, approach=None, max_cost=None,
+                thermodynamic='loopless', bigm=None):
     """ Reconstruct a metabolic model using the CarveMe approach.
 
     Args:
@@ -243,7 +244,8 @@ def carve_model(model, reaction_scores, inplace=True, default_score=-1.0, uptake
         from carveme.reconstruction.straindesign_backend import complete_model
         inactive = complete_model(model, reaction_scores, gprs=gprs, min_growth=min_growth,
                                   constraints=hard_constraints, solver=solver, threads=threads,
-                                  time_limit=time_limit, verbose=verbose)
+                                  time_limit=time_limit, verbose=verbose, approach=approach,
+                                  max_cost=max_cost, thermodynamic=thermodynamic, bigm=bigm)
         sol = None
     else:
         sol = minmax_reduction(model, scores, default_score=default_score, uptake_score=uptake_score, soft_score=soft_score,
