@@ -188,7 +188,9 @@ def minmax_reduction(model, scores, min_growth=0.1, min_atpm=0.1, eps=1e-3, bigM
 
 def carve_model(model, reaction_scores, inplace=True, default_score=-1.0, uptake_score=0.0, soft_score=1.0,
                 soft_constraints=None, hard_constraints=None, ref_model=None, ref_score=0.0, init_env=None,
-                debug_output=None, verbose=False):
+                debug_output=None, verbose=False, backend='reframed', gprs=None, solver=None,
+                threads=None, time_limit=None, min_growth=0.1, approach=None, max_cost=None,
+                thermodynamic='loopless', bigm=None):
     """ Reconstruct a metabolic model using the CarveMe approach.
 
     Args:
@@ -203,6 +205,14 @@ def carve_model(model, reaction_scores, inplace=True, default_score=-1.0, uptake
         soft_constraints (dict): dictionary from reaction id to expected flux direction (-1, 1, 0)
         hard_constraints (dict): dictionary of flux bounds
         init_env (Environment): initialize final model with given Environment (optional)
+        backend (str): 'reframed' for the carving MILP (default), or 'straindesign' to pose the
+            problem as a completion instead. Completion guarantees that no reaction in the
+            result is blocked and that every annotated reaction it keeps carries flux; carving
+            guarantees neither. It needs a MILP solver via StrainDesign.
+        gprs (pandas.DataFrame): the BiGG GPR table; the completion backend uses it to tell
+            spontaneous reactions from catalysed ones
+        solver (str): MILP solver for the completion backend
+        threads (int), time_limit (float), min_growth (float): completion backend settings
 
     Returns:
         CBModel: reconstructed model
@@ -230,15 +240,23 @@ def carve_model(model, reaction_scores, inplace=True, default_score=-1.0, uptake
     else:
         ref_reactions = None
 
-    sol = minmax_reduction(model, scores, default_score=default_score, uptake_score=uptake_score, soft_score=soft_score,
-                           soft_constraints=soft_constraints, hard_constraints=hard_constraints,
-                           ref_reactions=ref_reactions, ref_score=ref_score, debug_output=debug_output)
-
-    if sol.status == Status.OPTIMAL or sol.status == Status.SUBOPTIMAL:
-        inactive = inactive_reactions(model, sol)
+    if backend == 'straindesign':
+        from carveme.reconstruction.straindesign_backend import complete_model
+        inactive = complete_model(model, reaction_scores, gprs=gprs, min_growth=min_growth,
+                                  constraints=hard_constraints, solver=solver, threads=threads,
+                                  time_limit=time_limit, verbose=verbose, approach=approach,
+                                  max_cost=max_cost, thermodynamic=thermodynamic, bigm=bigm)
+        sol = None
     else:
-        print("MILP solver failed: {}".format(sol.message))
-        return
+        sol = minmax_reduction(model, scores, default_score=default_score, uptake_score=uptake_score, soft_score=soft_score,
+                               soft_constraints=soft_constraints, hard_constraints=hard_constraints,
+                               ref_reactions=ref_reactions, ref_score=ref_score, debug_output=debug_output)
+
+        if sol.status == Status.OPTIMAL or sol.status == Status.SUBOPTIMAL:
+            inactive = inactive_reactions(model, sol)
+        else:
+            print("MILP solver failed: {}".format(sol.message))
+            return
 
     if verbose:
         pos_score = {r_id for r_id, val in scores.items() if val > 0}
@@ -252,7 +270,7 @@ def carve_model(model, reaction_scores, inplace=True, default_score=-1.0, uptake
         print(f'AI: {n_ai:4n} AE: {n_ae:4n}')
         print(f'NI: {n_ni:4n} NE: {n_ne:4n}')
 
-    if debug_output:
+    if debug_output and sol is not None:
         pd.DataFrame.from_dict(sol.values, orient='index').to_csv(debug_output + '_milp_solution.tsv',
                                                                   sep='\t', header=False)
 
