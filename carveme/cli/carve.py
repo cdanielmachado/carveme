@@ -44,6 +44,7 @@ def build_model_id(name):
 
 def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
          ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, blind_gapfill=False, init=None,
+         backend='reframed',
          mediadb=None, default_score=None, uptake_score=None, soft_score=None, soft=None, hard=None, reference=None,
          ref_score=None, recursive_mode=False):
 
@@ -204,7 +205,8 @@ def maincall(inputfile, input_type='protein', outputfile=None, diamond_args=None
         model = carve_model(universe_model, scores, inplace=(not gapfill), default_score=default_score,
                             uptake_score=uptake_score, soft_score=soft_score, soft_constraints=soft_constraints,
                             hard_constraints=hard_constraints, ref_model=ref_model, ref_score=ref_score,
-                            init_env=init_env, debug_output=debug_output, verbose=verbose)
+                            init_env=init_env, debug_output=debug_output, verbose=verbose,
+                            backend=backend, gprs=gprs, solver=solver)
         annotate_genes(model, gene2gene, gene_annotations)
 
     else:
@@ -305,6 +307,11 @@ def main():
     parser.add_argument('--reference', help="Manually curated model of a close reference species.")
 
     parser.add_argument('--solver', help="Select MILP solver. Available options: cplex [default], gurobi.")
+    parser.add_argument('--backend', choices=['reframed', 'straindesign'], default='reframed',
+                        help="Reconstruction backend. 'reframed' carves the universe down "
+                             "[default]; 'straindesign' completes an annotated core instead, "
+                             "which guarantees no reaction in the result is blocked and that "
+                             "every annotated reaction it keeps carries flux.")
 
     parser.add_argument('--default-score', type=float, default=-1.0, help=argparse.SUPPRESS)
     parser.add_argument('--uptake-score', type=float, default=0.0, help=argparse.SUPPRESS)
@@ -317,6 +324,12 @@ def main():
 
     if args.gapfill and args.ensemble:
         parser.error('Gap fill and ensemble generation cannot currently be combined (not implemented yet).')
+
+    if args.ensemble and args.backend != 'reframed':
+        # build_ensemble goes straight to the carving MILP, so the requested backend would be
+        # ignored without a word and the ensemble built by carving after all.
+        parser.error('Ensemble generation is only implemented for the carving backend '
+                     '(--backend reframed).')
 
     if (args.soft or args.hard) and args.ensemble:
         parser.error('Soft/hard constraints and ensemble generation cannot currently be combined (not implemented yet).')
@@ -369,6 +382,7 @@ def main():
             flavor=flavor,
             gapfill=args.gapfill,
             blind_gapfill=False,
+            backend=args.backend,
             init=args.init,
             mediadb=args.mediadb,
             default_score=args.default_score,
@@ -395,6 +409,7 @@ def main():
                 flavor=flavor,
                 gapfill=args.gapfill,
                 blind_gapfill=False,
+                backend=args.backend,
                 init=args.init,
                 mediadb=args.mediadb,
                 default_score=args.default_score,

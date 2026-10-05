@@ -172,3 +172,39 @@ Please use *hard* constraints with care, as they can make the reconstruction pro
 
 
 
+
+Reconstruction by completion
+----------------------------
+
+By default CarveMe reconstructs by *carving*: it takes the universal network, scores every reaction
+by how well the genome supports it, and deletes the low scorers until what remains still grows.
+Nothing in that formulation ties a reaction's presence to its ability to carry flux, so a draft
+model can end up containing reactions that can never run, and missing reactions the genome plainly
+supports.
+
+The ``straindesign`` backend poses the same problem the other way round. It starts from the
+annotated core and buys the cheapest additions that let that core run, stating both properties as
+constraints:
+
+* a reaction that was not bought carries no flux, and
+* an annotated reaction that *was* kept demonstrably carries flux.
+
+Together these mean the reconstructed model contains no blocked reactions at all -- not because
+they were cleaned up afterwards, but because no other solution is feasible. Annotated reactions
+that could not be connected at any price are reported by name instead of disappearing quietly.
+
+.. code-block:: console
+
+    $ carve genome.faa --backend straindesign --solver cplex
+
+The costs are CarveMe's own, so the two backends are comparable: an annotated reaction is rewarded
+by its normalized score and an unannotated one costs 1. There are two exceptions. Spontaneous
+reactions cost almost nothing, because a genome cannot be evidence against chemistry that needs no
+enzyme. Artificial sinks cost 50, because a sink is a hole in the mass balance rather than a
+reaction -- priced like anything else, it lets the network meet the biomass demand through a
+shortcut instead of producing the metabolite.
+
+This backend requires `StrainDesign <https://straindesign.readthedocs.io>`_ and a MILP solver
+(CPLEX, Gurobi, SCIP or GLPK). It is slower than carving -- minutes rather than seconds at
+genome scale -- because it solves one MILP over the whole universe instead of a sequence of
+smaller ones. Pass ``--solver`` to choose the solver.
